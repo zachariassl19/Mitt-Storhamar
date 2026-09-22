@@ -1,6 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Car, ChevronDown, MapPin, Plus, Save, Trash2 } from 'lucide-react'
-import { calculateCarCost, loadCarSettings, saveCarSettings, type CarEnergy, type CarSettings } from '../lib/travelSettings'
+import {
+  averageEnergyPrice,
+  calculateCarCost,
+  loadCarSettings,
+  saveCarSettings,
+  settingsForEnergy,
+  type CarEnergy,
+  type CarSettings,
+} from '../lib/travelSettings'
 import { createLeg, createTripForGame } from '../lib/trips'
 import type { Game, TransportMode, Trip, TripLeg } from '../types'
 
@@ -34,6 +42,13 @@ function numberOrNull(value: string) {
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 }).format(value) + ' kr'
+}
+
+function formatUnitPrice(value: number) {
+  return new Intl.NumberFormat('nb-NO', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 3,
+  }).format(value)
 }
 
 function normalizeLegs(legs: TripLeg[]) {
@@ -87,6 +102,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
   const arenaIndex = nodes.findIndex((node) => samePlace(node, game.arena))
   const hasCar = legs.some((leg) => leg.transport === 'car')
   const invalidRoute = legs.length === 0 || legs.some((leg) => !leg.fromName.trim() || !leg.toName.trim())
+  const priceReference = averageEnergyPrice(carSettings.energy)
 
   const totalKm = legs.reduce((sum, leg) => sum + (leg.km ?? 0), 0)
   const totalMinutes = legs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
@@ -275,13 +291,24 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         <div className="car-settings-card">
           <div className="car-settings-heading"><Car size={18} /><div><strong>Bilinnstilling</strong><span>Brukes på alle bil-etapper</span></div></div>
           <div className="energy-choice">
-            {energyOptions.map((option) => <button key={option.value} className={carSettings.energy === option.value ? 'selected' : ''} onClick={() => setCar({ ...carSettings, energy: option.value })}>{option.label}</button>)}
+            {energyOptions.map((option) => (
+              <button
+                key={option.value}
+                className={carSettings.energy === option.value ? 'selected' : ''}
+                onClick={() => setCar(settingsForEnergy(carSettings, option.value))}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
           <div className="car-setting-fields">
             <label><span>{carSettings.energy === 'electric' ? 'Forbruk kWh/100 km' : 'Forbruk l/100 km'}</span><input type="number" min="0" step="0.1" inputMode="decimal" value={carSettings.consumptionPer100 ?? ''} placeholder="Ukjent" onChange={(event) => setCar({ ...carSettings, consumptionPer100: numberOrNull(event.target.value) })} /></label>
             <label><span>{carSettings.energy === 'electric' ? 'Pris kr/kWh' : 'Pris kr/l'}</span><input type="number" min="0" step="0.01" inputMode="decimal" value={carSettings.energyUnitPrice ?? ''} placeholder="Ukjent" onChange={(event) => setCar({ ...carSettings, energyUnitPrice: numberOrNull(event.target.value) })} /></label>
           </div>
-          <p>Bilpris = km ÷ 100 × forbruk × energipris. Manglende pris stopper aldri selve reiseplanen.</p>
+          <p>
+            Utgangspunkt: <strong>{formatUnitPrice(priceReference.price)} {priceReference.unit}</strong> · {priceReference.source}, {priceReference.period}. {priceReference.description} Du kan overstyre prisen over hvis du faktisk betalte noe annet.
+          </p>
+          <p>Bilpris = km ÷ 100 × forbruk × energipris. Forbruket settes én gang for bilen din.</p>
         </div>
       )}
 
@@ -326,7 +353,7 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
           <label><span>Km</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
           <label><span>Minutter</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label>
           {manualCost && <label className="wide"><span>{leg.transport === 'supporter_bus' ? 'Pris supporterbuss' : 'Pris'} (kr)</span><input type="number" min="0" step="1" inputMode="decimal" value={leg.estimatedCost ?? ''} placeholder="Ukjent" onChange={(event) => onUpdate({ estimatedCost: numberOrNull(event.target.value) })} /></label>}
-          {leg.transport === 'car' && <p className="segment-help">Bilens kostnad regnes automatisk fra km og den globale bilinnstillingen under.</p>}
+          {leg.transport === 'car' && <p className="segment-help">Bilens kostnad regnes automatisk fra km, forbruket ditt og norsk gjennomsnittspris som standard.</p>}
           {(leg.transport === 'walk' || leg.transport === 'bike') && <p className="segment-help">Denne delen har 0 kr i transportkostnad.</p>}
         </div>
       )}
