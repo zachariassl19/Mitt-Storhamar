@@ -31,6 +31,7 @@ import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
+import { gameFeatureClassNames, gameFeatures, gameStatusClass } from './lib/gamePresentation'
 import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
   classifyArenaProximity,
@@ -331,7 +332,7 @@ export default function AppV2() {
                   openGame={openGame}
                 />
               )}
-              {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} />}
+              {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} />}
               {active === 'career' && <CareerPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
               {active === 'history' && <HistoryPage />}
               {active === 'more' && (
@@ -373,6 +374,7 @@ function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, open
   const upcoming = games.filter((game) => new Date(game.startsAt).getTime() > Date.now()).slice(0, 4)
   const ehlCount = games.filter((game) => game.competition === 'EHL').length
   const chlCount = games.filter((game) => game.competition === 'CHL').length
+  const features = gameFeatures(nextGame)
 
   return (
     <>
@@ -383,8 +385,9 @@ function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, open
         </section>
       )}
 
-      <section className={`hero-card ${nextGame.competition === 'CHL' ? 'chl' : ''} ${matchday ? 'is-matchday' : ''}`}>
+      <section className={`hero-card ${nextGame.competition === 'CHL' ? 'chl' : ''} ${gameFeatureClassNames(nextGame)} ${matchday ? 'is-matchday' : ''}`}>
         <div className="section-kicker"><span>{matchday ? 'KAMPDAG' : 'NESTE KAMP'}</span><span className="competition-pill">{nextGame.competition}</span></div>
+        {features.length > 0 && <div className="hero-feature-row">{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}</div>}
         <div className="hero-teams">
           <TeamMark name={nextGame.homeTeam} primary={nextGame.homeTeam === 'Storhamar'} />
           <div className="hero-center"><span>{dateText(nextGame)}</span><strong>{isFinished(nextGame) ? `${nextGame.homeScore}–${nextGame.awayScore}` : timeText(nextGame)}</strong><small>{isHome(nextGame) ? 'HJEMME' : 'BORTE'}</small></div>
@@ -439,20 +442,84 @@ function AttendanceButtons({ value, onChange }: { value: AttendancePlan; onChang
   return <div className="attendance-buttons">{choices.map(({ value: option, label, icon: Icon }) => <button key={option} className={value === option ? `selected ${option}` : ''} onClick={() => onChange(option)}><Icon size={18} /> {label}</button>)}</div>
 }
 
-function GamesPage({ currentPlan, updatePlan, openGame, records }: {
+function HistoricalAttendanceButtons({ record, onYes, onNo }: {
+  record?: GameDayRecord
+  onYes: () => void
+  onNo: () => void
+}) {
+  const attended = record?.completed && record.attendanceActual === 'attended'
+  const notAttended = record?.completed && record.attendanceActual === 'not_attended'
+  return (
+    <div className="past-attendance-buttons">
+      <button className={attended ? 'selected yes' : ''} onClick={onYes}><Check size={18} /> Ja</button>
+      <button className={notAttended ? 'selected no' : ''} onClick={onNo}><X size={18} /> Nei</button>
+    </div>
+  )
+}
+
+function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord }: {
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
   openGame: (game: Game) => void
   records: Record<string, GameDayRecord>
+  onSaveRecord: (record: GameDayRecord) => void
 }) {
+  const [filter, setFilter] = useState<'all' | 'past' | 'future'>('all')
   const now = Date.now()
   const past = games.filter((game) => new Date(game.startsAt).getTime() < now)
   const future = games.filter((game) => new Date(game.startsAt).getTime() >= now)
+
+  function openHistoricalGame(game: Game) {
+    const existing = records[game.id]
+    if (!(existing?.completed && existing.attendanceActual === 'attended')) {
+      const nowIso = new Date().toISOString()
+      onSaveRecord({
+        ...(existing ?? blankGameDayRecord(game.id)),
+        gameId: game.id,
+        attendanceActual: 'attended',
+        completed: false,
+        completedAt: undefined,
+        updatedAt: nowIso,
+      })
+    }
+    openGame(game)
+  }
+
+  function markHistoricalNotAttended(game: Game) {
+    const existing = records[game.id]
+    const nowIso = new Date().toISOString()
+    onSaveRecord({
+      ...(existing ?? blankGameDayRecord(game.id)),
+      gameId: game.id,
+      attendanceActual: 'not_attended',
+      entryType: 'unknown',
+      ticketCost: null,
+      completed: true,
+      completedAt: existing?.completed && existing.attendanceActual === 'not_attended' && existing.completedAt ? existing.completedAt : nowIso,
+      updatedAt: nowIso,
+    })
+  }
+
   return (
     <section className="page-section">
-      <div className="page-heading"><span className="eyebrow">2026/27 · {games.length} KAMPER</span><h1>Kamper</h1><p>Trykk på en kamp for kampdetalj, attendance og reise.</p></div>
-      {future.length > 0 && <><div className="games-subheading"><span>KOMMENDE</span><strong>{future.length}</strong></div><div className="game-card-list">{future.map((game) => <article className={`card full-game-card ${game.competition === 'CHL' ? 'chl-border' : ''}`} key={game.id}><GameRow game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} /><AttendanceButtons value={currentPlan(game.id)} onChange={(value) => updatePlan(game.id, value)} /></article>)}</div></>}
-      {past.length > 0 && <><div className="games-subheading past-heading"><span>TIDLIGERE KAMPER</span><strong>{past.length}</strong></div><div className="game-card-list">{[...past].reverse().map((game) => <article className={`card full-game-card past-game ${game.competition === 'CHL' ? 'chl-border' : ''}`} key={game.id}><GameRow game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} actual={records[game.id]?.completed ? records[game.id].attendanceActual : undefined} /></article>)}</div></>}
+      <div className="page-heading"><span className="eyebrow">2026/27 · {games.length} KAMPER</span><h1>Kamper</h1><p>Sorter mellom gamle og kommende kamper. På gamle kamper kan du raskt registrere om du var der.</p></div>
+
+      <div className="game-filter-bar" role="group" aria-label="Filtrer kamper">
+        <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>Alle <strong>{games.length}</strong></button>
+        <button className={filter === 'past' ? 'active' : ''} onClick={() => setFilter('past')}>Gamle <strong>{past.length}</strong></button>
+        <button className={filter === 'future' ? 'active' : ''} onClick={() => setFilter('future')}>Kommende <strong>{future.length}</strong></button>
+      </div>
+
+      {filter !== 'past' && future.length > 0 && <><div className="games-subheading"><span>KOMMENDE</span><strong>{future.length}</strong></div><div className="game-card-list">{future.map((game) => {
+        const plan = currentPlan(game.id)
+        return <article className={`card full-game-card ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, records[game.id], now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} /><AttendanceButtons value={plan} onChange={(value) => updatePlan(game.id, value)} /></article>
+      })}</div></>}
+
+      {filter !== 'future' && past.length > 0 && <><div className="games-subheading past-heading"><span>TIDLIGERE KAMPER</span><strong>{past.length}</strong></div><div className="game-card-list">{[...past].reverse().map((game) => {
+        const record = records[game.id]
+        const plan = currentPlan(game.id)
+        return <article className={`card full-game-card past-game ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, record, now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} actual={record?.completed ? record.attendanceActual : undefined} /><HistoricalAttendanceButtons record={record} onYes={() => openHistoricalGame(game)} onNo={() => markHistoricalNotAttended(game)} /></article>
+      })}</div></>}
     </section>
   )
 }
@@ -475,12 +542,14 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
 }) {
   const temporalState = getGameTemporalState(game)
   const future = temporalState === 'FUTURE' || temporalState === 'GAME_DAY_BEFORE_START'
+  const features = gameFeatures(game)
 
   return (
     <section className="game-detail-page">
       <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Tilbake til kamper</button>
-      <article className={`game-detail-hero ${game.competition === 'CHL' ? 'chl' : ''}`}>
+      <article className={`game-detail-hero ${game.competition === 'CHL' ? 'chl' : ''} ${gameFeatureClassNames(game)}`}>
         <div className="section-kicker"><span>{game.competition} · {game.season}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span></div>
+        {features.length > 0 && <div className="hero-feature-row">{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}</div>}
         <div className="detail-matchup"><TeamMark name={game.homeTeam} primary={game.homeTeam === 'Storhamar'} /><div className="detail-score">{isFinished(game) ? <><strong>{game.homeScore}–{game.awayScore}</strong><span>FERDIG{decisionLabel(game)}</span></> : <><strong>{timeText(game)}</strong><span>{dateText(game)}</span></>}</div><TeamMark name={game.awayTeam} primary={game.awayTeam === 'Storhamar'} /></div>
         <div className="detail-meta"><span><CalendarDays size={14} /> {fullDateText(game)}</span><span><MapPin size={14} /> {game.arena}{game.city ? ` · ${game.city}` : ''}</span></div>
         {record?.completed && <div className={`actual-badge ${record.attendanceActual}`}>{actualLabel(record.attendanceActual)}</div>}
@@ -682,11 +751,13 @@ function MorePage({ hubData, importMessage, importHubFile, removeImport, version
 
 function GameRow({ game, plan, onOpen, actual }: { game: Game; plan: AttendancePlan; onOpen: () => void; actual?: AttendanceActual }) {
   const result = isFinished(game)
+  const features = gameFeatures(game)
+  const hasClassic = features.some((feature) => feature.key === 'classic')
   return (
     <button className="game-row game-row-with-logos" onClick={onOpen} type="button">
       <div className="date-block"><strong>{new Intl.DateTimeFormat('nb-NO', { day: 'numeric', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</strong><span>{new Intl.DateTimeFormat('nb-NO', { month: 'short', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</span></div>
       <div className="logo-pair" aria-hidden="true"><TeamLogo team={game.homeTeam} /><TeamLogo team={game.awayTeam} /></div>
-      <div className="game-row-main"><div className="game-meta"><span>{game.competition}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span>{game.special && <span className="special-tag">{game.special}</span>}{!result && plan !== 'unset' && <span className={`tiny-plan ${plan}`}>{planLabel(plan)}</span>}{actual === 'attended' && <span className="tiny-actual">VAR DER</span>}</div><strong>{game.homeTeam} – {game.awayTeam}</strong><small>{game.arena} · {result ? 'Ferdig' : timeText(game)}</small></div>
+      <div className="game-row-main"><div className="game-meta"><span>{game.competition}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span>{game.special && !hasClassic && <span className="special-tag">{game.special}</span>}{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}{!result && plan !== 'unset' && <span className={`tiny-plan ${plan}`}>{planLabel(plan)}</span>}{actual === 'attended' && <span className="tiny-actual">VAR DER</span>}{actual === 'not_attended' && <span className="tiny-actual not-attended">IKKE DER</span>}</div><strong>{game.homeTeam} – {game.awayTeam}</strong><small>{game.arena} · {result ? 'Ferdig' : timeText(game)}</small></div>
       {result ? <div className="game-result"><strong>{game.homeScore}–{game.awayScore}</strong>{game.decisionType && game.decisionType !== 'REG' && <span>{decisionLabel(game).trim()}</span>}</div> : <ChevronRight size={18} />}
     </button>
   )
