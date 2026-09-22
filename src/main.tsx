@@ -8,6 +8,7 @@ import './detailStyles.css'
 import './travelPlanner.css'
 import './purchases.css'
 import './cloudSync.css'
+import './gameCards.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
