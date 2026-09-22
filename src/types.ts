@@ -122,22 +122,4 @@ export interface HubExport {
   [key: string]: unknown
 }
 
-export interface PuckHunterHistoryGame {
-  importId: string
-  date: string
-  hockeySeason?: string | null
-  homeTeam: string
-  awayTeam: string
-  homeScore?: number | null
-  awayScore?: number | null
-  arena?: string | null
-  attendanceActual: 'ATTENDED'
-}
-
-export interface PuckHunterHistory {
-  schemaVersion: 1
-  importedAt: string
-  games: PuckHunterHistoryGame[]
-}
-
 export type NavKey = 'home' | 'games' | 'career' | 'history' | 'more'
