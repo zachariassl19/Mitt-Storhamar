@@ -4,6 +4,10 @@ Personlig Storhamar-app for kampdag, kamper, reiser, supporterstatistikk og klub
 
 Dette repoet er den nye hovedbasen for videreutviklingen av den eksisterende **Storhamar HUB**-appen.
 
+## Live
+
+- GitHub Pages: https://zachariassl19.github.io/Mitt-Storhamar/
+
 ## Viktig prinsipp
 
 **Ikke start appen på nytt. Ikke bygg om ting som allerede fungerer uten grunn.**
