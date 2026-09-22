@@ -2,6 +2,33 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.8.0] – 2026-09-23
+
+### Bedre kampoversikt
+- Kamper kan nå filtreres med «Alle», «Gamle» og «Kommende».
+- Gamle kamper har egne Ja/Nei-knapper for rask historikkregistrering.
+- «Ja» åpner kampen og gjør den klar for å fullføre kampdagen med reise, billett og kjøp.
+- «Nei» markerer kampen som «Ikke der» uten å åpne ekstra meny.
+- Bekreftet «Var der», «Ikke der», planlagt «Ja», «Kanskje» og «Nei» gir tydelig forskjellig preg på kampkortene.
+
+### Spesialkamper og arrangementspreg
+- CHL-kamper får tydeligere Europa/CHL-uttrykk.
+- Kampen Lillehammer–Storhamar i Håkons Hall får eget «Hockey Classic»-preg.
+- Kamper mot Vålerenga merkes som «Rivaloppgjør» og får egen visuell variant.
+- EHL-kamper på fredag får «Superfredag»-preg i Mitt Storhamar.
+- Spesialmerkene vises både i kampoversikten, på neste kamp og på kampdetaljen.
+
+### Tester
+- Nye tester dekker Superfredag-presentasjon, CHL, Hockey Classic, rivaloppgjør og statusprioritering.
+- Produksjonsbuilden kjører fortsatt Vitest, TypeScript-sjekk og Vite-build.
+
+## [0.7.1] – 2026-09-23
+
+### Reise og historiske km
+- Google Routes lagrer nå beregnet km og tid direkte etter vellykket ruteberegning.
+- En historisk kamp som allerede er bekreftet med «Jeg var der» kan få reisen beregnet i ettertid og fortsatt telle som gjennomført.
+- Dette retter situasjonen der gjennomførte reiser kunne vises mens «Bekreftede km» fortsatt sto på 0.
+
 ## [0.7.0] – 2026-09-23
 
 ### Kampkjøp og kostnader
