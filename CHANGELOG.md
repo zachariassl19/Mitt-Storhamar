@@ -2,6 +2,35 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.3.0] – 2026-09-22
+
+### Lagt til
+- Smart Kampdag direkte på kampdetaljen.
+- GPS-status for utenfor, nær arena og ved arena.
+- Start/stopp av GPS-følging mens appen er aktiv på kampdag.
+- Engangssjekk av posisjon med «Sjekk nå».
+- GPS-observasjoner lagres som `near_arena`, `arrived_at_arena` og `left_arena` uten kontinuerlig rått GPS-spor.
+- GPS kan foreslå at brukeren var på kampen, men kan ikke registrere attendance automatisk.
+- Egen «Fullfør kampdagen»-flyt etter kamp.
+- Faktisk attendance: «Jeg var der», «Jeg var ikke der» eller «Husker ikke».
+- Inngangstype og billettkostnad på gjennomført kampdag.
+- Lagret kampdagsresultat vises som «DU VAR DER» / «IKKE DELTATT».
+- Trip markeres som `completed` først når kampdagen fullføres med «Jeg var der».
+- Sentral temporal logikk for framtidig kamp, kampdag før start, pågående kamp, post-game og ferdig kamp.
+
+### Viktig regel
+- `attendancePlan = yes` betyr kun at brukeren planlegger å dra.
+- Planlagt «Ja» teller aldri som kamp sett.
+- Planlagte km og planlagte reiser teller ikke i ny karrierestatistikk.
+- Først `attendanceActual = attended` på en fullført kampdag gjør at kampen teller.
+
+### Neste
+- Utvide Arena-registeret med GPS-punkt for alle arenaer i 2026/27.
+- Google Routes for automatisk km og reisetid.
+- DRA basert på automatisk reisetid.
+- Bilinnstillinger og drivstoffkostnad.
+- Reisefølge og kjøp i post-game-flyten.
+
 ## [0.2.1] – 2026-09-22
 
 ### Endret
@@ -15,11 +44,6 @@ Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 - GPS kan klassifisere `near_arena`, `arrived_at_arena` og `left_arena`.
 - Rå GPS-posisjon skal ikke brukes som attendance-fasit eller lagres som kontinuerlig spor.
 - GPS kan senere foreslå «Det ser ut som du var der – bekreft?», men kan aldri sette `attendanceActual` automatisk.
-
-### Neste
-- Koble Smart Game Day til kampdetalj/kampdag-UI.
-- Fullfør kampdagen med faktisk attendance, inngangstype og billettkostnad.
-- Marker Trip som `completed` først når gjennomført kampdag bekreftes.
 
 ## [0.2.0] – 2026-09-22
 
@@ -35,11 +59,6 @@ Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 - Reisen persisteres lokalt og finnes fortsatt etter refresh.
 - Versjonsnummer vises under Mer.
 - SemVer-regler dokumentert i `docs/VERSIONING.md`.
-
-### Neste
-- Google Routes for automatisk km og tid.
-- Bilinnstillinger og drivstoffkostnad.
-- Ordentlig database i stedet for localStorage som hovedlagring.
 
 ## [0.1.0] – 2026-09-22
 
