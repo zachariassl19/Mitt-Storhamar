@@ -6,6 +6,7 @@ import './styles.css'
 import './logoStyles.css'
 import './detailStyles.css'
 import './travelPlanner.css'
+import './purchases.css'
 import './cloudSync.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
