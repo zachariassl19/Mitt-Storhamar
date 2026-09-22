@@ -2,6 +2,17 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.4.2] – 2026-09-22
+
+### Standardforbruk per 100 km
+- Bilberegningen har nå også automatisk standardforbruk per 100 km, slik at kostnaden kan beregnes uten at brukeren først må kjenne bilens eksakte forbruk.
+- Bensin: 6,46 l/100 km.
+- Diesel: 5,48 l/100 km.
+- Strøm: 15,61 kWh/100 km.
+- Tallene er praktiske standardestimat beregnet som enkelt snitt av Statens vegvesens tilgjengelige 2026-segmentverdier for kompakt-, mellomklasse- og SUV-biler.
+- Når energitype byttes, settes både riktig norsk standardpris og standardforbruk automatisk.
+- Brukeren kan fortsatt overstyre standardforbruket med bilens faktiske forbruk.
+
 ## [0.4.1] – 2026-09-22
 
 ### Energipriser og bilkostnad
