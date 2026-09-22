@@ -2,6 +2,25 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.2.1] – 2026-09-22
+
+### Endret
+- «Ja» før kamp er kun attendance-plan og teller aldri som en sett kamp.
+- Planlagte reiser skal ikke telle i karrierestatistikk før kampdagen er bekreftet som gjennomført.
+- Lagt inn egen statistikkregel som kun teller bekreftet `attendanceActual = attended` og fullførte reiser.
+
+### Smart Game Day-grunnmur
+- Canonical Arena-register er startet.
+- CC Amfi er lagt inn med aliaser og geofence-radius.
+- GPS kan klassifisere `near_arena`, `arrived_at_arena` og `left_arena`.
+- Rå GPS-posisjon skal ikke brukes som attendance-fasit eller lagres som kontinuerlig spor.
+- GPS kan senere foreslå «Det ser ut som du var der – bekreft?», men kan aldri sette `attendanceActual` automatisk.
+
+### Neste
+- Koble Smart Game Day til kampdetalj/kampdag-UI.
+- Fullfør kampdagen med faktisk attendance, inngangstype og billettkostnad.
+- Marker Trip som `completed` først når gjennomført kampdag bekreftes.
+
 ## [0.2.0] – 2026-09-22
 
 ### Lagt til
