@@ -2,6 +2,18 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.4.1] – 2026-09-22
+
+### Energipriser og bilkostnad
+- Bilkostnad bruker nå norske gjennomsnittspriser som standard i stedet for tom energipris.
+- Bensin: 19,42 kr/l, basert på SSBs gjennomsnittlige utsalgspris for blyfri 95 oktan i august 2026.
+- Diesel: 21,48 kr/l, basert på SSBs gjennomsnittlige utsalgspris for avgiftspliktig diesel i august 2026.
+- Strøm: 1,179 kr/kWh, basert på SSBs nasjonale husholdningssnitt for kraft, nettleie og avgifter etter offentlig støtte i 2. kvartal 2026.
+- Når energitype byttes mellom Strøm, Bensin og Diesel settes riktig norsk gjennomsnittspris automatisk som nytt utgangspunkt.
+- Prisgrunnlaget og perioden vises i Reise-UI-et.
+- Brukeren kan fortsatt overstyre standardprisen dersom faktisk pumpe-/ladepris er kjent.
+- Selve forbruket til bilen lagres separat og brukes i formelen `km / 100 × forbruk × energipris`.
+
 ## [0.4.0] – 2026-09-22
 
 ### Reise er bygget om
