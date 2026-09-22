@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ArrowDown,
   ArrowLeft,
-  ArrowUp,
   CalendarDays,
   Check,
   CheckCircle2,
   ChevronRight,
   Clock3,
-  Copy,
   Database,
   History,
   Home,
@@ -17,13 +14,9 @@ import {
   Medal,
   MoreHorizontal,
   Navigation,
-  Plus,
   Route,
-  Save,
   Settings,
   Shield,
-  Ticket,
-  Trash2,
   Trophy,
   Upload,
   UserRound,
@@ -31,6 +24,7 @@ import {
   X,
 } from 'lucide-react'
 import appPackage from '../package.json'
+import { TravelPlanner } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
@@ -53,7 +47,7 @@ import {
   saveHubExport,
   saveSmartGameDayEvent,
 } from './lib/storage'
-import { createLeg, createTripForGame, deleteTrip, loadTrips, saveTrip, tripForGame } from './lib/trips'
+import { deleteTrip, loadTrips, saveTrip, tripForGame } from './lib/trips'
 import type {
   ArenaProximity,
   AttendanceActual,
@@ -64,9 +58,7 @@ import type {
   HubExport,
   NavKey,
   SmartGameDayEvent,
-  TransportMode,
   Trip,
-  TripLeg,
 } from './types'
 
 const APP_VERSION = appPackage.version
@@ -77,18 +69,6 @@ const navItems: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: 'career', label: 'Karriere', icon: Medal },
   { key: 'history', label: 'Historie', icon: History },
   { key: 'more', label: 'Mer', icon: MoreHorizontal },
-]
-
-const transportOptions: { value: TransportMode; label: string }[] = [
-  { value: 'car', label: 'Bil' },
-  { value: 'train', label: 'Tog' },
-  { value: 'supporter_bus', label: 'Supporterbuss' },
-  { value: 'bus', label: 'Rutebuss' },
-  { value: 'plane', label: 'Fly' },
-  { value: 'taxi', label: 'Taxi' },
-  { value: 'walk', label: 'Gange' },
-  { value: 'bike', label: 'Sykkel' },
-  { value: 'other', label: 'Annet' },
 ]
 
 const entryOptions: { value: EntryType; label: string }[] = [
@@ -179,10 +159,6 @@ function decisionLabel(game: Game) {
   return ''
 }
 
-function transportLabel(value: TransportMode) {
-  return transportOptions.find((option) => option.value === value)?.label ?? 'Annet'
-}
-
 function entryLabel(value: EntryType) {
   return entryOptions.find((option) => option.value === value)?.label ?? 'Husker ikke'
 }
@@ -195,10 +171,6 @@ function numberOrNull(value: string) {
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 }).format(value) + ' kr'
-}
-
-function cloneTrip(trip: Trip): Trip {
-  return { ...trip, legs: trip.legs.map((leg) => ({ ...leg })) }
 }
 
 function blankGameDayRecord(gameId: string): GameDayRecord {
@@ -483,55 +455,8 @@ function GameDetail({ game, plan, updatePlan, trip, record, smartEvents, onBack,
   onSaveRecord: (record: GameDayRecord) => void
   onSmartEvent: (event: SmartGameDayEvent) => void
 }) {
-  const [draft, setDraft] = useState<Trip>(() => cloneTrip(trip ?? createTripForGame(game)))
-  const [savedMessage, setSavedMessage] = useState('')
   const temporalState = getGameTemporalState(game)
   const future = temporalState === 'FUTURE' || temporalState === 'GAME_DAY_BEFORE_START'
-  const hasSavedTrip = Boolean(trip)
-
-  const sortedLegs = [...draft.legs].sort((a, b) => a.order - b.order)
-  const totalKm = sortedLegs.reduce((sum, leg) => sum + (leg.km ?? 0), 0)
-  const totalCost = sortedLegs.reduce((sum, leg) => sum + (leg.estimatedCost ?? 0), 0)
-  const totalMinutes = sortedLegs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  const outbound = sortedLegs.filter((leg) => leg.direction === 'outbound')
-  const outboundReady = outbound.length > 0 && outbound.every((leg) => typeof leg.durationMinutes === 'number' && leg.durationMinutes >= 0)
-  const outboundMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  const draDate = outboundReady ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000) : null
-  const invalidLeg = sortedLegs.some((leg) => !leg.fromName.trim() || !leg.toName.trim())
-
-  function normalizeLegs(legs: TripLeg[]) { return legs.map((leg, index) => ({ ...leg, order: index })) }
-  function updateLeg(id: string, patch: Partial<TripLeg>) { setSavedMessage(''); setDraft((current) => ({ ...current, legs: current.legs.map((leg) => leg.id === id ? { ...leg, ...patch } : leg) })) }
-  function addLeg(direction: TripLeg['direction']) { setSavedMessage(''); setDraft((current) => ({ ...current, legs: normalizeLegs([...current.legs, createLeg(current.legs.length, direction)]) })) }
-  function removeLeg(id: string) { setSavedMessage(''); setDraft((current) => ({ ...current, legs: normalizeLegs(current.legs.filter((leg) => leg.id !== id)) })) }
-  function duplicateLeg(id: string) {
-    setSavedMessage('')
-    setDraft((current) => {
-      const index = current.legs.findIndex((leg) => leg.id === id)
-      if (index < 0) return current
-      const duplicate = { ...current.legs[index], id: `leg:${Date.now()}:${Math.random().toString(36).slice(2, 8)}` }
-      const next = [...current.legs]; next.splice(index + 1, 0, duplicate)
-      return { ...current, legs: normalizeLegs(next) }
-    })
-  }
-  function moveLeg(id: string, direction: -1 | 1) {
-    setSavedMessage('')
-    setDraft((current) => {
-      const next = [...current.legs].sort((a, b) => a.order - b.order)
-      const index = next.findIndex((leg) => leg.id === id); const target = index + direction
-      if (index < 0 || target < 0 || target >= next.length) return current
-      ;[next[index], next[target]] = [next[target], next[index]]
-      return { ...current, legs: normalizeLegs(next) }
-    })
-  }
-  function save() {
-    if (invalidLeg || draft.legs.length === 0) return
-    const next: Trip = { ...draft, legs: normalizeLegs(sortedLegs), updatedAt: new Date().toISOString() }
-    onSaveTrip(next); setDraft(cloneTrip(next)); setSavedMessage('Reisen er lagret og beholdes etter refresh.')
-  }
-  function removeSavedTrip() {
-    if (!trip) return
-    onDeleteTrip(trip.id); setDraft(createTripForGame(game)); setSavedMessage('Den lagrede reisen er slettet.')
-  }
 
   return (
     <section className="game-detail-page">
@@ -551,19 +476,7 @@ function GameDetail({ game, plan, updatePlan, trip, record, smartEvents, onBack,
 
       <SmartGameDayPanel game={game} events={smartEvents} record={record} onEvent={onSmartEvent} />
 
-      <article className="card detail-card travel-card">
-        <div className="card-heading"><div><span className="eyebrow">REISE</span><h2>{hasSavedTrip ? 'Lagret reise' : 'Planlegg reisen'}</h2></div>{hasSavedTrip && <span className="saved-badge">{trip?.status === 'completed' ? 'GJENNOMFØRT' : 'LAGRET'}</span>}</div>
-        <div className="travel-summary-grid"><div><span>KM</span><strong>{totalKm > 0 ? Math.round(totalKm) : '—'}</strong></div><div><span>TID</span><strong>{totalMinutes > 0 ? `${totalMinutes}m` : '—'}</strong></div><div><span>KOSTNAD</span><strong>{totalCost > 0 ? formatMoney(totalCost) : '—'}</strong></div><div><span>DRA</span><strong>{draDate ? new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' }).format(draDate) : '—'}</strong></div></div>
-        <label className="arrival-setting"><span>Ønsket tid ved arena</span><select value={draft.desiredArrivalMinutesBefore} onChange={(event) => setDraft((current) => ({ ...current, desiredArrivalMinutesBefore: Number(event.target.value) }))}><option value={15}>15 min før</option><option value={30}>30 min før</option><option value={45}>45 min før</option><option value={60}>60 min før</option><option value={90}>90 min før</option></select></label>
-        <div className="trip-legs">{sortedLegs.map((leg, index) => <TripLegEditor key={leg.id} leg={leg} index={index} count={sortedLegs.length} onUpdate={(patch) => updateLeg(leg.id, patch)} onDelete={() => removeLeg(leg.id)} onDuplicate={() => duplicateLeg(leg.id)} onMoveUp={() => moveLeg(leg.id, -1)} onMoveDown={() => moveLeg(leg.id, 1)} />)}</div>
-        <div className="add-leg-row"><button onClick={() => addLeg('outbound')}><Plus size={16} /> Etappe til arena</button><button onClick={() => addLeg('return')}><Plus size={16} /> Etappe hjem</button></div>
-        {draft.legs.length === 0 && <p className="save-warning">Legg til minst én etappe før reisen kan lagres.</p>}
-        {invalidLeg && <p className="save-warning">Fyll inn både fra og til på alle etapper før du lagrer.</p>}
-        {savedMessage && <p className="save-success">{savedMessage}</p>}
-        <div className="travel-actions"><button className="primary-action" onClick={save} disabled={invalidLeg || draft.legs.length === 0}><Save size={17} /> Lagre reisen</button>{trip && <button className="danger-action" onClick={removeSavedTrip}><Trash2 size={16} /> Slett reisen</button>}</div>
-        {!outboundReady && <p className="travel-footnote">DRA beregnes når alle etappene til arena har reisetid. Automatisk Google Routes kommer i neste steg.</p>}
-        {trip?.status !== 'completed' && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
-      </article>
+      <TravelPlanner game={game} trip={trip} onSaveTrip={onSaveTrip} onDeleteTrip={onDeleteTrip} />
 
       {canConfirmAttendance(game) && (
         <GameDayCompletion
@@ -698,25 +611,6 @@ function GameDayCompletion({ game, record, trip, smartEvents, onSaveRecord, onSa
       <button className="primary-action full-width" onClick={complete}><CheckCircle2 size={17} /> {draft.completed ? 'Lagre endringer' : 'Fullfør kampdagen'}</button>
       <p className="travel-footnote">Kun en fullført kampdag med «Jeg var der» teller som kamp sett. En tidligere planlagt «Ja» påvirker ikke statistikken.</p>
     </article>
-  )
-}
-
-function TripLegEditor({ leg, index, count, onUpdate, onDelete, onDuplicate, onMoveUp, onMoveDown }: {
-  leg: TripLeg
-  index: number
-  count: number
-  onUpdate: (patch: Partial<TripLeg>) => void
-  onDelete: () => void
-  onDuplicate: () => void
-  onMoveUp: () => void
-  onMoveDown: () => void
-}) {
-  return (
-    <div className="trip-leg-card">
-      <div className="trip-leg-header"><div><span className={`direction-dot ${leg.direction}`} /><strong>Etappe {index + 1}</strong><small>{leg.direction === 'outbound' ? 'TIL ARENA' : 'HJEMREISE'}</small></div><div className="leg-icon-actions"><button onClick={onMoveUp} disabled={index === 0} aria-label="Flytt opp"><ArrowUp size={15} /></button><button onClick={onMoveDown} disabled={index === count - 1} aria-label="Flytt ned"><ArrowDown size={15} /></button><button onClick={onDuplicate} aria-label="Dupliser"><Copy size={15} /></button><button onClick={onDelete} aria-label="Slett"><Trash2 size={15} /></button></div></div>
-      <div className="trip-form-grid"><label><span>Retning</span><select value={leg.direction} onChange={(event) => onUpdate({ direction: event.target.value as TripLeg['direction'] })}><option value="outbound">Til arena</option><option value="return">Hjemreise</option></select></label><label><span>Transport</span><select value={leg.transport} onChange={(event) => onUpdate({ transport: event.target.value as TransportMode })}>{transportOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label><label className="wide"><span>Fra</span><input value={leg.fromName} placeholder="Hjem" onChange={(event) => onUpdate({ fromName: event.target.value })} /></label><label className="wide"><span>Til</span><input value={leg.toName} placeholder="Arena / stasjon" onChange={(event) => onUpdate({ toName: event.target.value })} /></label><label><span>Km</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label><label><span>Minutter</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label><label className="wide"><span>Estimert kostnad</span><input type="number" min="0" step="1" inputMode="decimal" value={leg.estimatedCost ?? ''} placeholder="0 kr / ukjent" onChange={(event) => onUpdate({ estimatedCost: numberOrNull(event.target.value) })} /></label></div>
-      <div className="leg-summary"><Route size={14} /><span>{transportLabel(leg.transport)} · {leg.fromName || 'Fra?'} → {leg.toName || 'Til?'}</span></div>
-    </div>
   )
 }
 
