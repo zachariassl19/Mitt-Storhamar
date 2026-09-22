@@ -1,0 +1,110 @@
+.real-team-logo {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(255,255,255,.2);
+}
+.real-team-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.real-team-logo b {
+  color: #0b2a5b;
+  font-size: 10px;
+  font-weight: 900;
+}
+.hero-logo {
+  width: 74px;
+  height: 74px;
+  padding: 7px;
+  border-radius: 20px;
+  box-shadow: 0 9px 24px rgba(0,0,0,.18);
+}
+.team-mark.primary .hero-logo {
+  border: 3px solid #f2c94c;
+  background: #fff;
+}
+.mini-logo {
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border-radius: 50%;
+}
+.logo-pair {
+  width: 58px;
+  display: flex;
+  align-items: center;
+}
+.logo-pair .mini-logo + .mini-logo {
+  margin-left: -5px;
+  box-shadow: -3px 0 0 #0a1d3d;
+}
+.game-row-with-logos {
+  grid-template-columns: 42px 58px 1fr auto;
+}
+.game-result {
+  min-width: 43px;
+  text-align: center;
+  align-self: center;
+}
+.game-result strong {
+  display: block;
+  color: #ffe28a;
+  font-size: 18px;
+  letter-spacing: -.04em;
+}
+.game-result span {
+  display: block;
+  margin-top: 2px;
+  color: #95a9c7;
+  font-size: 8px;
+  font-weight: 900;
+}
+.games-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 2px 9px;
+  color: #bdd0e9;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+.games-subheading strong {
+  display: grid;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  place-items: center;
+  border-radius: 999px;
+  color: #102348;
+  background: #f2c94c;
+  letter-spacing: 0;
+}
+.past-heading {
+  margin-top: 28px;
+}
+.past-game {
+  opacity: .92;
+}
+.special-tag {
+  color: #ffe28a !important;
+}
+.team-mark > .real-team-logo {
+  width: 74px;
+  height: 74px;
+}
+.team-mark > span.real-team-logo {
+  background: rgba(255,255,255,.96);
+}
+@media (max-width: 390px) {
+  .hero-logo { width: 64px; height: 64px; }
+  .team-mark > .real-team-logo { width: 64px; height: 64px; }
+  .game-row-with-logos { grid-template-columns: 38px 52px 1fr auto; gap: 7px; }
+  .mini-logo { width: 27px; height: 27px; }
+  .logo-pair { width: 52px; }
+}
