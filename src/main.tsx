@@ -1,14 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './AppV2'
+import { CloudSyncManager } from './components/CloudSyncManager'
 import './styles.css'
 import './logoStyles.css'
 import './detailStyles.css'
 import './travelPlanner.css'
+import './cloudSync.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
+    <CloudSyncManager />
   </React.StrictMode>,
 )
 
