@@ -255,6 +255,11 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
 
   async function calculateRoute() {
     if (invalidRoute || routingState === 'calculating') return
+    if (usesHome && !savedLocations.homeAddress.trim()) {
+      setRoutingState('error')
+      setRoutingMessage('Legg inn den private Hjem-adressen først. Den lagres lokalt og kan synkes privat når du er innlogget.')
+      return
+    }
     if (!hasGoogleRoutesKey()) {
       setRoutingState('error')
       setRoutingMessage('Google Maps-nøkkelen mangler i den publiserte builden.')
@@ -352,7 +357,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         <div className="home-location-card">
           <div>
             <strong>Privat Hjem-adresse</strong>
-            <span>Brukes bare til ruteberegning på denne enheten. Den ligger ikke i GitHub-repoet.</span>
+            <span>Brukes bare til ruteberegning på denne enheten. Når privat synk er aktiv kan den følge deg mellom enheter.</span>
           </div>
           <input
             value={savedLocations.homeAddress}
@@ -392,7 +397,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
       <div className={`route-provider-note ${routingState}`}>
         <div className="route-provider-heading">
           <div><strong>Google Routes</strong><span>Automatisk km og reisetid for bil, supporterbuss, taxi, gange og sykkel.</span></div>
-          <button onClick={() => void calculateRoute()} disabled={invalidRoute || routingState === 'calculating' || (usesHome && !savedLocations.homeAddress.trim())}>
+          <button onClick={() => void calculateRoute()} disabled={invalidRoute || routingState === 'calculating'}>
             <Navigation size={15} /> {routingState === 'calculating' ? 'Beregner…' : 'Beregn ruten'}
           </button>
         </div>
