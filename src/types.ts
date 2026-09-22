@@ -83,6 +83,16 @@ export interface HubAttendance {
   favorite?: boolean
 }
 
+export interface HubTrip {
+  id: string
+  status?: string
+}
+
+export interface HubTripGame {
+  tripId: string
+  gameId: string
+}
+
 export interface HubTripLeg {
   id: string
   tripId: string
@@ -100,8 +110,8 @@ export interface HubExport {
   exportedAt?: string
   primaryTeamId?: string
   attendance?: HubAttendance[]
-  trips?: unknown[]
-  tripGames?: unknown[]
+  trips?: HubTrip[]
+  tripGames?: HubTripGame[]
   tripLegs?: HubTripLeg[]
   tickets?: unknown[]
   expenses?: unknown[]
@@ -110,6 +120,24 @@ export interface HubExport {
   settings?: unknown[]
   achievementUnlocks?: unknown[]
   [key: string]: unknown
+}
+
+export interface PuckHunterHistoryGame {
+  importId: string
+  date: string
+  hockeySeason?: string | null
+  homeTeam: string
+  awayTeam: string
+  homeScore?: number | null
+  awayScore?: number | null
+  arena?: string | null
+  attendanceActual: 'ATTENDED'
+}
+
+export interface PuckHunterHistory {
+  schemaVersion: 1
+  importedAt: string
+  games: PuckHunterHistoryGame[]
 }
 
 export type NavKey = 'home' | 'games' | 'career' | 'history' | 'more'
