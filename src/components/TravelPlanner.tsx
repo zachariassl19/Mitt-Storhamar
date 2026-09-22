@@ -137,14 +137,13 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
     })
   }
 
-  function normalizeDirections(next: TripLeg[]) {
+  function normalizeDirections(next: TripLeg[]): TripLeg[] {
     const sorted = normalizeLegs(next)
     const arrivalLeg = sorted.findIndex((leg) => samePlace(leg.toName, game.arena))
-    return sorted.map((leg, index) => ({
-      ...leg,
-      direction: arrivalLeg >= 0 && index <= arrivalLeg ? 'outbound' : 'return',
-      order: index,
-    }))
+    return sorted.map((leg, index) => {
+      const direction: TripLeg['direction'] = arrivalLeg >= 0 && index <= arrivalLeg ? 'outbound' : 'return'
+      return { ...leg, direction, order: index }
+    })
   }
 
   function insertStop(nodeIndex: number) {
