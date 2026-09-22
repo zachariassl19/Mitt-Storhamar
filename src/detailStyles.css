@@ -56,6 +56,10 @@
 .detail-card { margin-top: 14px; padding: 17px; }
 .detail-notice { margin-top: 14px; }
 .saved-badge { font-size: 9px; font-weight: 900; letter-spacing: .1em; color: #8fe0b6; }
+.actual-badge { width: fit-content; margin: 13px auto 0; padding: 6px 10px; border-radius: 999px; font-size: 9px; font-weight: 900; letter-spacing: .1em; }
+.actual-badge.attended { background: rgba(40,148,96,.2); color: #96e6ba; border: 1px solid rgba(90,205,143,.35); }
+.actual-badge.not_attended { background: rgba(150,50,68,.18); color: #f1a0af; border: 1px solid rgba(234,118,137,.25); }
+.actual-badge.unknown { background: rgba(255,255,255,.06); color: #b7c7de; border: 1px solid var(--line); }
 
 .travel-summary-grid {
   display: grid;
@@ -100,7 +104,9 @@
 .trip-form-grid label > span { display: block; margin: 0 0 4px 2px; color: #9eb3d1; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
 .trip-form-grid input,
 .trip-form-grid select,
-.arrival-setting select {
+.arrival-setting select,
+.post-game-fields input,
+.post-game-fields select {
   width: 100%;
   min-height: 39px;
   padding: 0 10px;
@@ -110,7 +116,8 @@
   color: #eff5ff;
   font-size: 11px;
 }
-.trip-form-grid input::placeholder { color: #607694; }
+.trip-form-grid input::placeholder,
+.post-game-fields input::placeholder { color: #607694; }
 
 .leg-summary { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 6px; color: #aebfda; font-size: 9px; }
 .leg-summary svg { color: var(--gold); flex: 0 0 auto; }
@@ -123,10 +130,42 @@
 .save-success { color: #8fe0b6; }
 .travel-footnote { color: var(--muted); }
 .travel-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 13px; }
-.travel-actions button { min-height: 43px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 10px; font-weight: 900; cursor: pointer; }
+.travel-actions button,
+.gps-actions button,
+.full-width { min-height: 43px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 10px; font-weight: 900; cursor: pointer; }
 .primary-action { border: 0; background: var(--gold); color: #102348; }
 .primary-action:disabled { opacity: .45; cursor: default; }
+.secondary-action { padding: 0 12px; border: 1px solid var(--line); background: rgba(255,255,255,.045); }
 .danger-action { padding: 0 12px; border: 1px solid rgba(242,119,139,.25); background: rgba(132,39,56,.16); color: #f3a6b2; }
+.full-width { width: 100%; margin-top: 13px; }
+
+.smart-game-day-card { border-color: rgba(126,169,231,.2); }
+.gps-dot { width: 10px; height: 10px; border-radius: 50%; background: #64748b; box-shadow: 0 0 0 4px rgba(100,116,139,.1); }
+.gps-dot.live { background: #5dd49a; box-shadow: 0 0 0 4px rgba(93,212,154,.12), 0 0 14px rgba(93,212,154,.35); }
+.gps-status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.gps-status-grid div { padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); }
+.gps-status-grid span { display: block; color: var(--muted); font-size: 8px; font-weight: 900; letter-spacing: .08em; }
+.gps-status-grid strong { display: block; margin-top: 4px; font-size: 13px; }
+.gps-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 11px; }
+.gps-last-event { margin-top: 11px; padding: 10px 11px; display: flex; align-items: center; gap: 7px; border-radius: 11px; background: rgba(93,212,154,.07); color: #bfe8d2; font-size: 9px; }
+.gps-last-event svg { color: #6fdaa2; flex: 0 0 auto; }
+.gps-suggestion { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgba(242,201,76,.08); border: 1px solid rgba(242,201,76,.18); }
+.gps-suggestion strong { display: block; font-size: 11px; color: var(--gold-soft); }
+.gps-suggestion span { display: block; margin-top: 4px; color: #b9c8de; font-size: 9px; line-height: 1.45; }
+
+.actual-attendance-buttons { display: grid; grid-template-columns: 1.15fr 1.15fr .8fr; gap: 7px; margin-top: 14px; }
+.actual-attendance-buttons button { min-height: 44px; padding: 0 8px; border-radius: 11px; border: 1px solid var(--line); background: rgba(255,255,255,.035); display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 9px; font-weight: 900; cursor: pointer; }
+.actual-attendance-buttons button.selected.attended { background: #1d744e; border-color: #46bf88; }
+.actual-attendance-buttons button.selected.not-attended { background: #74313c; border-color: #c75d6d; }
+.actual-attendance-buttons button.selected.unknown { background: #3f536f; border-color: #7186a4; }
+.post-game-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
+.post-game-fields label > span { display: block; margin: 0 0 4px 2px; color: #9eb3d1; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+.completed-summary { margin-top: 12px; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; gap: 10px; align-items: center; background: rgba(255,255,255,.035); }
+.completed-summary strong { font-size: 10px; letter-spacing: .08em; }
+.completed-summary span { color: var(--muted); font-size: 9px; text-align: right; }
+.completed-summary.attended strong { color: #8fe0b6; }
+.completed-summary.not_attended strong { color: #f3a6b2; }
+.tiny-actual { padding: 2px 5px; border-radius: 999px; background: #1d744e; color: white !important; }
 
 .version-card { margin-bottom: 14px; padding: 15px 17px; display: flex; justify-content: space-between; gap: 14px; align-items: center; }
 .version-card strong { display: block; margin-top: 4px; font-size: 13px; }
@@ -136,6 +175,7 @@
   .travel-summary-grid { grid-template-columns: 1fr 1fr; }
   .trip-leg-header { align-items: flex-start; }
   .leg-icon-actions { display: grid; grid-template-columns: 1fr 1fr; }
-  .travel-actions { grid-template-columns: 1fr; }
+  .travel-actions, .gps-actions, .post-game-fields { grid-template-columns: 1fr; }
   .danger-action { min-width: 100%; }
+  .actual-attendance-buttons { grid-template-columns: 1fr; }
 }
