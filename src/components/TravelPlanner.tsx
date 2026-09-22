@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Car, ChevronDown, MapPin, Navigation, Plus, Save, Trash2 } from 'lucide-react'
 import { calculateGoogleRoute, canAutoRoute, hasGoogleRoutesKey } from '../lib/googleRoutes'
 import { loadSavedLocations, saveSavedLocations, type SavedLocations } from '../lib/savedLocations'
+import { loadGameDayRecords } from '../lib/storage'
 import {
   averageConsumptionPer100,
   averageEnergyPrice,
@@ -106,6 +107,8 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
   const [routingState, setRoutingState] = useState<RoutingState>('idle')
   const [routingMessage, setRoutingMessage] = useState('')
 
+  const storedRecord = loadGameDayRecords()[game.id]
+  const confirmedAttendance = completedAttendance || Boolean(storedRecord?.completed && storedRecord.attendanceActual === 'attended')
   const legs = useMemo(() => normalizeLegs(draft.legs), [draft.legs])
   const nodes = useMemo(() => routeNodes(legs), [legs])
   const arenaIndex = nodes.findIndex((node) => samePlace(node, game.arena))
@@ -295,7 +298,7 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
       }))
       const next: Trip = {
         ...draft,
-        status: completedAttendance ? 'completed' : draft.status,
+        status: confirmedAttendance ? 'completed' : draft.status,
         legs: calculatedLegs,
         updatedAt: now,
       }
@@ -315,7 +318,7 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
     const now = new Date().toISOString()
     const next: Trip = {
       ...draft,
-      status: completedAttendance ? 'completed' : draft.status,
+      status: confirmedAttendance ? 'completed' : draft.status,
       legs: normalizeDirections(legs.map((leg) => withCalculatedCost(leg, carSettings))),
       updatedAt: now,
     }
@@ -451,7 +454,7 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
         {trip && <button className="danger-action" onClick={removeSavedTrip}><Trash2 size={16} /> Slett reisen</button>}
       </div>
       {!outboundReady && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid.</p>}
-      {trip?.status !== 'completed' && !completedAttendance && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
+      {trip?.status !== 'completed' && !confirmedAttendance && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
     </article>
   )
 }
