@@ -73,6 +73,28 @@
   cursor: pointer;
 }
 
+.home-location-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(126,169,231,.17);
+  background: rgba(126,169,231,.045);
+}
+.home-location-card strong { display: block; font-size: 10px; color: #dbe8f9; }
+.home-location-card span { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; line-height: 1.45; }
+.home-location-card input {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 9px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: #071b38;
+  color: #eff5ff;
+  font-size: 10px;
+}
+.home-location-card input::placeholder { color: #607694; }
+
 .route-segment {
   position: relative;
   padding: 5px 0 5px 15px;
@@ -248,12 +270,39 @@
   border: 1px solid rgba(126,169,231,.14);
   background: rgba(126,169,231,.045);
 }
+.route-provider-note.ready { border-color: rgba(93,212,154,.25); background: rgba(93,212,154,.055); }
+.route-provider-note.error { border-color: rgba(242,119,139,.24); background: rgba(132,39,56,.09); }
+.route-provider-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
 .route-provider-note strong { display: block; font-size: 9px; color: #cfe0f6; }
 .route-provider-note span { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; line-height: 1.45; }
+.route-provider-note p { margin: 7px 0 0; color: var(--muted); font-size: 8px; line-height: 1.45; }
+.route-provider-heading button {
+  min-height: 38px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--gold);
+  color: #102348;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.route-provider-heading button:disabled { opacity: .45; cursor: default; }
 
 @media (max-width: 390px) {
   .route-segment-summary { grid-template-columns: 1fr; }
   .route-segment-meta { justify-content: space-between; }
   .stop-actions,
-  .car-setting-fields { grid-template-columns: 1fr; }
+  .car-setting-fields,
+  .route-provider-heading { grid-template-columns: 1fr; }
+  .route-provider-heading button { width: 100%; }
 }
