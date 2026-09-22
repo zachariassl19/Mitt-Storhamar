@@ -2,6 +2,29 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.6.0] – 2026-09-22
+
+### Privat synk mellom enheter
+- Eget Supabase-prosjekt for Mitt Storhamar er opprettet i EU North.
+- Privat brukerstate lagres bak Supabase Auth og Row Level Security.
+- Hjem-adresse, attendance, kampdagsregistreringer, Smart Kampdag-events, reiser, bilinnstillinger og HUB-import kan synkes mellom mobil og PC.
+- Første synk slår sammen eksisterende lokale data og skydata slik at lokale registreringer ikke kastes bort.
+- Appen fortsetter å fungere lokalt uten innlogging eller ved midlertidig nettverksfeil.
+- En egen Privat synk-knapp lar brukeren opprette konto, logge inn, synke nå og logge ut.
+- Publiserbar Supabase-klientnøkkel kan ligge i frontend; persondata beskyttes av innlogging og RLS.
+
+### Reise-fix
+- «Beregn ruten» blir ikke lenger grå bare fordi Hjem-adressen mangler.
+- Trykk på knappen gir i stedet en tydelig beskjed om at privat Hjem-adresse må fylles inn først.
+- Hjem-adressen hardkodes fortsatt aldri i det offentlige repoet.
+
+### Systemtest
+- Vitest er lagt til som automatisk smoke-test.
+- Tester dekker framtidig kamp, kampdag før start, pågående kamp, post-game og ferdig kamp.
+- Tester bekrefter at «Ja»/planlagte reiser aldri teller som faktisk oppmøte.
+- Tester dekker både historiske og nåværende kamp-ID-er, fullførte reiser, km, kostnader og bilberegning.
+- Hele 2026/27-kampdatasettet kontrolleres for sortering, duplikater og at Storhamar deltar i alle kampene.
+
 ## [0.5.0] – 2026-09-22
 
 ### Automatisk ruteberegning
