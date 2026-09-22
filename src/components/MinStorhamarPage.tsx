@@ -5,8 +5,9 @@ import { confirmedLocalCareerStats } from '../lib/careerStats'
 import { confirmedLegacyCareerStats } from '../lib/legacyStats'
 import { summarizePurchases, unitPrice } from '../lib/purchases'
 import type { GamePurchase, GameDayRecord, HubExport, Trip } from '../types'
+import { CompanionStatsPanel } from './CompanionStatsPanel'
 
-type MinStorhamarTab = 'overview' | 'economy' | 'arenas'
+type MinStorhamarTab = 'overview' | 'economy' | 'arenas' | 'companions'
 
 interface ArenaStat {
   arena: string
@@ -216,13 +217,14 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
       <div className="page-heading min-storhamar-heading">
         <span className="eyebrow">DIN SUPPORTERREISE</span>
         <h1>Min Storhamar</h1>
-        <p>Kamper, reiser og penger samlet fra kampdagene du faktisk har bekreftet.</p>
+        <p>Kamper, reiser, reisefølge og penger samlet fra kampdagene du faktisk har bekreftet.</p>
       </div>
 
       <div className="min-storhamar-tabs" role="tablist" aria-label="Min Storhamar">
         <button className={tab === 'overview' ? 'active' : ''} onClick={() => setTab('overview')}>Oversikt</button>
         <button className={tab === 'economy' ? 'active' : ''} onClick={() => setTab('economy')}>Økonomi</button>
         <button className={tab === 'arenas' ? 'active' : ''} onClick={() => setTab('arenas')}>Arenaer</button>
+        <button className={tab === 'companions' ? 'active' : ''} onClick={() => setTab('companions')}>Reisefølge</button>
       </div>
 
       {tab === 'overview' && (
@@ -321,6 +323,8 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
           </article>
         </>
       )}
+
+      {tab === 'companions' && <CompanionStatsPanel records={records} />}
 
       <article className="card min-rule-card">
         <Ticket size={18} />
