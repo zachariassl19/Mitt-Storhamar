@@ -7,6 +7,7 @@ export type TripDirection = 'outbound' | 'return'
 export type EntryType = 'purchased' | 'season_ticket' | 'work_accreditation' | 'free_invitation' | 'companion' | 'other' | 'unknown'
 export type ArenaProximity = 'outside' | 'near' | 'arrived'
 export type SmartGameDayEventType = 'near_arena' | 'arrived_at_arena' | 'left_arena'
+export type PurchaseKind = 'kiosk' | 'lottery' | 'supporter' | 'parking' | 'accommodation' | 'other'
 
 export interface Game {
   id: string
@@ -73,6 +74,21 @@ export interface GameDayRecord {
   ticketCost: number | null
   completed: boolean
   completedAt?: string
+  updatedAt: string
+}
+
+export interface GamePurchase {
+  id: string
+  gameId: string
+  kind: PurchaseKind
+  category: string
+  subcategory?: string | null
+  item: string
+  size?: string | null
+  quantity: number
+  totalPrice: number
+  currency: 'NOK'
+  createdAt: string
   updatedAt: string
 }
 
