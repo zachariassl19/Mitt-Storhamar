@@ -2,6 +2,35 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.4.0] – 2026-09-22
+
+### Reise er bygget om
+- Reise planlegges nå som stopp i riktig rekkefølge i stedet for at brukeren må opprette hver etappe manuelt.
+- Standardflyt er `Hjem → arena → Hjem`.
+- Det kan legges til stopp før arena og på hjemveien, for eksempel `Hjem → Ilseng → CC Amfi → Hjem`.
+- `TripLeg` beholdes under panseret og bygges automatisk mellom stoppene.
+- Hvert segment kan fortsatt ha egen reisemåte: bil, tog, supporterbuss, rutebuss, fly, taxi, gange, sykkel eller annet.
+- Stopp kan redigeres og fjernes uten at brukeren trenger å håndtere etappen direkte.
+
+### Bil og kostnad
+- Én global bilinnstilling brukes på alle bilsegmenter.
+- Bil kan settes til Strøm, Bensin eller Diesel.
+- Forbruk og energipris lagres lokalt på enheten.
+- Bilpris beregnes som `km / 100 × forbruk × energipris`.
+- Manglende energipris eller forbruk stopper ikke reiseplanleggingen.
+
+### Andre reisemåter
+- Supporterbuss og andre betalte reisemåter kan få manuell pris per segment.
+- Gange og sykkel får 0 kr transportkostnad.
+- Total km, tid og kostnad summeres over hele reisen.
+- DRA bruker bare reisetiden fram til arenaen.
+
+### Neste
+- Koble stoppmodellen til en sikker Google Routes-løsning for automatisk km og kjøretid.
+- Utvide arena-registeret med alle arenaer i 2026/27.
+- Lagre privat `Hjem`-lokasjon uten å hardkode adresse i offentlig repo.
+- Entur for kollektiv der det er relevant.
+
 ## [0.3.0] – 2026-09-22
 
 ### Lagt til
