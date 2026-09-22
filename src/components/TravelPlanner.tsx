@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Car, ChevronDown, MapPin, Plus, Save, Trash2 } from 'lucide-react'
+import { Car, ChevronDown, MapPin, Navigation, Plus, Save, Trash2 } from 'lucide-react'
+import { calculateGoogleRoute, canAutoRoute, hasGoogleRoutesKey } from '../lib/googleRoutes'
+import { loadSavedLocations, saveSavedLocations, type SavedLocations } from '../lib/savedLocations'
 import {
+  averageConsumptionPer100,
   averageEnergyPrice,
   calculateCarCost,
   loadCarSettings,
@@ -29,6 +32,8 @@ const energyOptions: { value: CarEnergy; label: string }[] = [
   { value: 'gasoline', label: 'Bensin' },
   { value: 'diesel', label: 'Diesel' },
 ]
+
+type RoutingState = 'idle' | 'calculating' | 'ready' | 'error'
 
 function cloneTrip(trip: Trip): Trip {
   return { ...trip, legs: trip.legs.map((leg) => ({ ...leg })) }
@@ -95,14 +100,21 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
 }) {
   const [draft, setDraft] = useState<Trip>(() => cloneTrip(trip ?? createTripForGame(game)))
   const [carSettings, setCarSettings] = useState<CarSettings>(() => loadCarSettings())
+  const [savedLocations, setSavedLocations] = useState<SavedLocations>(() => loadSavedLocations())
   const [message, setMessage] = useState('')
+  const [routingState, setRoutingState] = useState<RoutingState>('idle')
+  const [routingMessage, setRoutingMessage] = useState('')
 
   const legs = useMemo(() => normalizeLegs(draft.legs), [draft.legs])
   const nodes = useMemo(() => routeNodes(legs), [legs])
   const arenaIndex = nodes.findIndex((node) => samePlace(node, game.arena))
   const hasCar = legs.some((leg) => leg.transport === 'car')
+  const usesHome = nodes.some((node) => samePlace(node, 'Hjem'))
+  const hasWalkingOrBike = legs.some((leg) => leg.transport === 'walk' || leg.transport === 'bike')
+  const automaticLegCount = legs.filter((leg) => canAutoRoute(leg.transport)).length
   const invalidRoute = legs.length === 0 || legs.some((leg) => !leg.fromName.trim() || !leg.toName.trim())
   const priceReference = averageEnergyPrice(carSettings.energy)
+  const consumptionReference = averageConsumptionPer100(carSettings.energy)
 
   const totalKm = legs.reduce((sum, leg) => sum + (leg.km ?? 0), 0)
   const totalMinutes = legs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
@@ -115,14 +127,27 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
     ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000)
     : null
 
+  function resetRoutingState() {
+    setRoutingState('idle')
+    setRoutingMessage('')
+  }
+
   function setCar(next: CarSettings) {
     setCarSettings(next)
     saveCarSettings(next)
     setMessage('')
   }
 
+  function setHomeAddress(homeAddress: string) {
+    const next = { ...savedLocations, homeAddress }
+    setSavedLocations(next)
+    saveSavedLocations(next)
+    resetRoutingState()
+  }
+
   function updateLeg(id: string, patch: Partial<TripLeg>) {
     setMessage('')
+    resetRoutingState()
     setDraft((current) => ({
       ...current,
       legs: current.legs.map((leg) => {
@@ -136,6 +161,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
 
   function updateNode(index: number, value: string) {
     setMessage('')
+    resetRoutingState()
     setDraft((current) => {
       const sorted = normalizeLegs(current.legs)
       const next = sorted.map((leg) => ({ ...leg }))
@@ -164,6 +190,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
 
   function insertStop(nodeIndex: number) {
     setMessage('')
+    resetRoutingState()
     setDraft((current) => {
       const sorted = normalizeLegs(current.legs)
       const legIndex = nodeIndex - 1
@@ -192,6 +219,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
 
   function removeStop(nodeIndex: number) {
     setMessage('')
+    resetRoutingState()
     setDraft((current) => {
       const sorted = normalizeLegs(current.legs)
       if (nodeIndex <= 0 || nodeIndex >= sorted.length) return current
@@ -211,6 +239,64 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
     })
   }
 
+  function routeLocation(name: string) {
+    if (samePlace(name, 'Hjem')) {
+      const home = savedLocations.homeAddress.trim()
+      if (!home) throw new Error('Legg inn den private Hjem-adressen først.')
+      return home
+    }
+
+    if (samePlace(name, game.arena)) {
+      return [game.arena, game.city].filter(Boolean).join(', ')
+    }
+
+    return name.trim()
+  }
+
+  async function calculateRoute() {
+    if (invalidRoute || routingState === 'calculating') return
+    if (!hasGoogleRoutesKey()) {
+      setRoutingState('error')
+      setRoutingMessage('Google Maps-nøkkelen mangler i den publiserte builden.')
+      return
+    }
+    if (automaticLegCount === 0) {
+      setRoutingState('error')
+      setRoutingMessage('Ingen av delene i denne reisen kan beregnes med Google Routes ennå.')
+      return
+    }
+
+    setRoutingState('calculating')
+    setRoutingMessage('Beregner km og kjøretid…')
+
+    try {
+      const updates = new Map<string, { km: number; durationMinutes: number }>()
+
+      for (const leg of legs) {
+        if (!canAutoRoute(leg.transport)) continue
+        const result = await calculateGoogleRoute(
+          routeLocation(leg.fromName),
+          routeLocation(leg.toName),
+          leg.transport,
+        )
+        updates.set(leg.id, result)
+      }
+
+      setDraft((current) => ({
+        ...current,
+        legs: normalizeDirections(current.legs.map((leg) => {
+          const update = updates.get(leg.id)
+          return update ? { ...leg, ...update } : leg
+        })),
+      }))
+      setRoutingState('ready')
+      setRoutingMessage(`Google Routes beregnet ${updates.size} ${updates.size === 1 ? 'del' : 'deler'} av reisen.`)
+    } catch (error) {
+      setRoutingState('error')
+      setRoutingMessage(error instanceof Error ? error.message : 'Ruteberegningen feilet.')
+    }
+  }
+
   function save() {
     if (invalidRoute) return
     const now = new Date().toISOString()
@@ -221,13 +307,14 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
     }
     onSaveTrip(next)
     setDraft(cloneTrip(next))
-    setMessage('Reisen er lagret. Stoppene og reisemåtene beholdes etter refresh.')
+    setMessage('Reisen er lagret. Stoppene, km, tid og reisemåter beholdes etter refresh.')
   }
 
   function removeSavedTrip() {
     if (!trip) return
     onDeleteTrip(trip.id)
     setDraft(createTripForGame(game))
+    resetRoutingState()
     setMessage('Den lagrede reisen er slettet.')
   }
 
@@ -241,7 +328,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         {trip && <span className="saved-badge">{trip.status === 'completed' ? 'GJENNOMFØRT' : 'LAGRET'}</span>}
       </div>
 
-      <p className="travel-planner-intro">Legg inn stoppene i riktig rekkefølge. Appen bygger etappene automatisk mellom dem.</p>
+      <p className="travel-planner-intro">Legg inn stoppene i riktig rekkefølge. Appen bygger delene automatisk mellom dem.</p>
 
       <div className="travel-summary-grid">
         <div><span>KM</span><strong>{totalKm > 0 ? Math.round(totalKm) : '—'}</strong></div>
@@ -260,6 +347,21 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
           <option value={90}>90 min før</option>
         </select>
       </label>
+
+      {usesHome && (
+        <div className="home-location-card">
+          <div>
+            <strong>Privat Hjem-adresse</strong>
+            <span>Brukes bare til ruteberegning på denne enheten. Den ligger ikke i GitHub-repoet.</span>
+          </div>
+          <input
+            value={savedLocations.homeAddress}
+            placeholder="Skriv hjemmeadressen én gang"
+            autoComplete="street-address"
+            onChange={(event) => setHomeAddress(event.target.value)}
+          />
+        </div>
+      )}
 
       <div className="route-builder">
         {nodes.map((node, index) => {
@@ -287,9 +389,21 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         <button onClick={() => insertStop(returnInsertIndex)}><Plus size={15} /> Stopp på hjemveien</button>
       </div>
 
+      <div className={`route-provider-note ${routingState}`}>
+        <div className="route-provider-heading">
+          <div><strong>Google Routes</strong><span>Automatisk km og reisetid for bil, supporterbuss, taxi, gange og sykkel.</span></div>
+          <button onClick={() => void calculateRoute()} disabled={invalidRoute || routingState === 'calculating' || (usesHome && !savedLocations.homeAddress.trim())}>
+            <Navigation size={15} /> {routingState === 'calculating' ? 'Beregner…' : 'Beregn ruten'}
+          </button>
+        </div>
+        {routingMessage && <p>{routingMessage}</p>}
+        {legs.some((leg) => !canAutoRoute(leg.transport)) && <p>Tog, rutebuss, fly og «annet» beholder manuell km/tid til Entur og egne løsninger kobles på.</p>}
+        {hasWalkingOrBike && <p>Google oppgir at gang- og sykkelruter er beta og kan mangle tydelige gang- eller sykkelveier.</p>}
+      </div>
+
       {hasCar && (
         <div className="car-settings-card">
-          <div className="car-settings-heading"><Car size={18} /><div><strong>Bilinnstilling</strong><span>Brukes på alle bil-etapper</span></div></div>
+          <div className="car-settings-heading"><Car size={18} /><div><strong>Bilinnstilling</strong><span>Brukes på alle bil-delene</span></div></div>
           <div className="energy-choice">
             {energyOptions.map((option) => (
               <button
@@ -306,16 +420,14 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
             <label><span>{carSettings.energy === 'electric' ? 'Pris kr/kWh' : 'Pris kr/l'}</span><input type="number" min="0" step="0.01" inputMode="decimal" value={carSettings.energyUnitPrice ?? ''} placeholder="Ukjent" onChange={(event) => setCar({ ...carSettings, energyUnitPrice: numberOrNull(event.target.value) })} /></label>
           </div>
           <p>
-            Utgangspunkt: <strong>{formatUnitPrice(priceReference.price)} {priceReference.unit}</strong> · {priceReference.source}, {priceReference.period}. {priceReference.description} Du kan overstyre prisen over hvis du faktisk betalte noe annet.
+            Standardforbruk: <strong>{formatUnitPrice(consumptionReference.value)} {consumptionReference.unit}</strong> · {consumptionReference.source}. Du kan overstyre med bilens faktiske forbruk.
           </p>
-          <p>Bilpris = km ÷ 100 × forbruk × energipris. Forbruket settes én gang for bilen din.</p>
+          <p>
+            Energipris: <strong>{formatUnitPrice(priceReference.price)} {priceReference.unit}</strong> · {priceReference.source}, {priceReference.period}. Du kan overstyre hvis faktisk pumpe-/ladepris er kjent.
+          </p>
+          <p>Bilpris = km ÷ 100 × forbruk × energipris.</p>
         </div>
       )}
-
-      <div className="route-provider-note">
-        <strong>Automatisk km og tid</strong>
-        <span>Stoppmodellen er klar for Google Routes. Fram til den sikre rutetjenesten er koblet på kan km og minutter justeres på hver del av reisen.</span>
-      </div>
 
       {invalidRoute && <p className="save-warning">Alle stopp må ha et navn før reisen kan lagres.</p>}
       {message && <p className="save-success">{message}</p>}
@@ -324,7 +436,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         <button className="primary-action" onClick={save} disabled={invalidRoute}><Save size={17} /> Lagre reisen</button>
         {trip && <button className="danger-action" onClick={removeSavedTrip}><Trash2 size={16} /> Slett reisen</button>}
       </div>
-      {!outboundReady && <p className="travel-footnote">DRA vises når delene fram til arena har reisetid.</p>}
+      {!outboundReady && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid.</p>}
       {trip?.status !== 'completed' && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
     </article>
   )
@@ -338,6 +450,7 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
   const [open, setOpen] = useState(false)
   const cost = legCost(leg, carSettings)
   const manualCost = leg.transport !== 'car' && leg.transport !== 'walk' && leg.transport !== 'bike'
+  const automatic = canAutoRoute(leg.transport)
 
   return (
     <div className="route-segment">
@@ -349,11 +462,20 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
 
       {open && (
         <div className="route-segment-editor">
-          <label className="wide"><span>Reisemåte</span><select value={leg.transport} onChange={(event) => onUpdate({ transport: event.target.value as TransportMode, estimatedCost: event.target.value === 'walk' || event.target.value === 'bike' ? 0 : null })}>{transportOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-          <label><span>Km</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
-          <label><span>Minutter</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label>
+          <label className="wide"><span>Reisemåte</span><select value={leg.transport} onChange={(event) => {
+            const transport = event.target.value as TransportMode
+            onUpdate({
+              transport,
+              km: null,
+              durationMinutes: null,
+              estimatedCost: transport === 'walk' || transport === 'bike' ? 0 : null,
+            })
+          }}>{transportOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+          <label><span>Km {automatic ? '(Google)' : ''}</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
+          <label><span>Minutter {automatic ? '(Google)' : ''}</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label>
           {manualCost && <label className="wide"><span>{leg.transport === 'supporter_bus' ? 'Pris supporterbuss' : 'Pris'} (kr)</span><input type="number" min="0" step="1" inputMode="decimal" value={leg.estimatedCost ?? ''} placeholder="Ukjent" onChange={(event) => onUpdate({ estimatedCost: numberOrNull(event.target.value) })} /></label>}
-          {leg.transport === 'car' && <p className="segment-help">Bilens kostnad regnes automatisk fra km, forbruket ditt og norsk gjennomsnittspris som standard.</p>}
+          {automatic && <p className="segment-help">Km og tid kan fylles automatisk med «Beregn ruten». Feltene kan fortsatt overstyres manuelt.</p>}
+          {leg.transport === 'car' && <p className="segment-help">Bilens kostnad regnes fra km, forbruk og norsk gjennomsnittspris som standard.</p>}
           {(leg.transport === 'walk' || leg.transport === 'bike') && <p className="segment-help">Denne delen har 0 kr i transportkostnad.</p>}
         </div>
       )}
