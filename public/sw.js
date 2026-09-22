@@ -1,5 +1,6 @@
-const CACHE = 'mitt-storhamar-v1';
-const CORE = ['/', '/manifest.webmanifest', '/icon.svg'];
+const BASE = '/Mitt-Storhamar/';
+const CACHE = 'mitt-storhamar-v2';
+const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
@@ -22,6 +23,6 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/')))
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match(BASE)))
   );
 });
