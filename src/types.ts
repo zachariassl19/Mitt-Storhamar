@@ -1,15 +1,20 @@
-export type Competition = 'EHL' | 'CHL'
+export type Competition = 'EHL' | 'CHL' | 'Trening'
 export type AttendancePlan = 'yes' | 'maybe' | 'no' | 'unset'
 export type AttendanceActual = 'attended' | 'not_attended' | 'unknown'
+export type DecisionType = 'REG' | 'OT' | 'SO'
 
 export interface Game {
   id: string
+  season: string
   startsAt: string
   competition: Competition
   homeTeam: string
   awayTeam: string
   arena: string
   city?: string
+  homeScore?: number
+  awayScore?: number
+  decisionType?: DecisionType
   special?: string
 }
 
