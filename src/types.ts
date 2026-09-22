@@ -4,6 +4,7 @@ export type AttendanceActual = 'attended' | 'not_attended' | 'unknown'
 export type DecisionType = 'REG' | 'OT' | 'SO'
 export type TransportMode = 'car' | 'train' | 'supporter_bus' | 'bus' | 'plane' | 'taxi' | 'walk' | 'bike' | 'other'
 export type TripDirection = 'outbound' | 'return'
+export type EntryType = 'purchased' | 'season_ticket' | 'work_accreditation' | 'free_invitation' | 'companion' | 'other' | 'unknown'
 
 export interface Game {
   id: string
@@ -40,6 +41,16 @@ export interface Trip {
   desiredArrivalMinutesBefore: number
   legs: TripLeg[]
   createdAt: string
+  updatedAt: string
+}
+
+export interface GameDayRecord {
+  gameId: string
+  attendanceActual: AttendanceActual
+  entryType: EntryType
+  ticketCost: number | null
+  completed: boolean
+  completedAt?: string
   updatedAt: string
 }
 
