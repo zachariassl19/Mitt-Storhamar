@@ -24,12 +24,14 @@ import {
   X,
 } from 'lucide-react'
 import appPackage from '../package.json'
+import { GamePurchases } from './components/GamePurchases'
 import { TravelPlanner } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
+import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
   classifyArenaProximity,
   distanceMeters,
@@ -55,6 +57,7 @@ import type {
   EntryType,
   Game,
   GameDayRecord,
+  GamePurchase,
   HubExport,
   NavKey,
   SmartGameDayEvent,
@@ -207,6 +210,7 @@ export default function AppV2() {
   const [importMessage, setImportMessage] = useState('')
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
+  const [purchases, setPurchases] = useState<GamePurchase[]>(() => loadPurchases())
 
   const now = new Date()
   const today = osloDateKey(now)
@@ -254,6 +258,14 @@ export default function AppV2() {
     setRecords(saveGameDayRecord(record))
   }
 
+  function persistPurchase(purchase: GamePurchase) {
+    setPurchases(savePurchase(purchase))
+  }
+
+  function removePurchase(purchaseId: string) {
+    setPurchases(deletePurchase(purchaseId))
+  }
+
   function persistSmartEvent(event: SmartGameDayEvent) {
     setSmartEvents(saveSmartGameDayEvent(event))
   }
@@ -297,11 +309,14 @@ export default function AppV2() {
               updatePlan={(plan) => updatePlan(selectedGame.id, plan)}
               trip={tripForGame(trips, selectedGame.id)}
               record={records[selectedGame.id]}
+              purchases={purchasesForGame(purchases, selectedGame.id)}
               smartEvents={smartEvents.filter((event) => event.gameId === selectedGame.id)}
               onBack={() => setSelectedGameId(null)}
               onSaveTrip={persistTrip}
               onDeleteTrip={removeTrip}
               onSaveRecord={persistRecord}
+              onSavePurchase={persistPurchase}
+              onDeletePurchase={removePurchase}
               onSmartEvent={persistSmartEvent}
             />
           ) : (
@@ -317,7 +332,7 @@ export default function AppV2() {
                 />
               )}
               {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} />}
-              {active === 'career' && <CareerPage hubData={hubData} trips={trips} records={records} />}
+              {active === 'career' && <CareerPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
               {active === 'history' && <HistoryPage />}
               {active === 'more' && (
                 <MorePage
@@ -442,17 +457,20 @@ function GamesPage({ currentPlan, updatePlan, openGame, records }: {
   )
 }
 
-function GameDetail({ game, plan, updatePlan, trip, record, smartEvents, onBack, onSaveTrip, onDeleteTrip, onSaveRecord, onSmartEvent }: {
+function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEvents, onBack, onSaveTrip, onDeleteTrip, onSaveRecord, onSavePurchase, onDeletePurchase, onSmartEvent }: {
   game: Game
   plan: AttendancePlan
   updatePlan: (plan: AttendancePlan) => void
   trip?: Trip
   record?: GameDayRecord
+  purchases: GamePurchase[]
   smartEvents: SmartGameDayEvent[]
   onBack: () => void
   onSaveTrip: (trip: Trip) => void
   onDeleteTrip: (tripId: string) => void
   onSaveRecord: (record: GameDayRecord) => void
+  onSavePurchase: (purchase: GamePurchase) => void
+  onDeletePurchase: (purchaseId: string) => void
   onSmartEvent: (event: SmartGameDayEvent) => void
 }) {
   const temporalState = getGameTemporalState(game)
@@ -479,14 +497,17 @@ function GameDetail({ game, plan, updatePlan, trip, record, smartEvents, onBack,
       <TravelPlanner game={game} trip={trip} onSaveTrip={onSaveTrip} onDeleteTrip={onDeleteTrip} />
 
       {canConfirmAttendance(game) && (
-        <GameDayCompletion
-          game={game}
-          record={record}
-          trip={trip}
-          smartEvents={smartEvents}
-          onSaveRecord={onSaveRecord}
-          onSaveTrip={onSaveTrip}
-        />
+        <>
+          <GameDayCompletion
+            game={game}
+            record={record}
+            trip={trip}
+            smartEvents={smartEvents}
+            onSaveRecord={onSaveRecord}
+            onSaveTrip={onSaveTrip}
+          />
+          <GamePurchases game={game} purchases={purchases} onSave={onSavePurchase} onDelete={onDeletePurchase} />
+        </>
       )}
     </section>
   )
@@ -614,18 +635,30 @@ function GameDayCompletion({ game, record, trip, smartEvents, onSaveRecord, onSa
   )
 }
 
-function CareerPage({ hubData, trips, records }: { hubData: HubExport | null; trips: Trip[]; records: Record<string, GameDayRecord> }) {
+function CareerPage({ hubData, trips, records, purchases }: { hubData: HubExport | null; trips: Trip[]; records: Record<string, GameDayRecord>; purchases: GamePurchase[] }) {
   const local = confirmedLocalCareerStats(records, trips)
   const importedAttendedIds = new Set((hubData?.attendance ?? []).filter((entry) => entry.attendanceActual === 'attended').map((entry) => entry.gameId))
   const localAttendedIds = new Set(Object.values(records).filter((entry) => entry.completed && entry.attendanceActual === 'attended').map((entry) => entry.gameId))
   const attendedIds = new Set([...importedAttendedIds, ...localAttendedIds])
   const importedKm = Math.round((hubData?.tripLegs ?? []).reduce((sum, leg) => sum + (typeof leg.km === 'number' ? leg.km : 0), 0))
   const achievements = hubData?.achievementUnlocks?.length ?? 0
+  const confirmedPurchases = purchases.filter((purchase) => attendedIds.has(purchase.gameId))
+  const purchaseSummary = summarizePurchases(confirmedPurchases)
+  const ticketTotal = Object.values(records).reduce((sum, entry) => sum + (entry.completed && entry.attendanceActual === 'attended' ? entry.ticketCost ?? 0 : 0), 0)
+  const totalSpent = local.travelCost + ticketTotal + purchaseSummary.totalSpent
+  const kioskTotal = confirmedPurchases.filter((purchase) => purchase.kind === 'kiosk').reduce((sum, purchase) => sum + purchase.totalPrice, 0)
+  const lotteryTotal = confirmedPurchases.filter((purchase) => purchase.kind === 'lottery').reduce((sum, purchase) => sum + purchase.totalPrice, 0)
+
   return (
     <section className="page-section">
       <div className="page-heading"><span className="eyebrow">DIN SUPPORTERREISE</span><h1>Karriere</h1><p>Bare faktisk bekreftede kampdager teller i den nye statistikken.</p></div>
-      {!hubData && <div className="notice-card"><Database size={20} /><div><strong>Ingen historikk importert ennå</strong><p>Importer HUB-data under Mer for å få med gammel historikk.</p></div></div>}
+      {!hubData && <div className="notice-card"><Database size={20} /><div><strong>Ingen historikk importert ennå</strong><p>Ny statistikk bygges fra kampene du bekrefter i Mitt Storhamar.</p></div></div>}
       <div className="career-grid"><article className="stat-card"><strong>{attendedIds.size}</strong><span>Kamper sett</span></article><article className="stat-card"><strong>{importedKm + Math.round(local.km)}</strong><span>Bekreftede km</span></article><article className="stat-card"><strong>{local.completedTrips}</strong><span>Nye gjennomførte reiser</span></article><article className="stat-card"><strong>{achievements}</strong><span>Achievements</span></article></div>
+      <article className="card purchase-economy-card">
+        <div className="card-heading"><div><span className="eyebrow">ØKONOMI & KJØP</span><h2>{formatMoney(totalSpent)} totalt</h2></div><WalletCards size={22} /></div>
+        <div className="purchase-economy-grid"><div><strong>{formatMoney(purchaseSummary.totalSpent)}</strong><span>Registrerte kjøp</span></div><div><strong>{formatMoney(kioskTotal)}</strong><span>Kiosk</span></div><div><strong>{formatMoney(lotteryTotal)}</strong><span>Lotteri</span></div><div><strong>{purchaseSummary.mostBoughtItem ?? '—'}</strong><span>{purchaseSummary.mostBoughtItem ? `${purchaseSummary.mostBoughtQuantity} stk · mest kjøpt` : 'Mest kjøpt'}</span></div></div>
+        <p className="travel-footnote">Totalen består av bekreftet reise, billett og kjøp på kampdager der du har bekreftet «Jeg var der».</p>
+      </article>
       <article className="card achievement-card"><Medal size={28} /><div><span>VIKTIG REGEL</span><h3>Plan er ikke historikk</h3><p>«Ja» på en framtidig kamp og planlagte reiser gir ingen karrierestatistikk før kampdagen er fullført.</p></div></article>
     </section>
   )
