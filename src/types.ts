@@ -5,6 +5,8 @@ export type DecisionType = 'REG' | 'OT' | 'SO'
 export type TransportMode = 'car' | 'train' | 'supporter_bus' | 'bus' | 'plane' | 'taxi' | 'walk' | 'bike' | 'other'
 export type TripDirection = 'outbound' | 'return'
 export type EntryType = 'purchased' | 'season_ticket' | 'work_accreditation' | 'free_invitation' | 'companion' | 'other' | 'unknown'
+export type ArenaProximity = 'outside' | 'near' | 'arrived'
+export type SmartGameDayEventType = 'near_arena' | 'arrived_at_arena' | 'left_arena'
 
 export interface Game {
   id: string
@@ -19,6 +21,26 @@ export interface Game {
   awayScore?: number
   decisionType?: DecisionType
   special?: string
+}
+
+export interface Arena {
+  id: string
+  name: string
+  aliases: string[]
+  city?: string
+  latitude?: number
+  longitude?: number
+  nearRadiusMeters?: number
+  arrivalRadiusMeters?: number
+}
+
+export interface SmartGameDayEvent {
+  gameId: string
+  arenaId: string
+  type: SmartGameDayEventType
+  observedAt: string
+  distanceMeters: number
+  accuracyMeters: number
 }
 
 export interface TripLeg {
