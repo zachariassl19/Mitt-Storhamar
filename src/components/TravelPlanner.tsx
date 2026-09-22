@@ -92,9 +92,10 @@ function withCalculatedCost(leg: TripLeg, carSettings: CarSettings): TripLeg {
   return leg
 }
 
-export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
+export function TravelPlanner({ game, trip, completedAttendance = false, onSaveTrip, onDeleteTrip }: {
   game: Game
   trip?: Trip
+  completedAttendance?: boolean
   onSaveTrip: (trip: Trip) => void
   onDeleteTrip: (tripId: string) => void
 }) {
@@ -287,15 +288,22 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         updates.set(leg.id, result)
       }
 
-      setDraft((current) => ({
-        ...current,
-        legs: normalizeDirections(current.legs.map((leg) => {
-          const update = updates.get(leg.id)
-          return update ? { ...leg, ...update } : leg
-        })),
+      const now = new Date().toISOString()
+      const calculatedLegs = normalizeDirections(legs.map((leg) => {
+        const update = updates.get(leg.id)
+        return withCalculatedCost(update ? { ...leg, ...update } : leg, carSettings)
       }))
+      const next: Trip = {
+        ...draft,
+        status: completedAttendance ? 'completed' : draft.status,
+        legs: calculatedLegs,
+        updatedAt: now,
+      }
+
+      setDraft(cloneTrip(next))
+      onSaveTrip(next)
       setRoutingState('ready')
-      setRoutingMessage(`Google Routes beregnet ${updates.size} ${updates.size === 1 ? 'del' : 'deler'} av reisen.`)
+      setRoutingMessage(`Google Routes beregnet ${updates.size} ${updates.size === 1 ? 'del' : 'deler'} av reisen. Km og tid er lagret automatisk.`)
     } catch (error) {
       setRoutingState('error')
       setRoutingMessage(error instanceof Error ? error.message : 'Ruteberegningen feilet.')
@@ -307,6 +315,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
     const now = new Date().toISOString()
     const next: Trip = {
       ...draft,
+      status: completedAttendance ? 'completed' : draft.status,
       legs: normalizeDirections(legs.map((leg) => withCalculatedCost(leg, carSettings))),
       updatedAt: now,
     }
@@ -442,7 +451,7 @@ export function TravelPlanner({ game, trip, onSaveTrip, onDeleteTrip }: {
         {trip && <button className="danger-action" onClick={removeSavedTrip}><Trash2 size={16} /> Slett reisen</button>}
       </div>
       {!outboundReady && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid.</p>}
-      {trip?.status !== 'completed' && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
+      {trip?.status !== 'completed' && !completedAttendance && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
     </article>
   )
 }
