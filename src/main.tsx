@@ -9,6 +9,7 @@ import './travelPlanner.css'
 import './purchases.css'
 import './cloudSync.css'
 import './gameCards.css'
+import './minStorhamar.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
