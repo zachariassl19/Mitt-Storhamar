@@ -1,14 +1,15 @@
 {
   "name": "Mitt Storhamar",
   "short_name": "Mitt Storhamar",
-  "start_url": "/",
+  "start_url": "/Mitt-Storhamar/",
+  "scope": "/Mitt-Storhamar/",
   "display": "standalone",
   "background_color": "#06162f",
   "theme_color": "#0b2a5b",
   "description": "Personlig supporterapp for Storhamar Hockey.",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/Mitt-Storhamar/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
