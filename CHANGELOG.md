@@ -2,6 +2,36 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.7.0] – 2026-09-23
+
+### Kampkjøp og kostnader
+- Ferdige kamper har nå en egen «Kjøp og kostnader»-del under kampdetaljen.
+- Hvert kjøp knyttes automatisk til kampen og arenaen.
+- Kjøp lagrer kategori, type, vare, valgfri størrelse, antall og totalpris.
+- Stykkpris beregnes automatisk når antall er høyere enn 1.
+- Kjøp kan redigeres og slettes senere.
+- «+ Egen vare» gjør at varer som ikke finnes i standardlista fortsatt kan registreres.
+- Billett og reise beholdes som egne kostnader og skal ikke registreres dobbelt som kjøp.
+
+### Kioskkatalog
+- Drikke inneholder blant annet Cola, Cola Zero, Pepsi, Pepsi Max, Solo, Fanta, Fanta Exotic, Sprite, Urge, Villa, vann og svart kaffe.
+- Mat inneholder blant annet grillpølse, wienerpølse, puckpølse, pølse med vaffel, burger, pizza, pommes frites og vaffel.
+- Snacks, sjokolade, godis og is har egne valg.
+- Melkerull, Smil og Smurf er lagt til.
+- Is har pinneis, kroneis, sandwich, softis og annen is.
+- 7UP og energidrikk er ikke med i standardlista.
+
+### Økonomi i oversikten
+- Karriere viser nå total bekreftet økonomi fra reise, billett og kampkjøp.
+- Kiosk og lotteri vises separat.
+- «Mest kjøpt» beregnes etter antall enheter.
+- Kjøp teller i oversikten først når kampdagen er bekreftet med «Jeg var der».
+- Kjøpsdata bruker Mitt Storhamar-lagringen og omfattes av privat synk mellom enheter.
+
+### Tester
+- Kioskkatalogen testes automatisk for avtalte varer og at 7UP ikke finnes.
+- Kjøpssummer, antall, mest kjøpte vare og stykkpris har egne automatiske tester.
+
 ## [0.6.0] – 2026-09-22
 
 ### Privat synk mellom enheter
