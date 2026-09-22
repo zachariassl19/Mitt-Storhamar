@@ -1,28 +1,39 @@
 import { useMemo, useState } from 'react'
 import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
   CalendarDays,
   Check,
   ChevronRight,
   Clock3,
+  Copy,
   Database,
   History,
   Home,
   MapPin,
   Medal,
   MoreHorizontal,
+  Plus,
   Route,
+  Save,
   Settings,
   Shield,
+  Trash2,
   Trophy,
   Upload,
   UserRound,
   WalletCards,
   X,
 } from 'lucide-react'
+import appPackage from '../package.json'
 import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
 import { clearHubExport, loadAttendancePlans, loadHubExport, saveAttendancePlan, saveHubExport } from './lib/storage'
-import type { AttendancePlan, Game, HubExport, NavKey } from './types'
+import { createLeg, createTripForGame, deleteTrip, loadTrips, saveTrip, tripForGame } from './lib/trips'
+import type { AttendancePlan, Game, HubExport, NavKey, TransportMode, Trip, TripLeg } from './types'
+
+const APP_VERSION = appPackage.version
 
 const navItems: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: 'home', label: 'Hjem', icon: Home },
@@ -30,6 +41,18 @@ const navItems: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: 'career', label: 'Karriere', icon: Medal },
   { key: 'history', label: 'Historie', icon: History },
   { key: 'more', label: 'Mer', icon: MoreHorizontal },
+]
+
+const transportOptions: { value: TransportMode; label: string }[] = [
+  { value: 'car', label: 'Bil' },
+  { value: 'train', label: 'Tog' },
+  { value: 'supporter_bus', label: 'Supporterbuss' },
+  { value: 'bus', label: 'Rutebuss' },
+  { value: 'plane', label: 'Fly' },
+  { value: 'taxi', label: 'Taxi' },
+  { value: 'walk', label: 'Gange' },
+  { value: 'bike', label: 'Sykkel' },
+  { value: 'other', label: 'Annet' },
 ]
 
 function osloDateKey(date: Date) {
@@ -56,6 +79,16 @@ function dateText(game: Game) {
   }).format(new Date(game.startsAt))
 }
 
+function fullDateText(game: Game) {
+  return new Intl.DateTimeFormat('nb-NO', {
+    timeZone: 'Europe/Oslo',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(game.startsAt))
+}
+
 function timeText(game: Game) {
   return new Intl.DateTimeFormat('nb-NO', {
     timeZone: 'Europe/Oslo',
@@ -74,6 +107,10 @@ function isHome(game: Game) {
 
 function isFinished(game: Game) {
   return typeof game.homeScore === 'number' && typeof game.awayScore === 'number'
+}
+
+function isFutureGame(game: Game) {
+  return new Date(game.startsAt).getTime() > Date.now()
 }
 
 function badgeLetters(team: string) {
@@ -98,6 +135,27 @@ function decisionLabel(game: Game) {
   return ''
 }
 
+function transportLabel(value: TransportMode) {
+  return transportOptions.find((option) => option.value === value)?.label ?? 'Annet'
+}
+
+function numberOrNull(value: string) {
+  if (value.trim() === '') return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function formatMoney(value: number) {
+  return new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 }).format(value) + ' kr'
+}
+
+function cloneTrip(trip: Trip): Trip {
+  return {
+    ...trip,
+    legs: trip.legs.map((leg) => ({ ...leg })),
+  }
+}
+
 function TeamLogo({ team, hero = false }: { team: string; hero?: boolean }) {
   const [failed, setFailed] = useState(false)
   const src = logoForTeam(team)
@@ -118,11 +176,14 @@ export default function AppV2() {
   const [plans, setPlans] = useState<Record<string, AttendancePlan>>(() => loadAttendancePlans())
   const [hubData, setHubData] = useState<HubExport | null>(() => loadHubExport())
   const [importMessage, setImportMessage] = useState('')
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
+  const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
 
   const now = new Date()
   const today = osloDateKey(now)
   const nextGame = games.find((game) => new Date(game.startsAt).getTime() >= now.getTime()) ?? games[games.length - 1]
   const matchday = gameDateKey(nextGame) === today
+  const selectedGame = selectedGameId ? games.find((game) => game.id === selectedGameId) ?? null : null
 
   const importedPlanMap = useMemo(() => {
     const result: Record<string, AttendancePlan> = {}
@@ -139,6 +200,23 @@ export default function AppV2() {
   function updatePlan(gameId: string, plan: AttendancePlan) {
     saveAttendancePlan(gameId, plan)
     setPlans((current) => ({ ...current, [gameId]: plan }))
+  }
+
+  function navigate(key: NavKey) {
+    setSelectedGameId(null)
+    setActive(key)
+  }
+
+  function openGame(game: Game) {
+    setSelectedGameId(game.id)
+  }
+
+  function persistTrip(trip: Trip) {
+    setTrips(saveTrip(trip))
+  }
+
+  function removeTrip(tripId: string) {
+    setTrips(deleteTrip(tripId))
   }
 
   async function importHubFile(file: File | undefined) {
@@ -171,38 +249,55 @@ export default function AppV2() {
               <strong>MITT STORHAMAR</strong>
             </div>
           </div>
-          <button className="icon-button" aria-label="Innstillinger" onClick={() => setActive('more')}>
+          <button className="icon-button" aria-label="Innstillinger" onClick={() => navigate('more')}>
             <Settings size={20} />
           </button>
         </header>
 
         <main className="content">
-          {active === 'home' && (
-            <HomePage
-              nextGame={nextGame}
-              matchday={matchday}
-              currentPlan={currentPlan}
-              updatePlan={updatePlan}
-              openGames={() => setActive('games')}
+          {selectedGame ? (
+            <GameDetail
+              key={selectedGame.id}
+              game={selectedGame}
+              plan={currentPlan(selectedGame.id)}
+              updatePlan={(plan) => updatePlan(selectedGame.id, plan)}
+              trip={tripForGame(trips, selectedGame.id)}
+              onBack={() => setSelectedGameId(null)}
+              onSaveTrip={persistTrip}
+              onDeleteTrip={removeTrip}
             />
-          )}
-          {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} />}
-          {active === 'career' && <CareerPage hubData={hubData} />}
-          {active === 'history' && <HistoryPage />}
-          {active === 'more' && (
-            <MorePage
-              hubData={hubData}
-              importMessage={importMessage}
-              importHubFile={importHubFile}
-              removeImport={removeImport}
-            />
+          ) : (
+            <>
+              {active === 'home' && (
+                <HomePage
+                  nextGame={nextGame}
+                  matchday={matchday}
+                  currentPlan={currentPlan}
+                  updatePlan={updatePlan}
+                  openGames={() => navigate('games')}
+                  openGame={openGame}
+                />
+              )}
+              {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} />}
+              {active === 'career' && <CareerPage hubData={hubData} trips={trips} />}
+              {active === 'history' && <HistoryPage />}
+              {active === 'more' && (
+                <MorePage
+                  hubData={hubData}
+                  importMessage={importMessage}
+                  importHubFile={importHubFile}
+                  removeImport={removeImport}
+                  version={APP_VERSION}
+                />
+              )}
+            </>
           )}
         </main>
 
         <nav className="bottom-nav" aria-label="Hovedmeny">
           {navItems.map(({ key, label, icon: Icon }) => (
-            <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>
-              <Icon size={20} strokeWidth={active === key ? 2.5 : 2} />
+            <button key={key} className={!selectedGame && active === key ? 'active' : ''} onClick={() => navigate(key)}>
+              <Icon size={20} strokeWidth={!selectedGame && active === key ? 2.5 : 2} />
               <span>{label}</span>
             </button>
           ))}
@@ -218,12 +313,14 @@ function HomePage({
   currentPlan,
   updatePlan,
   openGames,
+  openGame,
 }: {
   nextGame: Game
   matchday: boolean
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
   openGames: () => void
+  openGame: (game: Game) => void
 }) {
   const plan = currentPlan(nextGame.id)
   const ready = plan === 'yes' ? 50 : plan === 'maybe' ? 25 : 0
@@ -260,7 +357,7 @@ function HomePage({
         </div>
 
         <div className="arena-line"><MapPin size={15} /> {nextGame.arena}</div>
-        <button className="open-game" onClick={openGames}>Åpne kampen <ChevronRight size={18} /></button>
+        <button className="open-game" onClick={() => openGame(nextGame)}>Åpne kampen <ChevronRight size={18} /></button>
       </section>
 
       <section className="card attendance-card">
@@ -285,9 +382,9 @@ function HomePage({
         <div className="progress-track"><div style={{ width: `${ready}%` }} /></div>
         <p>{plan === 'yes' ? 'Neste steg: planlegg reisen til kampen.' : 'Svar først på om du skal dit.'}</p>
         <div className="quick-actions">
-          <button><Route size={18} /><span>Reise</span></button>
-          <button><WalletCards size={18} /><span>Utgifter</span></button>
-          <button><Clock3 size={18} /><span>DRA</span></button>
+          <button onClick={() => openGame(nextGame)}><Route size={18} /><span>Reise</span></button>
+          <button onClick={() => openGame(nextGame)}><WalletCards size={18} /><span>Utgifter</span></button>
+          <button onClick={() => openGame(nextGame)}><Clock3 size={18} /><span>DRA</span></button>
         </div>
       </section>
 
@@ -300,7 +397,7 @@ function HomePage({
           <button className="text-button" onClick={openGames}>Alle kamper</button>
         </div>
         <div className="game-list">
-          {upcoming.map((game) => <GameRow key={game.id} game={game} plan={currentPlan(game.id)} />)}
+          {upcoming.map((game) => <GameRow key={game.id} game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} />)}
         </div>
       </section>
 
@@ -347,7 +444,15 @@ function AttendanceButtons({ value, onChange }: { value: AttendancePlan; onChang
   )
 }
 
-function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => AttendancePlan; updatePlan: (id: string, plan: AttendancePlan) => void }) {
+function GamesPage({
+  currentPlan,
+  updatePlan,
+  openGame,
+}: {
+  currentPlan: (id: string) => AttendancePlan
+  updatePlan: (id: string, plan: AttendancePlan) => void
+  openGame: (game: Game) => void
+}) {
   const now = Date.now()
   const past = games.filter((game) => new Date(game.startsAt).getTime() < now)
   const future = games.filter((game) => new Date(game.startsAt).getTime() >= now)
@@ -357,7 +462,7 @@ function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => A
       <div className="page-heading">
         <span className="eyebrow">2026/27 · {games.length} KAMPER</span>
         <h1>Kamper</h1>
-        <p>Hele sesongen – treningskamper, CHL og EHL. Resultat vises på ferdigspilte kamper.</p>
+        <p>Trykk på en kamp for kampdetalj, attendance og reise.</p>
       </div>
 
       {future.length > 0 && (
@@ -366,7 +471,7 @@ function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => A
           <div className="game-card-list">
             {future.map((game) => (
               <article className={`card full-game-card ${game.competition === 'CHL' ? 'chl-border' : ''}`} key={game.id}>
-                <GameRow game={game} plan={currentPlan(game.id)} />
+                <GameRow game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} />
                 <AttendanceButtons value={currentPlan(game.id)} onChange={(value) => updatePlan(game.id, value)} />
               </article>
             ))}
@@ -380,7 +485,7 @@ function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => A
           <div className="game-card-list">
             {[...past].reverse().map((game) => (
               <article className={`card full-game-card past-game ${game.competition === 'CHL' ? 'chl-border' : ''}`} key={game.id}>
-                <GameRow game={game} plan={currentPlan(game.id)} />
+                <GameRow game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} />
               </article>
             ))}
           </div>
@@ -390,10 +495,253 @@ function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => A
   )
 }
 
-function CareerPage({ hubData }: { hubData: HubExport | null }) {
+function GameDetail({
+  game,
+  plan,
+  updatePlan,
+  trip,
+  onBack,
+  onSaveTrip,
+  onDeleteTrip,
+}: {
+  game: Game
+  plan: AttendancePlan
+  updatePlan: (plan: AttendancePlan) => void
+  trip?: Trip
+  onBack: () => void
+  onSaveTrip: (trip: Trip) => void
+  onDeleteTrip: (tripId: string) => void
+}) {
+  const [draft, setDraft] = useState<Trip>(() => cloneTrip(trip ?? createTripForGame(game)))
+  const [savedMessage, setSavedMessage] = useState('')
+  const hasSavedTrip = Boolean(trip)
+  const future = isFutureGame(game)
+
+  const sortedLegs = [...draft.legs].sort((a, b) => a.order - b.order)
+  const totalKm = sortedLegs.reduce((sum, leg) => sum + (leg.km ?? 0), 0)
+  const totalCost = sortedLegs.reduce((sum, leg) => sum + (leg.estimatedCost ?? 0), 0)
+  const totalMinutes = sortedLegs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
+  const outbound = sortedLegs.filter((leg) => leg.direction === 'outbound')
+  const outboundReady = outbound.length > 0 && outbound.every((leg) => typeof leg.durationMinutes === 'number' && leg.durationMinutes >= 0)
+  const outboundMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
+  const draDate = outboundReady
+    ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000)
+    : null
+  const invalidLeg = sortedLegs.some((leg) => !leg.fromName.trim() || !leg.toName.trim())
+
+  function normalizeLegs(legs: TripLeg[]) {
+    return legs.map((leg, index) => ({ ...leg, order: index }))
+  }
+
+  function updateLeg(id: string, patch: Partial<TripLeg>) {
+    setSavedMessage('')
+    setDraft((current) => ({
+      ...current,
+      legs: current.legs.map((leg) => (leg.id === id ? { ...leg, ...patch } : leg)),
+    }))
+  }
+
+  function addLeg(direction: TripLeg['direction']) {
+    setSavedMessage('')
+    setDraft((current) => ({
+      ...current,
+      legs: normalizeLegs([...current.legs, createLeg(current.legs.length, direction)]),
+    }))
+  }
+
+  function removeLeg(id: string) {
+    setSavedMessage('')
+    setDraft((current) => ({ ...current, legs: normalizeLegs(current.legs.filter((leg) => leg.id !== id)) }))
+  }
+
+  function duplicateLeg(id: string) {
+    setSavedMessage('')
+    setDraft((current) => {
+      const index = current.legs.findIndex((leg) => leg.id === id)
+      if (index < 0) return current
+      const source = current.legs[index]
+      const duplicate = {
+        ...source,
+        id: `leg:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+      }
+      const next = [...current.legs]
+      next.splice(index + 1, 0, duplicate)
+      return { ...current, legs: normalizeLegs(next) }
+    })
+  }
+
+  function moveLeg(id: string, direction: -1 | 1) {
+    setSavedMessage('')
+    setDraft((current) => {
+      const next = [...current.legs].sort((a, b) => a.order - b.order)
+      const index = next.findIndex((leg) => leg.id === id)
+      const target = index + direction
+      if (index < 0 || target < 0 || target >= next.length) return current
+      ;[next[index], next[target]] = [next[target], next[index]]
+      return { ...current, legs: normalizeLegs(next) }
+    })
+  }
+
+  function save() {
+    if (invalidLeg || draft.legs.length === 0) return
+    const now = new Date().toISOString()
+    const next: Trip = {
+      ...draft,
+      legs: normalizeLegs(sortedLegs),
+      updatedAt: now,
+    }
+    onSaveTrip(next)
+    setDraft(cloneTrip(next))
+    setSavedMessage('Reisen er lagret og beholdes etter refresh.')
+  }
+
+  function removeSavedTrip() {
+    if (!trip) return
+    onDeleteTrip(trip.id)
+    const fresh = createTripForGame(game)
+    setDraft(fresh)
+    setSavedMessage('Den lagrede reisen er slettet.')
+  }
+
+  return (
+    <section className="game-detail-page">
+      <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Tilbake til kamper</button>
+
+      <article className={`game-detail-hero ${game.competition === 'CHL' ? 'chl' : ''}`}>
+        <div className="section-kicker"><span>{game.competition} · {game.season}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span></div>
+        <div className="detail-matchup">
+          <TeamMark name={game.homeTeam} primary={game.homeTeam === 'Storhamar'} />
+          <div className="detail-score">
+            {isFinished(game) ? (
+              <><strong>{game.homeScore}–{game.awayScore}</strong><span>FERDIG{decisionLabel(game)}</span></>
+            ) : (
+              <><strong>{timeText(game)}</strong><span>{dateText(game)}</span></>
+            )}
+          </div>
+          <TeamMark name={game.awayTeam} primary={game.awayTeam === 'Storhamar'} />
+        </div>
+        <div className="detail-meta"><span><CalendarDays size={14} /> {fullDateText(game)}</span><span><MapPin size={14} /> {game.arena}{game.city ? ` · ${game.city}` : ''}</span></div>
+      </article>
+
+      {future ? (
+        <article className="card detail-card">
+          <div className="card-heading"><div><span className="eyebrow">ATTENDANCE PLAN</span><h2>Skal du dit?</h2></div><span className="plan-status">{planLabel(plan)}</span></div>
+          <AttendanceButtons value={plan} onChange={updatePlan} />
+        </article>
+      ) : (
+        <article className="notice-card detail-notice"><Check size={20} /><div><strong>Kampen er spilt</strong><p>Planlagt attendance endres ikke her. Faktisk «Jeg var der»-registrering kommer i post-game-flyten.</p></div></article>
+      )}
+
+      <article className="card detail-card travel-card">
+        <div className="card-heading">
+          <div><span className="eyebrow">REISE</span><h2>{hasSavedTrip ? 'Lagret reise' : 'Planlegg reisen'}</h2></div>
+          {hasSavedTrip && <span className="saved-badge">LAGRET</span>}
+        </div>
+
+        <div className="travel-summary-grid">
+          <div><span>KM</span><strong>{totalKm > 0 ? Math.round(totalKm) : '—'}</strong></div>
+          <div><span>TID</span><strong>{totalMinutes > 0 ? `${totalMinutes}m` : '—'}</strong></div>
+          <div><span>KOSTNAD</span><strong>{totalCost > 0 ? formatMoney(totalCost) : '—'}</strong></div>
+          <div><span>DRA</span><strong>{draDate ? new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' }).format(draDate) : '—'}</strong></div>
+        </div>
+
+        <label className="arrival-setting">
+          <span>Ønsket tid ved arena</span>
+          <select value={draft.desiredArrivalMinutesBefore} onChange={(event) => setDraft((current) => ({ ...current, desiredArrivalMinutesBefore: Number(event.target.value) }))}>
+            <option value={15}>15 min før</option>
+            <option value={30}>30 min før</option>
+            <option value={45}>45 min før</option>
+            <option value={60}>60 min før</option>
+            <option value={90}>90 min før</option>
+          </select>
+        </label>
+
+        <div className="trip-legs">
+          {sortedLegs.map((leg, index) => (
+            <TripLegEditor
+              key={leg.id}
+              leg={leg}
+              index={index}
+              count={sortedLegs.length}
+              onUpdate={(patch) => updateLeg(leg.id, patch)}
+              onDelete={() => removeLeg(leg.id)}
+              onDuplicate={() => duplicateLeg(leg.id)}
+              onMoveUp={() => moveLeg(leg.id, -1)}
+              onMoveDown={() => moveLeg(leg.id, 1)}
+            />
+          ))}
+        </div>
+
+        <div className="add-leg-row">
+          <button onClick={() => addLeg('outbound')}><Plus size={16} /> Etappe til arena</button>
+          <button onClick={() => addLeg('return')}><Plus size={16} /> Etappe hjem</button>
+        </div>
+
+        {draft.legs.length === 0 && <p className="save-warning">Legg til minst én etappe før reisen kan lagres.</p>}
+        {invalidLeg && <p className="save-warning">Fyll inn både fra og til på alle etapper før du lagrer.</p>}
+        {savedMessage && <p className="save-success">{savedMessage}</p>}
+
+        <div className="travel-actions">
+          <button className="primary-action" onClick={save} disabled={invalidLeg || draft.legs.length === 0}><Save size={17} /> Lagre reisen</button>
+          {trip && <button className="danger-action" onClick={removeSavedTrip}><Trash2 size={16} /> Slett reisen</button>}
+        </div>
+
+        {!outboundReady && <p className="travel-footnote">DRA beregnes når alle etappene til arena har reisetid. Automatisk Google Routes kommer i neste steg.</p>}
+      </article>
+    </section>
+  )
+}
+
+function TripLegEditor({
+  leg,
+  index,
+  count,
+  onUpdate,
+  onDelete,
+  onDuplicate,
+  onMoveUp,
+  onMoveDown,
+}: {
+  leg: TripLeg
+  index: number
+  count: number
+  onUpdate: (patch: Partial<TripLeg>) => void
+  onDelete: () => void
+  onDuplicate: () => void
+  onMoveUp: () => void
+  onMoveDown: () => void
+}) {
+  return (
+    <div className="trip-leg-card">
+      <div className="trip-leg-header">
+        <div><span className={`direction-dot ${leg.direction}`} /><strong>Etappe {index + 1}</strong><small>{leg.direction === 'outbound' ? 'TIL ARENA' : 'HJEMREISE'}</small></div>
+        <div className="leg-icon-actions">
+          <button onClick={onMoveUp} disabled={index === 0} aria-label="Flytt opp"><ArrowUp size={15} /></button>
+          <button onClick={onMoveDown} disabled={index === count - 1} aria-label="Flytt ned"><ArrowDown size={15} /></button>
+          <button onClick={onDuplicate} aria-label="Dupliser"><Copy size={15} /></button>
+          <button onClick={onDelete} aria-label="Slett"><Trash2 size={15} /></button>
+        </div>
+      </div>
+
+      <div className="trip-form-grid">
+        <label><span>Retning</span><select value={leg.direction} onChange={(event) => onUpdate({ direction: event.target.value as TripLeg['direction'] })}><option value="outbound">Til arena</option><option value="return">Hjemreise</option></select></label>
+        <label><span>Transport</span><select value={leg.transport} onChange={(event) => onUpdate({ transport: event.target.value as TransportMode })}>{transportOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+        <label className="wide"><span>Fra</span><input value={leg.fromName} placeholder="Hjem" onChange={(event) => onUpdate({ fromName: event.target.value })} /></label>
+        <label className="wide"><span>Til</span><input value={leg.toName} placeholder="Arena / stasjon" onChange={(event) => onUpdate({ toName: event.target.value })} /></label>
+        <label><span>Km</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
+        <label><span>Minutter</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label>
+        <label className="wide"><span>Estimert kostnad</span><input type="number" min="0" step="1" inputMode="decimal" value={leg.estimatedCost ?? ''} placeholder="0 kr / ukjent" onChange={(event) => onUpdate({ estimatedCost: numberOrNull(event.target.value) })} /></label>
+      </div>
+      <div className="leg-summary"><Route size={14} /><span>{transportLabel(leg.transport)} · {leg.fromName || 'Fra?'} → {leg.toName || 'Til?'}</span></div>
+    </div>
+  )
+}
+
+function CareerPage({ hubData, trips }: { hubData: HubExport | null; trips: Trip[] }) {
   const attended = hubData?.attendance?.filter((entry) => entry.attendanceActual === 'attended').length ?? 0
-  const km = Math.round((hubData?.tripLegs ?? []).reduce((sum, leg) => sum + (typeof leg.km === 'number' ? leg.km : 0), 0))
-  const trips = hubData?.trips?.length ?? 0
+  const importedKm = Math.round((hubData?.tripLegs ?? []).reduce((sum, leg) => sum + (typeof leg.km === 'number' ? leg.km : 0), 0))
+  const localKm = Math.round(trips.reduce((sum, trip) => sum + trip.legs.reduce((tripSum, leg) => tripSum + (leg.km ?? 0), 0), 0))
+  const importedTrips = hubData?.trips?.length ?? 0
   const achievements = hubData?.achievementUnlocks?.length ?? 0
   return (
     <section className="page-section">
@@ -401,8 +749,8 @@ function CareerPage({ hubData }: { hubData: HubExport | null }) {
       {!hubData && <div className="notice-card"><Database size={20} /><div><strong>Ingen historikk importert ennå</strong><p>Importer HUB-data under Mer for å få med gammel historikk.</p></div></div>}
       <div className="career-grid">
         <article className="stat-card"><strong>{attended}</strong><span>Kamper sett</span></article>
-        <article className="stat-card"><strong>{km}</strong><span>Registrerte km</span></article>
-        <article className="stat-card"><strong>{trips}</strong><span>Reiser</span></article>
+        <article className="stat-card"><strong>{importedKm + localKm}</strong><span>Registrerte km</span></article>
+        <article className="stat-card"><strong>{importedTrips + trips.length}</strong><span>Reiser</span></article>
         <article className="stat-card"><strong>{achievements}</strong><span>Achievements</span></article>
       </div>
       <article className="card achievement-card"><Medal size={28} /><div><span>NESTE MÅL</span><h3>Fortsett supporterreisen</h3><p>Achievements og sesongrekorder bygges videre fra kamp- og reisedata.</p></div></article>
@@ -434,15 +782,21 @@ function MorePage({
   importMessage,
   importHubFile,
   removeImport,
+  version,
 }: {
   hubData: HubExport | null
   importMessage: string
   importHubFile: (file: File | undefined) => void
   removeImport: () => void
+  version: string
 }) {
   return (
     <section className="page-section">
-      <div className="page-heading"><span className="eyebrow">APPEN</span><h1>Mer</h1><p>Import, innstillinger og data.</p></div>
+      <div className="page-heading"><span className="eyebrow">APPEN · v{version}</span><h1>Mer</h1><p>Import, innstillinger og data.</p></div>
+      <article className="card version-card">
+        <div><span className="eyebrow">VERSJON</span><strong>Mitt Storhamar v{version}</strong></div>
+        <p>Versjonsnummer følger SemVer. Små feilrettinger øker siste tall, nye funksjoner øker midterste tall.</p>
+      </article>
       <article className="card import-card">
         <div className="import-icon"><Upload /></div>
         <h2>Importer Storhamar HUB</h2>
@@ -467,10 +821,10 @@ function MorePage({
   )
 }
 
-function GameRow({ game, plan }: { game: Game; plan: AttendancePlan }) {
+function GameRow({ game, plan, onOpen }: { game: Game; plan: AttendancePlan; onOpen: () => void }) {
   const result = isFinished(game)
   return (
-    <div className="game-row game-row-with-logos">
+    <button className="game-row game-row-with-logos" onClick={onOpen} type="button">
       <div className="date-block">
         <strong>{new Intl.DateTimeFormat('nb-NO', { day: 'numeric', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</strong>
         <span>{new Intl.DateTimeFormat('nb-NO', { month: 'short', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</span>
@@ -497,7 +851,7 @@ function GameRow({ game, plan }: { game: Game; plan: AttendancePlan }) {
       ) : (
         <ChevronRight size={18} />
       )}
-    </div>
+    </button>
   )
 }
 
