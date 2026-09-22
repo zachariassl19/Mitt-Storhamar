@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import appPackage from '../package.json'
 import { GamePurchases } from './components/GamePurchases'
+import { MinStorhamarPage } from './components/MinStorhamarPage'
 import { TravelPlanner } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
@@ -70,7 +71,7 @@ const APP_VERSION = appPackage.version
 const navItems: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: 'home', label: 'Hjem', icon: Home },
   { key: 'games', label: 'Kamper', icon: CalendarDays },
-  { key: 'career', label: 'Karriere', icon: Medal },
+  { key: 'career', label: 'Min Storhamar', icon: Medal },
   { key: 'history', label: 'Historie', icon: History },
   { key: 'more', label: 'Mer', icon: MoreHorizontal },
 ]
@@ -333,7 +334,7 @@ export default function AppV2() {
                 />
               )}
               {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} />}
-              {active === 'career' && <CareerPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
+              {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
               {active === 'history' && <HistoryPage />}
               {active === 'more' && (
                 <MorePage
