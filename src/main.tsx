@@ -4,6 +4,7 @@ import App from './AppV2'
 import './styles.css'
 import './logoStyles.css'
 import './detailStyles.css'
+import './travelPlanner.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
