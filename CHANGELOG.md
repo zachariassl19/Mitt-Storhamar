@@ -2,6 +2,37 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.5.0] – 2026-09-22
+
+### Automatisk ruteberegning
+- Google Maps JavaScript API + Routes API er koblet inn i Reise.
+- Bil, supporterbuss, taxi, gange og sykkel kan få km og reisetid automatisk fra Google Routes.
+- Bilruter bruker trafikkbevisst ruteberegning når Google kan levere trafikkdata.
+- DRA oppdateres automatisk når alle delene fram til arenaen har reisetid.
+- Brukeren kan fortsatt overstyre km og minutter manuelt ved behov.
+- Tog, rutebuss, fly og «annet» beholdes manuelle inntil Entur/egne løsninger kobles på.
+
+### Privat Hjem-lokasjon
+- `Hjem` har nå en privat adresse som lagres lokalt på enheten.
+- Den faktiske hjemmeadressen hardkodes aldri i det offentlige GitHub-repoet.
+- Når en reise bruker `Hjem`, brukes den private adressen automatisk i ruteberegningen.
+
+### API-sikkerhet
+- GitHub Pages-builden leser den begrensede Google Maps-nøkkelen fra `VITE_GOOGLE_MAPS_API_KEY` i GitHub Actions Secrets.
+- Nøkkelen ligger ikke som ren tekst i repoet.
+- Nettlesernøkkelen skal fortsatt være begrenset i Google Cloud til GitHub Pages-domenet og bare Routes API + Maps JavaScript API.
+
+### Kostnad
+- Automatisk Google-km går direkte inn i eksisterende bilkostnad.
+- Valgt Strøm/Bensin/Diesel bruker standardforbruk per 100 km og norsk standard energipris som utgangspunkt.
+- Supporterbuss beholder manuell billettpris samtidig som km/tid kan beregnes automatisk som veirute.
+
+### Neste
+- Canonical arena-register med full adresse/koordinater for alle arenaer.
+- Entur for tog og rutebuss.
+- Bedre trafikk-/avreiselogikk og buffer i DRA.
+- Reisefølge og kjøp i post-game-flyten.
+
 ## [0.4.2] – 2026-09-22
 
 ### Standardforbruk per 100 km
