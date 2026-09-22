@@ -11,6 +11,11 @@ build/
 .env.*
 !.env.example
 
+# private/local app data exports
+storhamar-hub-data.json
+data/private/
+*.private.json
+
 # logs
 *.log
 npm-debug.log*
