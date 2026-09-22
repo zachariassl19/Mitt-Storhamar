@@ -14,6 +14,14 @@ export interface EnergyPriceReference {
   description: string
 }
 
+export interface ConsumptionReference {
+  value: number
+  unit: 'l/100 km' | 'kWh/100 km'
+  period: string
+  source: string
+  description: string
+}
+
 const CAR_SETTINGS_KEY = 'mitt-storhamar:car-settings:v1'
 
 export const NORWAY_AVERAGE_ENERGY_PRICES: Record<CarEnergy, EnergyPriceReference> = {
@@ -40,13 +48,46 @@ export const NORWAY_AVERAGE_ENERGY_PRICES: Record<CarEnergy, EnergyPriceReferenc
   },
 }
 
+// Praktiske standardestimat for forbruk per 100 km.
+// Statens vegvesen oppgir 2026-forbruk for de mest solgte modellene innen
+// kompakt-, mellomklasse- og SUV-segmentene. Her brukes et enkelt snitt av
+// de segmentverdiene som finnes for hver energitype, slik at appen får ett
+// nøytralt utgangspunkt som brukeren kan overstyre med bilens faktiske forbruk.
+export const NORWAY_AVERAGE_CONSUMPTION_PER_100: Record<CarEnergy, ConsumptionReference> = {
+  gasoline: {
+    value: 6.46,
+    unit: 'l/100 km',
+    period: '2026-referanse',
+    source: 'Statens vegvesen – Energipris per 100 km',
+    description: 'Snitt av oppgitte 2026-segmentverdier: 5,20 / 7,67 / 6,50 l per 100 km.',
+  },
+  diesel: {
+    value: 5.48,
+    unit: 'l/100 km',
+    period: '2026-referanse',
+    source: 'Statens vegvesen – Energipris per 100 km',
+    description: 'Snitt av tilgjengelige 2026-segmentverdier: 5,35 / 5,60 l per 100 km.',
+  },
+  electric: {
+    value: 15.61,
+    unit: 'kWh/100 km',
+    period: '2026-referanse',
+    source: 'Statens vegvesen – Energipris per 100 km',
+    description: 'Snitt av oppgitte 2026-segmentverdier: 15,70 / 14,90 / 16,23 kWh per 100 km.',
+  },
+}
+
 export function averageEnergyPrice(energy: CarEnergy) {
   return NORWAY_AVERAGE_ENERGY_PRICES[energy]
 }
 
+export function averageConsumptionPer100(energy: CarEnergy) {
+  return NORWAY_AVERAGE_CONSUMPTION_PER_100[energy]
+}
+
 const DEFAULT_SETTINGS: CarSettings = {
   energy: 'gasoline',
-  consumptionPer100: null,
+  consumptionPer100: NORWAY_AVERAGE_CONSUMPTION_PER_100.gasoline.value,
   energyUnitPrice: NORWAY_AVERAGE_ENERGY_PRICES.gasoline.price,
 }
 
@@ -62,6 +103,7 @@ export function loadCarSettings(): CarSettings {
       ...DEFAULT_SETTINGS,
       ...stored,
       energy,
+      consumptionPer100: stored.consumptionPer100 ?? averageConsumptionPer100(energy).value,
       energyUnitPrice: stored.energyUnitPrice ?? averageEnergyPrice(energy).price,
     }
   } catch {
@@ -74,9 +116,12 @@ export function saveCarSettings(settings: CarSettings) {
 }
 
 export function settingsForEnergy(current: CarSettings, energy: CarEnergy): CarSettings {
+  if (current.energy === energy) return current
+
   return {
     ...current,
     energy,
+    consumptionPer100: averageConsumptionPer100(energy).value,
     energyUnitPrice: averageEnergyPrice(energy).price,
   }
 }
