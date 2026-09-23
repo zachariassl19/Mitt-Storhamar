@@ -8,7 +8,7 @@ export interface Companion {
 
 export interface GameCompanionSelection {
   gameId: string
-  status: 'known' | 'unknown'
+  status: 'known' | 'unknown' | 'unset'
   companionIds: string[]
   updatedAt: string
 }
@@ -85,7 +85,7 @@ export function companionSelectionForGame(gameId: string): GameCompanionSelectio
   const current = loadGameCompanionSelections()[gameId]
   return current ?? {
     gameId,
-    status: 'unknown',
+    status: 'unset',
     companionIds: [],
     updatedAt: new Date().toISOString(),
   }
