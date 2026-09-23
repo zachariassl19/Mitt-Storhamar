@@ -1,3 +1,4 @@
+import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
 export interface HistoryCategory {
@@ -27,7 +28,7 @@ export const historyCategories: HistoryCategory[] = [
 // Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
-  sources: [],
+  sources: historySources,
   seasons: [],
   honours: [],
   jerseys: [],
