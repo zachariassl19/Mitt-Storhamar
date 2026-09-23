@@ -1,5 +1,7 @@
 .companions-card { display: grid; gap: 12px; }
 .companions-card .card-heading > svg { color: var(--gold); }
+.companions-card-embedded { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.08); }
+.companions-card-embedded .card-heading { margin: 0; }
 .companion-choice-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
 .companion-choice-grid button, .companion-state-row button { min-height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: #c7d7ee; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
 .companion-choice-grid button.selected { border-color: rgba(242,201,76,.5); background: rgba(242,201,76,.13); color: var(--gold-soft); }
