@@ -1,6 +1,7 @@
 import type { Game, Trip, TripLeg, TransportMode } from '../types'
 
 const TRIPS_KEY = 'mitt-storhamar:trips:v1'
+export const TRIPS_CHANGED_EVENT = 'mitt-storhamar:trips-changed'
 
 export function loadTrips(): Trip[] {
   try {
@@ -13,6 +14,28 @@ export function loadTrips(): Trip[] {
 
 function persistTrips(trips: Trip[]) {
   localStorage.setItem(TRIPS_KEY, JSON.stringify(trips))
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(TRIPS_CHANGED_EVENT, { detail: trips }))
+  }
+}
+
+export function subscribeTrips(listener: (trips: Trip[]) => void) {
+  if (typeof window === 'undefined') return () => undefined
+
+  const onCustom = (event: Event) => {
+    const custom = event as CustomEvent<Trip[]>
+    listener(custom.detail ?? loadTrips())
+  }
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === TRIPS_KEY) listener(loadTrips())
+  }
+
+  window.addEventListener(TRIPS_CHANGED_EVENT, onCustom)
+  window.addEventListener('storage', onStorage)
+  return () => {
+    window.removeEventListener(TRIPS_CHANGED_EVENT, onCustom)
+    window.removeEventListener('storage', onStorage)
+  }
 }
 
 export function saveTrip(trip: Trip): Trip[] {
@@ -32,7 +55,8 @@ export function deleteTrip(tripId: string): Trip[] {
 }
 
 export function tripForGame(trips: Trip[], gameId: string) {
-  return trips.find((trip) => trip.gameId === gameId)
+  const latest = typeof window !== 'undefined' ? loadTrips() : trips
+  return latest.find((trip) => trip.gameId === gameId) ?? trips.find((trip) => trip.gameId === gameId)
 }
 
 export function createTripForGame(game: Game): Trip {
