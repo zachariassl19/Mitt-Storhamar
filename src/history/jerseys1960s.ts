@@ -1,0 +1,82 @@
+import type { ArchiveJersey } from './types'
+
+const verifiedAt = '2026-09-24'
+
+export const jerseys1960s: ArchiveJersey[] = [
+  {
+    id: 'jersey-1967-77',
+    title: '1967–77 · Gul Ramah',
+    slug: '1967-77-gul-ramah',
+    summary: 'Drakten som markerte overgangen fra pionerperioden til et mer etablert hockeyuttrykk: gul hovedfarge, svarte bukser og røde detaljer.',
+    body: [
+      'I 1967 gikk Storhamar bort fra det nesten helsvarte uttrykket og nærmet seg klubbens offisielle farger. Ramah leverte en gul trøye med tydelig skulderparti, striper og stor SIL-logo på brystet.',
+      'Rødt ble brukt som tredjefarge på blant annet krage og nummer. De svarte buksene ble beholdt. Drakten fulgte laget gjennom et tiår som endte med opprykk til 1. divisjon i 1977.',
+    ],
+    completeness: 'verified',
+    sources: ['silarkivet'],
+    media: [
+      {
+        id: 'media-jersey-1967-77-front',
+        type: 'jersey',
+        src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/67-77.png?resize=750%2C473',
+        alt: 'Storhamars gule Ramah-drakt brukt i perioden 1967–77',
+        caption: 'Storhamars gule hoveddrakt fra perioden 1967–77.',
+        credit: 'SIL-arkivet',
+        sourceId: 'silarkivet',
+        sourceUrl: 'https://silarkivet.no/drakter/1967-77/',
+        seasonIds: ['season-1967-68', 'season-1968-69', 'season-1969-70', 'season-1970-71', 'season-1971-72', 'season-1972-73', 'season-1973-74', 'season-1974-75', 'season-1975-76', 'season-1976-77'],
+        personIds: ['legend-steinar-johansen', 'player-jan-sindre-larsen'],
+        tags: ['drakt', 'ramah', 'gul', 'svart', 'rød', '1960-tallet', '1970-tallet'],
+        rightsNote: 'Historisk materiale fra SIL-arkivet. Prosjekteier har opplyst at materialet kan brukes i Mitt Storhamar.',
+      },
+    ],
+    related: [
+      { kind: 'legend', id: 'legend-steinar-johansen' },
+      { kind: 'player', id: 'player-jan-sindre-larsen' },
+      { kind: 'arena', id: 'arena-storhamarbana' },
+    ],
+    fromSeasonId: 'season-1967-68',
+    toSeasonId: 'season-1976-77',
+    seasonIds: ['season-1967-68', 'season-1968-69', 'season-1969-70', 'season-1970-71', 'season-1971-72', 'season-1972-73', 'season-1973-74', 'season-1974-75', 'season-1975-76', 'season-1976-77'],
+    usage: ['home'],
+    manufacturer: 'Ramah',
+    colours: ['gul', 'svart', 'rød'],
+    playerIds: ['legend-steinar-johansen', 'player-jan-sindre-larsen'],
+    notableMomentIds: ['timeline-1977-promotion-top-division'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'jersey-hamkam-60-70',
+    title: 'HamKam-drakten · 60–70-tallet',
+    slug: 'hamkam-drakten-60-70-tallet',
+    summary: 'Grønne og hvite drakter Storhamar overtok da Hamarkameratenes hockeygruppe ble lagt ned.',
+    body: [
+      'Utstyr var kostbart, og Storhamar overtok draktene etter HamKams nedlagte hockeygruppe. De grønne og hvite trøyene ble brukt flittig på trening.',
+      'SIL-arkivet understreker at det er ukjent om disse draktene noen gang ble brukt som nødløsning i offisiell kamp. I Mitt Storhamar skal denne usikkerheten bevares, ikke glattes over.',
+    ],
+    completeness: 'verified',
+    sources: ['silarkivet'],
+    media: [
+      {
+        id: 'media-jersey-hamkam-60-70',
+        type: 'jersey',
+        src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/hamkamdrakta.png?resize=750%2C473',
+        alt: 'Grønn og hvit HamKam-hockeydrakt overtatt av Storhamar',
+        caption: 'HamKam-drakten som Storhamar overtok og brukte i treningssammenheng.',
+        credit: 'SIL-arkivet',
+        sourceId: 'silarkivet',
+        sourceUrl: 'https://silarkivet.no/drakter/hamkam-drakta-60-70-tall/',
+        tags: ['drakt', 'hamkam', 'trening', 'kuriositet', '1960-tallet', '1970-tallet'],
+        rightsNote: 'Historisk materiale fra SIL-arkivet. Prosjekteier har opplyst at materialet kan brukes i Mitt Storhamar.',
+      },
+    ],
+    related: [{ kind: 'identity', id: 'identity-early-colours', label: 'Tidlige klubbfarger' }],
+    seasonIds: [],
+    usage: ['preseason', 'other'],
+    colours: ['grønn', 'hvit'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['kuriositet', 'treningsdrakt'],
+    lastVerifiedAt: verifiedAt,
+  },
+]
