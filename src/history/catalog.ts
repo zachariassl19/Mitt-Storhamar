@@ -1,3 +1,12 @@
+import {
+  earlyArenas,
+  earlyHonours,
+  earlyJerseys,
+  earlyLegends,
+  earlyPlayers,
+  earlySeasons,
+  earlyTimeline,
+} from './earlyHistory'
 import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
@@ -29,13 +38,13 @@ export const historyCategories: HistoryCategory[] = [
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
   sources: historySources,
-  seasons: [],
-  honours: [],
-  jerseys: [],
-  legends: [],
-  players: [],
-  arenas: [],
+  seasons: earlySeasons,
+  honours: earlyHonours,
+  jerseys: earlyJerseys,
+  legends: earlyLegends,
+  players: earlyPlayers,
+  arenas: earlyArenas,
   europe: [],
   records: [],
-  timeline: [],
+  timeline: earlyTimeline,
 }
