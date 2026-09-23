@@ -2,23 +2,24 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './AppV2'
 import { CloudSyncManager } from './components/CloudSyncManager'
-import { installSmartGameDayAutoResume } from './lib/smartGameDayAutoResume'
+import { SmartGameDayManager, SmartGameDaySettingsPortal } from './components/SmartGameDayGlobal'
 import './styles.css'
 import './logoStyles.css'
 import './detailStyles.css'
 import './travelPlanner.css'
 import './unifiedTravel.css'
 import './gps.css'
+import './smartGameDaySettings.css'
 import './purchases.css'
 import './cloudSync.css'
 import './gameCards.css'
 import './minStorhamar.css'
 
-installSmartGameDayAutoResume()
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
+    <SmartGameDayManager />
+    <SmartGameDaySettingsPortal />
     <CloudSyncManager />
   </React.StrictMode>,
 )
