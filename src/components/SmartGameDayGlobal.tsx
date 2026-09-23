@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { ChevronDown, LocateFixed } from 'lucide-react'
 import { arenaForGame } from '../data/arenas'
 import { games } from '../data/games'
 import { isGameDay } from '../lib/gameTime'
@@ -127,14 +128,12 @@ function useSettingsPortalTarget() {
         setTarget(null)
         return
       }
-      const parent = settingsList.parentElement
-      if (!parent) return
 
-      let container = parent.querySelector<HTMLDivElement>('#smart-gameday-settings-portal')
+      let container = settingsList.querySelector<HTMLDivElement>('#smart-gameday-settings-portal')
       if (!container) {
         container = document.createElement('div')
         container.id = 'smart-gameday-settings-portal'
-        parent.insertBefore(container, settingsList)
+        settingsList.insertBefore(container, settingsList.firstChild)
         owned = container
       }
       setTarget(container)
@@ -155,6 +154,7 @@ function useSettingsPortalTarget() {
 
 export function SmartGameDaySettingsPortal() {
   const target = useSettingsPortalTarget()
+  const [open, setOpen] = useState(false)
   const [settings, setSettings] = useState<SmartGameDaySettings>(() => loadSmartGameDaySettings())
   const [permission, setPermission] = useState<PermissionState>('checking')
   const [testMessage, setTestMessage] = useState('')
@@ -227,42 +227,58 @@ export function SmartGameDaySettingsPortal() {
   if (!target) return null
 
   return createPortal(
-    <article className="card smart-settings-card">
-      <div className="smart-settings-head">
-        <div><span className="eyebrow">SMART KAMPDAG</span><h2>Posisjon og GPS</h2></div>
-        <button
-          type="button"
-          className={`smart-toggle ${settings.enabled ? 'on' : ''}`}
-          aria-pressed={settings.enabled}
-          onClick={() => update({ enabled: !settings.enabled })}
-        >
-          <span />{settings.enabled ? 'På' : 'Av'}
-        </button>
-      </div>
-
-      <p>Slår du dette på én gang, gjelder det alle Storhamar-kamper. På kampdager brukes arenaens innebygde GPS-punkt automatisk.</p>
-
-      <div className="smart-settings-grid">
-        <div><span>POSISJON</span><strong className={permission === 'denied' ? 'bad' : permission === 'granted' ? 'good' : ''}>{permissionText(permission)}</strong></div>
-        <div><span>ARENAER KLARE</span><strong>{arenaCoverage.ready}/{arenaCoverage.total}</strong></div>
-      </div>
-
-      <label className="smart-setting-row">
-        <div><strong>Start automatisk på kampdager</strong><span>Prøver å starte GPS igjen når appen åpnes eller blir aktiv.</span></div>
-        <input
-          type="checkbox"
-          checked={settings.autoStartOnGameDay}
-          onChange={(event) => update({ autoStartOnGameDay: event.target.checked })}
-          disabled={!settings.enabled}
-        />
-      </label>
-
-      <button type="button" className="secondary-action smart-test-button" onClick={testPosition} disabled={testing}>
-        {testing ? 'Henter posisjon…' : 'Test posisjon'}
+    <div className={`settings-expandable smart-settings-entry ${open ? 'open' : ''}`}>
+      <button
+        type="button"
+        className="settings-entry-button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <LocateFixed size={22} />
+        <div><strong>Smart Kampdag</strong><span>GPS og automatisk kampdag</span></div>
+        <div className="settings-entry-tail">
+          <span className={`settings-entry-state ${settings.enabled ? 'on' : ''}`}>{settings.enabled ? 'På' : 'Av'}</span>
+          <ChevronDown className={open ? 'rotated' : ''} size={19} />
+        </div>
       </button>
-      {testMessage && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{testMessage}</p>}
-      <p className="travel-footnote">Mitt Storhamar lagrer ikke et kontinuerlig GPS-spor. Det lagres bare kampdagssignaler som nær arena, ankom arena og forlot arena.</p>
-    </article>,
+
+      {open && (
+        <div className="settings-entry-panel smart-settings-panel">
+          <div className="settings-panel-toggle-row">
+            <div><strong>Smart Kampdag</strong><span>Bruk arenaens GPS automatisk på kampdager.</span></div>
+            <button
+              type="button"
+              className={`smart-toggle ${settings.enabled ? 'on' : ''}`}
+              aria-pressed={settings.enabled}
+              onClick={() => update({ enabled: !settings.enabled })}
+            >
+              <span />{settings.enabled ? 'På' : 'Av'}
+            </button>
+          </div>
+
+          <div className="smart-settings-grid">
+            <div><span>POSISJON</span><strong className={permission === 'denied' ? 'bad' : permission === 'granted' ? 'good' : ''}>{permissionText(permission)}</strong></div>
+            <div><span>ARENAER KLARE</span><strong>{arenaCoverage.ready}/{arenaCoverage.total}</strong></div>
+          </div>
+
+          <label className="smart-setting-row">
+            <div><strong>Start automatisk på kampdager</strong><span>Starter igjen når appen blir aktiv.</span></div>
+            <input
+              type="checkbox"
+              checked={settings.autoStartOnGameDay}
+              onChange={(event) => update({ autoStartOnGameDay: event.target.checked })}
+              disabled={!settings.enabled}
+            />
+          </label>
+
+          <button type="button" className="secondary-action smart-test-button" onClick={testPosition} disabled={testing}>
+            {testing ? 'Henter posisjon…' : 'Test posisjon'}
+          </button>
+          {testMessage && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{testMessage}</p>}
+          <p className="settings-panel-note">Lagrer bare kampdagssignaler, ikke et kontinuerlig GPS-spor.</p>
+        </div>
+      )}
+    </div>,
     target,
   )
 }
