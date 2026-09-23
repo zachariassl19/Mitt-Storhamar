@@ -1,0 +1,39 @@
+.travel-delete-route {
+  margin-top: 14px;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid rgba(242,119,139,.22);
+  border-radius: 11px;
+  background: rgba(132,39,56,.08);
+  color: #f0a8b4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.unified-travel-message { margin-top: 14px; }
+.unified-travel-help {
+  margin: 14px 0 8px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.unified-travel-save {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 10px 26px rgba(242,201,76,.13);
+}
+
+.unified-travel-save:disabled {
+  opacity: .45;
+  box-shadow: none;
+}
