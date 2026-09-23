@@ -1,12 +1,23 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { CalendarDays, ChevronDown, Download, Upload } from 'lucide-react'
+import { CalendarDays, ChevronDown, Link2, RefreshCw, Upload } from 'lucide-react'
 import { games } from '../data/games'
-import { compareCalendarToGames, createUpcomingCalendarIcs, parseCalendarIcs, type CalendarSuggestion } from '../lib/calendarSync'
+import { compareCalendarToGames, parseCalendarIcs, type CalendarSuggestion } from '../lib/calendarSync'
 
 const REVIEW_KEY = 'mitt-storhamar:calendar-reviewed:v1'
+const SOURCE_KEY = 'mitt-storhamar:calendar-source:v1'
+const SUGGESTIONS_KEY = 'mitt-storhamar:calendar-suggestions:v1'
+const LAST_CHECK_KEY = 'mitt-storhamar:calendar-last-check:v1'
 
 type ReviewState = Record<string, 'approved' | 'ignored'>
+
+interface CalendarSource {
+  name: string
+  url: string
+  enabled: boolean
+  autoCheck: boolean
+  updatedAt: string
+}
 
 function loadReviews(): ReviewState {
   try {
@@ -18,6 +29,40 @@ function loadReviews(): ReviewState {
 
 function saveReviews(value: ReviewState) {
   localStorage.setItem(REVIEW_KEY, JSON.stringify(value))
+}
+
+function loadSource(): CalendarSource | null {
+  try {
+    const raw = localStorage.getItem(SOURCE_KEY)
+    return raw ? JSON.parse(raw) as CalendarSource : null
+  } catch {
+    return null
+  }
+}
+
+function saveSource(value: CalendarSource) {
+  localStorage.setItem(SOURCE_KEY, JSON.stringify(value))
+}
+
+function loadSuggestions(): CalendarSuggestion[] {
+  try {
+    const raw = localStorage.getItem(SUGGESTIONS_KEY)
+    return raw ? JSON.parse(raw) as CalendarSuggestion[] : []
+  } catch {
+    return []
+  }
+}
+
+function saveSuggestions(value: CalendarSuggestion[]) {
+  localStorage.setItem(SUGGESTIONS_KEY, JSON.stringify(value))
+}
+
+function loadLastCheck() {
+  return localStorage.getItem(LAST_CHECK_KEY)
+}
+
+function saveLastCheck(value: string) {
+  localStorage.setItem(LAST_CHECK_KEY, value)
 }
 
 function useSettingsPortalTarget() {
@@ -70,17 +115,15 @@ function formatDateTime(value: string | null) {
   }).format(new Date(value))
 }
 
-function downloadIcs() {
-  const ics = createUpcomingCalendarIcs(games, new Date(), window.location.href)
-  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = 'mitt-storhamar-kamper.ics'
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 500)
+function formatLastCheck(value: string | null) {
+  if (!value) return 'Ikke sjekket ennå'
+  return new Intl.DateTimeFormat('nb-NO', {
+    timeZone: 'Europe/Oslo',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value))
 }
 
 function SuggestionCard({ suggestion, state, onReview }: {
@@ -102,11 +145,53 @@ export function CalendarSettingsPortal() {
   const target = useSettingsPortalTarget()
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
-  const [suggestions, setSuggestions] = useState<CalendarSuggestion[]>([])
+  const [checking, setChecking] = useState(false)
+  const [source, setSource] = useState<CalendarSource | null>(() => loadSource())
+  const [sourceUrl, setSourceUrl] = useState(() => loadSource()?.url ?? '')
+  const [suggestions, setSuggestions] = useState<CalendarSuggestion[]>(() => loadSuggestions())
   const [reviews, setReviews] = useState<ReviewState>(() => loadReviews())
+  const [lastCheck, setLastCheck] = useState<string | null>(() => loadLastCheck())
+  const autoChecked = useRef(false)
 
   const upcomingCount = useMemo(() => games.filter((game) => new Date(game.startsAt).getTime() >= Date.now()).length, [])
   const pendingCount = suggestions.filter((suggestion) => !reviews[suggestion.id]).length
+
+  function refreshSourceFromStorage() {
+    const stored = loadSource()
+    setSource(stored)
+    if (stored?.url) setSourceUrl(stored.url)
+    return stored
+  }
+
+  async function checkSource(sourceOverride?: CalendarSource | null) {
+    const activeSource = sourceOverride ?? refreshSourceFromStorage()
+    if (!activeSource?.enabled || !activeSource.url.trim()) {
+      setMessage('Koble til Min Hockey-kalenderen først.')
+      return
+    }
+
+    setChecking(true)
+    setMessage('Sjekker Min Hockey-kalenderen…')
+    try {
+      const response = await fetch(activeSource.url, { cache: 'no-store' })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const text = await response.text()
+      const events = parseCalendarIcs(text)
+      const next = compareCalendarToGames(events, games, new Date())
+      const checkedAt = new Date().toISOString()
+      setSuggestions(next)
+      saveSuggestions(next)
+      setLastCheck(checkedAt)
+      saveLastCheck(checkedAt)
+      setMessage(next.length === 0
+        ? `Kalenderen er sjekket · ${events.length} hendelser lest · ingen avvik.`
+        : `${next.length} mulig ${next.length === 1 ? 'oppdatering' : 'oppdateringer'} funnet.`)
+    } catch {
+      setMessage('Kunne ikke lese kalenderen direkte. Du kan fortsatt bruke «Sjekk kalenderfil» som reserve.')
+    } finally {
+      setChecking(false)
+    }
+  }
 
   async function importCalendar(file: File | undefined) {
     if (!file) return
@@ -114,12 +199,49 @@ export function CalendarSettingsPortal() {
       const text = await file.text()
       const events = parseCalendarIcs(text)
       const next = compareCalendarToGames(events, games, new Date())
+      const checkedAt = new Date().toISOString()
       setSuggestions(next)
+      saveSuggestions(next)
+      setLastCheck(checkedAt)
+      saveLastCheck(checkedAt)
       setMessage(next.length === 0 ? 'Ingen avvik mot kommende kamper.' : `${next.length} mulig ${next.length === 1 ? 'oppdatering' : 'oppdateringer'} funnet.`)
     } catch {
       setSuggestions([])
       setMessage('Kunne ikke lese kalenderfila.')
     }
+  }
+
+  function connectSource() {
+    const url = sourceUrl.trim()
+    if (!url.startsWith('https://calendar.google.com/calendar/ical/') || !url.includes('/public/')) {
+      setMessage('Lim inn den offentlige .ics-lenken fra Google Kalender.')
+      return
+    }
+    const next: CalendarSource = {
+      name: 'Storhamar Hockey · Min Hockey',
+      url,
+      enabled: true,
+      autoCheck: true,
+      updatedAt: new Date().toISOString(),
+    }
+    saveSource(next)
+    setSource(next)
+    setMessage('Min Hockey-kalenderen er koblet til.')
+    void checkSource(next)
+  }
+
+  function updateAutoCheck(enabled: boolean) {
+    if (!source) return
+    const next = { ...source, autoCheck: enabled, updatedAt: new Date().toISOString() }
+    saveSource(next)
+    setSource(next)
+  }
+
+  function disconnectSource() {
+    localStorage.removeItem(SOURCE_KEY)
+    setSource(null)
+    setSourceUrl('')
+    setMessage('Kalenderkoblingen er fjernet. Kampene i appen er ikke endret.')
   }
 
   function review(id: string, value: 'approved' | 'ignored') {
@@ -128,28 +250,74 @@ export function CalendarSettingsPortal() {
     saveReviews(next)
   }
 
+  useEffect(() => {
+    if (!open) {
+      autoChecked.current = false
+      return
+    }
+    const stored = refreshSourceFromStorage()
+    if (!stored?.autoCheck || !stored.enabled || autoChecked.current) return
+    autoChecked.current = true
+    void checkSource(stored)
+  }, [open])
+
   if (!target) return null
 
   return createPortal(
     <div className={`settings-expandable calendar-settings-entry ${open ? 'open' : ''}`}>
       <button type="button" className="settings-entry-button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
         <CalendarDays size={22} />
-        <div><strong>Kalender</strong><span>Kamper og oppdateringssjekk</span></div>
+        <div><strong>Kalender</strong><span>{source ? 'Min Hockey · Storhamar Hockey' : 'Koble eksisterende kalender'}</span></div>
         <div className="settings-entry-tail">
-          <span className={`settings-entry-state ${pendingCount > 0 ? 'attention' : ''}`}>{pendingCount > 0 ? `${pendingCount} nye` : `${upcomingCount} kommende`}</span>
+          <span className={`settings-entry-state ${pendingCount > 0 ? 'attention' : source ? 'on' : ''}`}>{pendingCount > 0 ? `${pendingCount} nye` : source ? 'Koblet' : `${upcomingCount} kamper`}</span>
           <ChevronDown className={open ? 'rotated' : ''} size={19} />
         </div>
       </button>
 
       {open && (
         <div className="settings-entry-panel calendar-settings-panel">
-          <button type="button" className="secondary-action calendar-action" onClick={downloadIcs}><Download size={16} /> Legg kommende i kalender</button>
-          <label className="secondary-action calendar-action calendar-file-button"><Upload size={16} /> Sjekk kalenderfil<input type="file" accept="text/calendar,.ics" onChange={(event) => void importCalendar(event.target.files?.[0])} /></label>
+          {source ? (
+            <>
+              <div className="calendar-source-card">
+                <div className="calendar-source-icon"><Link2 size={18} /></div>
+                <div><strong>{source.name}</strong><span>Sjekker kampdato, klokkeslett og arena</span><small>Sist sjekket: {formatLastCheck(lastCheck)}</small></div>
+                <span className="calendar-connected">Koblet</span>
+              </div>
+
+              <button type="button" className="secondary-action calendar-action" onClick={() => void checkSource(source)} disabled={checking}>
+                <RefreshCw size={16} className={checking ? 'calendar-spin' : ''} /> {checking ? 'Sjekker…' : 'Sjekk nå'}
+              </button>
+
+              <label className="smart-setting-row calendar-auto-row">
+                <div><strong>Sjekk automatisk</strong><span>Når du åpner Kalender-innstillingen.</span></div>
+                <input type="checkbox" checked={source.autoCheck} onChange={(event) => updateAutoCheck(event.target.checked)} />
+              </label>
+            </>
+          ) : (
+            <div className="calendar-connect-box">
+              <div><strong>Koble Min Hockey</strong><span>Bruk den offentlige .ics-lenken fra Google Kalender.</span></div>
+              <input
+                type="url"
+                value={sourceUrl}
+                onChange={(event) => setSourceUrl(event.target.value)}
+                placeholder="https://calendar.google.com/calendar/ical/.../public/basic.ics"
+                autoComplete="off"
+              />
+              <button type="button" className="secondary-action calendar-action" onClick={connectSource}><Link2 size={16} /> Koble kalender</button>
+            </div>
+          )}
+
+          <details className="calendar-manual-fallback">
+            <summary>Manuell reserve</summary>
+            <label className="secondary-action calendar-action calendar-file-button"><Upload size={16} /> Sjekk kalenderfil<input type="file" accept="text/calendar,.ics" onChange={(event) => void importCalendar(event.target.files?.[0])} /></label>
+          </details>
+
           {message && <p className="calendar-message">{message}</p>}
 
           {suggestions.length > 0 && <div className="calendar-suggestion-list">{suggestions.map((suggestion) => <SuggestionCard key={suggestion.id} suggestion={suggestion} state={reviews[suggestion.id]} onReview={(value) => review(suggestion.id, value)} />)}</div>}
 
-          <p className="settings-panel-note">Kalenderfila kan legges inn i Google Kalender. Importerte avvik vises som forslag. Godkjenning lagres separat og overskriver aldri kamp, oppmøte, reise eller kostnader automatisk.</p>
+          {source && <button type="button" className="danger-text calendar-disconnect" onClick={disconnectSource}>Koble fra kalender</button>}
+          <p className="settings-panel-note">Kalenderen brukes bare som kontrollkilde. Ingen kamp, reise, oppmøte eller kostnad endres automatisk.</p>
         </div>
       )}
     </div>,
