@@ -1,0 +1,32 @@
+.gps-permission-row {
+  margin-top: 9px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.025);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gps-permission-row span {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.gps-permission-row strong {
+  color: #b8cbe6;
+  font-size: 9px;
+  letter-spacing: .05em;
+}
+
+.gps-permission-row strong.granted { color: #8fe0b6; }
+.gps-permission-row strong.blocked { color: #f3a6b2; }
+.gps-actions button:disabled { opacity: .45; cursor: default; }
+
+@media (max-width: 370px) {
+  .gps-permission-row { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
