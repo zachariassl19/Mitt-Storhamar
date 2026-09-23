@@ -1,0 +1,85 @@
+.notification-settings-card {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.notification-settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.notification-settings-head h2 {
+  margin: 3px 0 0;
+}
+
+.notification-permission {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notification-permission div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notification-permission span {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  opacity: 0.66;
+}
+
+.notification-permission strong.good {
+  color: #8fd98b;
+}
+
+.notification-permission strong.bad {
+  color: #ff9b9b;
+}
+
+.notification-setting-list {
+  display: grid;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.notification-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.notification-setting-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notification-setting-row span {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  opacity: 0.68;
+}
+
+.notification-setting-row input {
+  width: 20px;
+  height: 20px;
+  accent-color: currentColor;
+  flex: 0 0 auto;
+}
+
+.notification-test-button {
+  width: 100%;
+  margin-top: 14px;
+  justify-content: center;
+}
