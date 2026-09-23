@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './AppV2'
 import { CloudSyncManager } from './components/CloudSyncManager'
+import { NotificationManager, NotificationSettingsPortal } from './components/NotificationCenter'
 import { SmartGameDayManager, SmartGameDaySettingsPortal } from './components/SmartGameDayGlobal'
 import './styles.css'
 import './logoStyles.css'
@@ -10,6 +11,7 @@ import './travelPlanner.css'
 import './unifiedTravel.css'
 import './gps.css'
 import './smartGameDaySettings.css'
+import './notifications.css'
 import './purchases.css'
 import './cloudSync.css'
 import './gameCards.css'
@@ -20,6 +22,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
     <SmartGameDayManager />
     <SmartGameDaySettingsPortal />
+    <NotificationManager />
+    <NotificationSettingsPortal />
     <CloudSyncManager />
   </React.StrictMode>,
 )
