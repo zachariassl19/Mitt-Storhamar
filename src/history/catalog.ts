@@ -13,6 +13,7 @@ import {
   seasons1961To1967,
   timeline1961To1967,
 } from './earlyHistory1961'
+import { jerseys1960s } from './jerseys1960s'
 import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
@@ -46,7 +47,7 @@ export const historyArchive: HistoryArchive = {
   sources: historySources,
   seasons: [...earlySeasons, ...seasons1961To1967],
   honours: earlyHonours,
-  jerseys: earlyJerseys,
+  jerseys: [...earlyJerseys, ...jerseys1960s],
   legends: earlyLegends,
   players: [...earlyPlayers, ...players1961To1967],
   arenas: earlyArenas,
