@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './AppV2'
+import { CalendarSettingsPortal } from './components/CalendarSettings'
 import { CloudSyncManager } from './components/CloudSyncManager'
 import { DynamicMatchdayHome } from './components/DynamicMatchdayHome'
 import { NotificationManager, NotificationSettingsPortal } from './components/NotificationCenter'
@@ -13,6 +14,7 @@ import './unifiedTravel.css'
 import './gps.css'
 import './smartGameDaySettings.css'
 import './notifications.css'
+import './calendarSettings.css'
 import './dynamicHome.css'
 import './purchases.css'
 import './cloudSync.css'
@@ -27,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <SmartGameDaySettingsPortal />
     <NotificationManager />
     <NotificationSettingsPortal />
+    <CalendarSettingsPortal />
     <CloudSyncManager />
   </React.StrictMode>,
 )
