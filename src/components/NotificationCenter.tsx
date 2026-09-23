@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Bell, BellRing } from 'lucide-react'
+import { Bell, BellRing, ChevronDown } from 'lucide-react'
 import { games } from '../data/games'
 import { notificationCandidates } from '../lib/notificationLogic'
 import {
@@ -124,16 +124,14 @@ function useSettingsPortalTarget() {
         setTarget(null)
         return
       }
-      const parent = settingsList.parentElement
-      if (!parent) return
 
-      let container = parent.querySelector<HTMLDivElement>('#notification-settings-portal')
+      let container = settingsList.querySelector<HTMLDivElement>('#notification-settings-portal')
       if (!container) {
         container = document.createElement('div')
         container.id = 'notification-settings-portal'
-        const smartPortal = parent.querySelector('#smart-gameday-settings-portal')
-        if (smartPortal?.nextSibling) parent.insertBefore(container, smartPortal.nextSibling)
-        else parent.insertBefore(container, settingsList)
+        const smartPortal = settingsList.querySelector('#smart-gameday-settings-portal')
+        if (smartPortal) smartPortal.insertAdjacentElement('afterend', container)
+        else settingsList.insertBefore(container, settingsList.firstChild)
         owned = container
       }
       setTarget(container)
@@ -166,6 +164,7 @@ function permissionLabel(permission: PermissionState) {
 
 export function NotificationSettingsPortal() {
   const target = useSettingsPortalTarget()
+  const [open, setOpen] = useState(false)
   const [settings, setSettings] = useState<NotificationSettings>(() => loadNotificationSettings())
   const [permission, setPermission] = useState<PermissionState>(() => permissionState())
   const [message, setMessage] = useState('')
@@ -224,47 +223,65 @@ export function NotificationSettingsPortal() {
   if (!target) return null
 
   const rows: { key: keyof Omit<NotificationSettings, 'enabled'>; title: string; text: string }[] = [
-    { key: 'gameTomorrow', title: 'Kamp i morgen', text: 'Påminnelse fra kl. 18 kvelden før.' },
-    { key: 'gameDay', title: 'Kampdag', text: 'Kamp, tidspunkt og arena på kampdagen.' },
-    { key: 'departure', title: 'DRA-varsel', text: 'Bruker reisetid og ønsket ankomst fra den lagrede reisen.' },
-    { key: 'smartGameDay', title: 'Smart Kampdag', text: 'Bekrefter at Smart Kampdag er klar når funksjonen er slått på.' },
-    { key: 'finishGameDay', title: 'Fullfør kampdagen', text: 'Minner deg etter kampen hvis den ikke er ferdigregistrert.' },
+    { key: 'gameTomorrow', title: 'Kamp i morgen', text: 'Kvelden før.' },
+    { key: 'gameDay', title: 'Kampdag', text: 'På kampdagen.' },
+    { key: 'departure', title: 'DRA-varsel', text: 'Fra lagret reise.' },
+    { key: 'smartGameDay', title: 'Smart Kampdag', text: 'Når GPS-funksjonen er klar.' },
+    { key: 'finishGameDay', title: 'Fullfør kampdagen', text: 'Etter kampen.' },
   ]
 
   return createPortal(
-    <article className="card notification-settings-card">
-      <div className="notification-settings-head">
-        <div><span className="eyebrow">VARSLER</span><h2>Kampdag og reise</h2></div>
-        <button
-          type="button"
-          className={`smart-toggle ${settings.enabled ? 'on' : ''}`}
-          aria-pressed={settings.enabled}
-          onClick={() => void toggleEnabled()}
-        >
-          <span />{settings.enabled ? 'På' : 'Av'}
-        </button>
-      </div>
-
-      <div className="notification-permission">
-        <BellRing size={18} />
-        <div><span>SYSTEMTILLATELSE</span><strong className={permission === 'granted' ? 'good' : permission === 'denied' ? 'bad' : ''}>{permissionLabel(permission)}</strong></div>
-      </div>
-
-      <div className="notification-setting-list">
-        {rows.map((row) => (
-          <label className="notification-setting-row" key={row.key}>
-            <div><strong>{row.title}</strong><span>{row.text}</span></div>
-            <input type="checkbox" checked={settings[row.key]} disabled={!settings.enabled} onChange={() => toggle(row.key)} />
-          </label>
-        ))}
-      </div>
-
-      <button type="button" className="secondary-action notification-test-button" onClick={() => void testNotification()}>
-        <Bell size={16} /> Send testvarsel
+    <div className={`settings-expandable notification-settings-entry ${open ? 'open' : ''}`}>
+      <button
+        type="button"
+        className="settings-entry-button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <BellRing size={22} />
+        <div><strong>Varsler</strong><span>Kamp, DRA og påminnelser</span></div>
+        <div className="settings-entry-tail">
+          <span className={`settings-entry-state ${settings.enabled ? 'on' : ''}`}>{settings.enabled ? 'På' : 'Av'}</span>
+          <ChevronDown className={open ? 'rotated' : ''} size={19} />
+        </div>
       </button>
-      {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
-      <p className="travel-footnote">DRA-varsel finnes bare når reisen har reisetid fram til arena. I dagens PWA sjekkes planlagte varsler når appen er aktiv eller åpnes igjen; ekte push mens appen er helt lukket krever en senere push-/Android-løsning.</p>
-    </article>,
+
+      {open && (
+        <div className="settings-entry-panel notification-settings-panel">
+          <div className="settings-panel-toggle-row">
+            <div><strong>Varsler</strong><span>Velg hvilke kampvarsler du vil ha.</span></div>
+            <button
+              type="button"
+              className={`smart-toggle ${settings.enabled ? 'on' : ''}`}
+              aria-pressed={settings.enabled}
+              onClick={() => void toggleEnabled()}
+            >
+              <span />{settings.enabled ? 'På' : 'Av'}
+            </button>
+          </div>
+
+          <div className="notification-permission">
+            <BellRing size={18} />
+            <div><span>SYSTEMTILLATELSE</span><strong className={permission === 'granted' ? 'good' : permission === 'denied' ? 'bad' : ''}>{permissionLabel(permission)}</strong></div>
+          </div>
+
+          <div className="notification-setting-list">
+            {rows.map((row) => (
+              <label className="notification-setting-row" key={row.key}>
+                <div><strong>{row.title}</strong><span>{row.text}</span></div>
+                <input type="checkbox" checked={settings[row.key]} disabled={!settings.enabled} onChange={() => toggle(row.key)} />
+              </label>
+            ))}
+          </div>
+
+          <button type="button" className="secondary-action notification-test-button" onClick={() => void testNotification()}>
+            <Bell size={16} /> Send testvarsel
+          </button>
+          {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
+          <p className="settings-panel-note">DRA krever lagret reisetid. PWA-varsler sjekkes når appen er aktiv eller åpnes.</p>
+        </div>
+      )}
+    </div>,
     target,
   )
 }
