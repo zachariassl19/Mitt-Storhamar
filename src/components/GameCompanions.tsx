@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Check, Plus, UserRound, Users, X } from 'lucide-react'
 import {
   addCompanion,
@@ -10,17 +10,34 @@ import {
 import type { Game } from '../types'
 import '../companions.css'
 
-export function GameCompanions({ game }: { game: Game }) {
+export function GameCompanions({
+  game,
+  value,
+  onChange,
+  embedded = false,
+  autosave = true,
+}: {
+  game: Game
+  value?: GameCompanionSelection
+  onChange?: (selection: GameCompanionSelection) => void
+  embedded?: boolean
+  autosave?: boolean
+}) {
   const [people, setPeople] = useState(() => loadCompanions())
-  const [selection, setSelection] = useState<GameCompanionSelection>(() => companionSelectionForGame(game.id))
+  const [selection, setSelection] = useState<GameCompanionSelection>(() => value ?? companionSelectionForGame(game.id))
   const [adding, setAdding] = useState(false)
   const [newName, setNewName] = useState('')
   const [message, setMessage] = useState('')
 
+  useEffect(() => {
+    if (value) setSelection(value)
+  }, [value])
+
   function persist(next: GameCompanionSelection) {
-    saveGameCompanionSelection(next)
+    if (autosave) saveGameCompanionSelection(next)
     setSelection(next)
-    setMessage('Reisefølge lagret.')
+    onChange?.(next)
+    setMessage(autosave ? 'Reisefølge lagret.' : '')
   }
 
   function togglePerson(id: string) {
@@ -65,14 +82,15 @@ export function GameCompanions({ game }: { game: Game }) {
   const alone = selection.status === 'known' && selection.companionIds.length === 0
   const unknown = selection.status === 'unknown'
   const selectedNames = people.filter((person) => selection.companionIds.includes(person.id)).map((person) => person.name)
+  const Root = embedded ? 'section' : 'article'
 
   return (
-    <article className="card detail-card companions-card">
+    <Root className={embedded ? 'companions-card companions-card-embedded' : 'card detail-card companions-card'}>
       <div className="card-heading">
-        <div><span className="eyebrow">ETTER KAMPEN · REISEFØLGE</span><h2>Hvem dro du med?</h2></div>
+        <div><span className="eyebrow">REISEFØLGE</span><h2>Hvem dro du med?</h2></div>
         <Users size={21} />
       </div>
-      <p className="travel-footnote">Velg én eller flere. Reisefølge teller bare i statistikken når kampen er fullført med «Jeg var der».</p>
+      <p className="travel-footnote">Velg én eller flere. Du kan også velge «Alene» eller «Husker ikke».</p>
 
       <div className="companion-choice-grid">
         {people.map((person) => {
@@ -102,10 +120,10 @@ export function GameCompanions({ game }: { game: Game }) {
       )}
 
       <div className="companion-current">
-        <span>REGISTRERT</span>
+        <span>VALGT</span>
         <strong>{unknown ? 'Husker ikke' : alone ? 'Alene' : selectedNames.length > 0 ? selectedNames.join(' + ') : 'Ikke valgt'}</strong>
       </div>
       {message && <p className="save-success">{message}</p>}
-    </article>
+    </Root>
   )
 }
