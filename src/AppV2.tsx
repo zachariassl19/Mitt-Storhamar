@@ -583,6 +583,15 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
   )
 }
 
+type LocationPermissionState = 'checking' | 'granted' | 'prompt' | 'denied' | 'unsupported'
+
+function locationErrorMessage(error: GeolocationPositionError) {
+  if (error.code === error.PERMISSION_DENIED) return 'Posisjon er blokkert. Tillat posisjon for Mitt Storhamar i nettleseren og prøv igjen.'
+  if (error.code === error.POSITION_UNAVAILABLE) return 'Telefonen finner ikke posisjonen akkurat nå. Sjekk at posisjon/GPS er slått på.'
+  if (error.code === error.TIMEOUT) return 'GPS brukte for lang tid. Gå gjerne nær et vindu eller utendørs og prøv igjen.'
+  return 'Kunne ikke hente posisjon akkurat nå.'
+}
+
 function SmartGameDayPanel({ game, events, record, onEvent }: {
   game: Game
   events: SmartGameDayEvent[]
@@ -591,19 +600,56 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
 }) {
   const arena = arenaForGame(game)
   const [tracking, setTracking] = useState(false)
+  const [checking, setChecking] = useState(false)
   const [proximity, setProximity] = useState<ArenaProximity>('outside')
   const [distance, setDistance] = useState<number | null>(null)
   const [accuracy, setAccuracy] = useState<number | null>(null)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [permission, setPermission] = useState<LocationPermissionState>('checking')
+  const [lastCheckedAt, setLastCheckedAt] = useState<Date | null>(null)
   const watchId = useRef<number | null>(null)
   const proximityRef = useRef<ArenaProximity>('outside')
   const matchday = isGameDay(game)
-  const canTrack = matchday && arena?.latitude != null && arena.longitude != null
+  const hasArenaPosition = Boolean(arena && arena.latitude != null && arena.longitude != null)
+  const geolocationSupported = typeof navigator !== 'undefined' && 'geolocation' in navigator
+  const secureContext = typeof window === 'undefined' || window.isSecureContext
+  const canCheckPosition = hasArenaPosition && geolocationSupported && secureContext
+  const canTrack = matchday && canCheckPosition
   const suggestAttendance = !record?.completed && shouldSuggestAttendance(game, events)
 
-  useEffect(() => () => {
-    if (watchId.current != null && 'geolocation' in navigator) navigator.geolocation.clearWatch(watchId.current)
-  }, [])
+  useEffect(() => {
+    let active = true
+    let permissionStatus: PermissionStatus | null = null
+
+    async function checkPermission() {
+      if (!geolocationSupported || !secureContext) {
+        if (active) setPermission('unsupported')
+        return
+      }
+      if (!navigator.permissions?.query) {
+        if (active) setPermission('prompt')
+        return
+      }
+      try {
+        permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+        if (!active) return
+        setPermission(permissionStatus.state)
+        permissionStatus.onchange = () => {
+          if (active && permissionStatus) setPermission(permissionStatus.state)
+        }
+      } catch {
+        if (active) setPermission('prompt')
+      }
+    }
+
+    void checkPermission()
+    return () => {
+      active = false
+      if (permissionStatus) permissionStatus.onchange = null
+      if (watchId.current != null && geolocationSupported) navigator.geolocation.clearWatch(watchId.current)
+    }
+  }, [geolocationSupported, secureContext])
 
   function processPosition(position: GeolocationPosition) {
     if (!arena || arena.latitude == null || arena.longitude == null) return
@@ -614,47 +660,107 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
     setProximity(nextProximity)
     setDistance(Math.round(meters))
     setAccuracy(Math.round(position.coords.accuracy))
+    setLastCheckedAt(new Date(position.timestamp))
     setError('')
+    setMessage(matchday ? 'Posisjon oppdatert.' : 'Posisjon fungerer. Dette er bare en test utenfor kampdag.')
+    setPermission('granted')
     if (smartEvent && matchday) onEvent(smartEvent)
+  }
+
+  function onPositionError(geoError: GeolocationPositionError) {
+    setError(locationErrorMessage(geoError))
+    setMessage('')
+    setChecking(false)
+    setTracking(false)
+    if (geoError.code === geoError.PERMISSION_DENIED) setPermission('denied')
   }
 
   function startTracking() {
     if (!canTrack) return
-    if (!('geolocation' in navigator)) { setError('Posisjon støttes ikke på denne enheten.'); return }
     if (watchId.current != null) return
-    const id = navigator.geolocation.watchPosition(processPosition, (geoError) => {
-      setError(geoError.code === 1 ? 'Posisjonstillatelse ble ikke gitt.' : 'Kunne ikke hente posisjon akkurat nå.')
-      setTracking(false)
-    }, { enableHighAccuracy: true, maximumAge: 30_000, timeout: 20_000 })
+    setError('')
+    setMessage('Henter posisjon…')
+    const id = navigator.geolocation.watchPosition(processPosition, onPositionError, {
+      enableHighAccuracy: true,
+      maximumAge: 10_000,
+      timeout: 25_000,
+    })
     watchId.current = id
     setTracking(true)
   }
 
   function stopTracking() {
-    if (watchId.current != null && 'geolocation' in navigator) navigator.geolocation.clearWatch(watchId.current)
+    if (watchId.current != null && geolocationSupported) navigator.geolocation.clearWatch(watchId.current)
     watchId.current = null
     setTracking(false)
+    setMessage('Smart Kampdag GPS er stoppet.')
   }
 
   function checkOnce() {
-    if (!canTrack || !('geolocation' in navigator)) return
-    navigator.geolocation.getCurrentPosition(processPosition, () => setError('Kunne ikke hente posisjon akkurat nå.'), { enableHighAccuracy: true, maximumAge: 30_000, timeout: 15_000 })
+    if (!canCheckPosition || checking) return
+    setChecking(true)
+    setError('')
+    setMessage('Henter posisjon…')
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        processPosition(position)
+        setChecking(false)
+      },
+      onPositionError,
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 25_000 },
+    )
   }
 
   const lastEvent = [...events].sort((a, b) => b.observedAt.localeCompare(a.observedAt))[0]
+  const permissionLabel = permission === 'granted'
+    ? 'TILLATT'
+    : permission === 'denied'
+      ? 'BLOKKERT'
+      : permission === 'unsupported'
+        ? 'IKKE TILGJENGELIG'
+        : permission === 'checking'
+          ? 'SJEKKER…'
+          : 'KLAR TIL Å SPØRRE'
 
   return (
     <article className="card detail-card smart-game-day-card">
       <div className="card-heading"><div><span className="eyebrow">SMART KAMPDAG · GPS</span><h2>Posisjon ved arena</h2></div><span className={`gps-dot ${tracking ? 'live' : ''}`} /></div>
-      {!arena ? <p className="travel-footnote">Arenaen mangler GPS-punkt i arena-registeret ennå.</p> : !matchday ? <p className="travel-footnote">Smart Kampdag aktiveres på selve kampdatoen. GPS brukes ikke til å registrere oppmøte på forhånd.</p> : (
+
+      {!hasArenaPosition ? (
+        <p className="save-warning">Denne arenaen mangler GPS-punkt. Si ifra hvilken kamp det gjelder, så kan arenaen rettes.</p>
+      ) : !geolocationSupported ? (
+        <p className="save-warning">Nettleseren på denne enheten støtter ikke posisjon.</p>
+      ) : !secureContext ? (
+        <p className="save-warning">Posisjon krever sikker HTTPS-tilkobling. Åpne den publiserte Mitt Storhamar-siden på nytt.</p>
+      ) : (
         <>
-          <div className="gps-status-grid"><div><span>STATUS</span><strong>{proximity === 'arrived' ? 'VED ARENA' : proximity === 'near' ? 'NÆR ARENA' : 'UTENFOR'}</strong></div><div><span>AVSTAND</span><strong>{distance == null ? '—' : distance < 1000 ? `${distance} m` : `${(distance / 1000).toFixed(1)} km`}</strong></div></div>
-          <div className="gps-actions">{tracking ? <button className="danger-action" onClick={stopTracking}><Navigation size={16} /> Stopp GPS</button> : <button className="primary-action" onClick={startTracking}><Navigation size={16} /> Start Smart Kampdag</button>}<button className="secondary-action" onClick={checkOnce}><LocateFixed size={16} /> Sjekk nå</button></div>
-          {accuracy != null && <p className="travel-footnote">GPS-nøyaktighet ca. ±{accuracy} m. Det lagres ikke noe kontinuerlig rått GPS-spor.</p>}
+          <div className="gps-status-grid">
+            <div><span>STATUS</span><strong>{distance == null ? 'IKKE SJEKKET' : proximity === 'arrived' ? 'VED ARENA' : proximity === 'near' ? 'NÆR ARENA' : 'UTENFOR'}</strong></div>
+            <div><span>AVSTAND</span><strong>{distance == null ? '—' : distance < 1000 ? `${distance} m` : `${(distance / 1000).toFixed(1)} km`}</strong></div>
+          </div>
+
+          <div className="gps-permission-row">
+            <span>POSISJONSTILLATELSE</span>
+            <strong className={permission === 'denied' ? 'blocked' : permission === 'granted' ? 'granted' : ''}>{permissionLabel}</strong>
+          </div>
+
+          <div className="gps-actions">
+            {matchday && (tracking
+              ? <button className="danger-action" onClick={stopTracking}><Navigation size={16} /> Stopp GPS</button>
+              : <button className="primary-action" onClick={startTracking} disabled={!canTrack || permission === 'denied'}><Navigation size={16} /> Start Smart Kampdag</button>)}
+            <button className={matchday ? 'secondary-action' : 'primary-action'} onClick={checkOnce} disabled={!canCheckPosition || checking}>
+              <LocateFixed size={16} /> {checking ? 'Henter…' : matchday ? 'Sjekk nå' : 'Test posisjon'}
+            </button>
+          </div>
+
+          {!matchday && <p className="travel-footnote">Du kan teste GPS når som helst. Utenfor kampdag lagres ingen ankomst-/oppmøtehendelser.</p>}
+          {accuracy != null && <p className="travel-footnote">GPS-nøyaktighet ca. ±{accuracy} m.{lastCheckedAt ? ` Sist sjekket ${new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(lastCheckedAt)}.` : ''} Det lagres ikke noe kontinuerlig rått GPS-spor.</p>}
         </>
       )}
-      {lastEvent && <div className="gps-last-event"><CheckCircle2 size={15} /><span>Siste signal: {lastEvent.type === 'arrived_at_arena' ? 'ankom arena' : lastEvent.type === 'near_arena' ? 'nær arena' : 'forlot arena'} · {new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(new Date(lastEvent.observedAt))}</span></div>}
+
+      {lastEvent && <div className="gps-last-event"><CheckCircle2 size={15} /><span>Siste kampdagsignal: {lastEvent.type === 'arrived_at_arena' ? 'ankom arena' : lastEvent.type === 'near_arena' ? 'nær arena' : 'forlot arena'} · {new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(new Date(lastEvent.observedAt))}</span></div>}
       {suggestAttendance && <div className="gps-suggestion"><strong>GPS tyder på at du var på kampen.</strong><span>Dette teller fortsatt ikke før du bekrefter under «Fullfør kampdagen».</span></div>}
+      {message && <p className="save-success">{message}</p>}
       {error && <p className="save-warning">{error}</p>}
     </article>
   )
