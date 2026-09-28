@@ -27,6 +27,13 @@ import {
   seasons1977To1984,
   timeline1977To1984,
 } from './history1977to1984'
+import {
+  jerseys1984To1990,
+  players1984To1990,
+  records1984To1990,
+  seasons1984To1990,
+  timeline1984To1990,
+} from './history1984to1990'
 import { jerseys1960s } from './jerseys1960s'
 import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
@@ -59,13 +66,13 @@ export const historyCategories: HistoryCategory[] = [
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
   sources: historySources,
-  seasons: [...earlySeasons, ...seasons1961To1967, ...seasons1967To1977, ...seasons1977To1984],
+  seasons: [...earlySeasons, ...seasons1961To1967, ...seasons1967To1977, ...seasons1977To1984, ...seasons1984To1990],
   honours: earlyHonours,
-  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984],
+  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990],
   legends: earlyLegends,
-  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984],
+  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990],
   arenas: [...earlyArenas, ...arenas1977To1984],
   europe: [],
-  records: [...records1961To1967, ...records1967To1977, ...records1977To1984],
-  timeline: [...earlyTimeline, ...timeline1961To1967, ...timeline1967To1977, ...timeline1977To1984],
+  records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990],
+  timeline: [...earlyTimeline, ...timeline1961To1967, ...timeline1967To1977, ...timeline1977To1984, ...timeline1984To1990],
 }
