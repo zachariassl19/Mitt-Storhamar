@@ -107,6 +107,7 @@ import {
 } from './history2023to2026'
 import { womenHistoryLegends, womenHistoryTimeline } from './historyWomen'
 import { rafterLegends, rafterTimeline } from './legendsRafters'
+import { withRafterStatus } from './rafterStatus'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
@@ -137,6 +138,17 @@ export const historyCategories: HistoryCategory[] = [
   { id: 'supporter-culture', title: 'Supporterkultur', description: 'Supportere, tribuneliv, sanger, turer og store supporterøyeblikk.', priority: 'secondary', icon: 'supporters' },
 ]
 
+const allLegends = [
+  ...earlyLegends,
+  ...legends1990To1994,
+  ...legends1997To2000,
+  ...legends2005To2010,
+  ...legends2020To2023,
+  ...legends2023To2026,
+  ...womenHistoryLegends,
+  ...rafterLegends,
+]
+
 // Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
@@ -144,7 +156,7 @@ export const historyArchive: HistoryArchive = {
   seasons: [...earlySeasons, ...seasons1961To1967, ...seasons1967To1977, ...seasons1977To1984, ...seasons1984To1990, ...seasons1990To1994, ...seasons1994To1997, ...seasons1997To2000, ...seasons2000To2005, ...seasons2005To2010, ...seasons2010To2015, ...seasons2015To2020, ...seasons2020To2023, ...seasons2023To2026],
   honours: [...earlyHonours, ...honours1990To1994, ...honours1994To1997, ...honours1997To2000, ...honours2000To2005, ...honours2005To2010, ...honours2015To2020, ...honours2023To2026],
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys],
-  legends: [...earlyLegends, ...legends1990To1994, ...legends1997To2000, ...legends2005To2010, ...legends2020To2023, ...legends2023To2026, ...womenHistoryLegends, ...rafterLegends],
+  legends: allLegends.map(withRafterStatus),
   players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...verifiedPlayers1997To2000, ...players2000To2005, ...players2005To2010, ...players2010To2015, ...players2015To2020, ...players2023To2026],
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994],
   europe: [...europe1994To1997, ...europe1997To2000, ...europe2000To2005, ...europe2015To2020],
