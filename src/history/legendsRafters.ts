@@ -80,7 +80,7 @@ export const rafterLegends: ArchiveLegend[] = [
       '7. september 2019 ble han hedret sammen med Lars Løkken Østli og Lars Erik Hesbråten. Jensen fikk et blått banner. SIL forklarer at dette betyr at spilleren er hedret, i motsetning til det gule banneret som markerer at nummeret er fredet.',
     ],
     completeness: 'verified', sources: ['silarkivet'], media: [],
-    related: [{ kind: 'timeline', id: 'timeline-2019-three-stars' }, { kind: 'record', id: 'record-2017-217-14' }, { kind: 'season', id: 'season-2017-18' }],
+    related: [{ kind: 'timeline', id: 'timeline-2019-three-stars' }, { kind: 'record', id: 'record-2017-world-longest-game' }, { kind: 'season', id: 'season-2017-18' }],
     born: '1987-08-08', birthPlace: 'Bærum', position: 'Løper', shirtNumbers: [21],
     storhamarPeriods: [{ fromSeasonId: 'season-2007-08', toSeasonId: 'season-2018-19' }],
     seasonIds: ['season-2007-08', 'season-2008-09', 'season-2009-10', 'season-2010-11', 'season-2011-12', 'season-2012-13', 'season-2013-14', 'season-2014-15', 'season-2015-16', 'season-2016-17', 'season-2017-18', 'season-2018-19'],
