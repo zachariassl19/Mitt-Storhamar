@@ -108,6 +108,7 @@ import {
 import { womenHistoryLegends, womenHistoryTimeline } from './historyWomen'
 import { rafterLegends, rafterTimeline } from './legendsRafters'
 import { withRafterStatus } from './rafterStatus'
+import { withLegendMedia } from './legendMedia'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
 import { applyVerifiedRosterResearch, buildRosterSupplementPlayers } from './rosterBridge'
@@ -259,7 +260,7 @@ export const historyArchive: HistoryArchive = {
   seasons: resolvedSeasons,
   honours: rawHonours.map(resolveHonourResearch),
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys, ...jerseys2025To2026],
-  legends: allLegends.map(resolveLegendResearch).map(withRafterStatus),
+  legends: allLegends.map(resolveLegendResearch).map(withRafterStatus).map(withLegendMedia),
   players: allPlayers,
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas],
   europe: allEuropeCampaigns,
