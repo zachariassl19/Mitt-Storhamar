@@ -1,0 +1,147 @@
+import type { ArchiveJersey, ArchiveMedia } from './types'
+
+const verifiedAt = '2026-09-28'
+const seasonId = 'season-2025-26'
+const rightsNote = 'Offisielt klubbilde brukt som historisk referanse. Rettighetsstatus må følges opp før eventuell lokal kopiering eller videre distribusjon.'
+
+function media(id: string, src: string, alt: string, sourceUrl: string, caption: string): ArchiveMedia {
+  return {
+    id,
+    type: 'jersey',
+    src,
+    alt,
+    caption,
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+    sourceUrl,
+    seasonIds: [seasonId],
+    rightsNote,
+  }
+}
+
+export const jerseys2025To2026: ArchiveJersey[] = [
+  {
+    id: 'jersey-2025-26-series',
+    title: '2025/26 · Seriedrakt',
+    slug: '2025-26-seriedrakt',
+    summary: 'Seriedraktene for 2025/26 ble lansert 13. september 2025 til sesongens første EHL-kamp. Et blått sett skulle også tas i bruk senere i sesongen.',
+    body: [
+      'Storhamar lanserte årets seriedesign samme dag som serieåpningen. Klubbens egen lansering dokumenterer hovedsettet og opplyser at et blått draktsett skulle komme senere i sesongen.',
+      'Drakten hører til sesongen som endte med klubbens tredje strake seriemesterskap og tredje strake NM-gull.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [
+      media(
+        'media-jersey-2025-26-series',
+        'https://www.sil.no/wp-content/uploads/2025/09/seriedrakt25-1-310x465.jpg',
+        'Storhamars seriedrakt 2025/26',
+        'https://www.sil.no/seriedraktene-25-26-er-lansert/',
+        'Seriedrakten presentert av Storhamar Hockey før serieåpningen 2025/26.',
+      ),
+    ],
+    related: [{ kind: 'season', id: seasonId }],
+    fromSeasonId: seasonId,
+    toSeasonId: seasonId,
+    seasonIds: [seasonId],
+    usage: ['home', 'away'],
+    colours: ['gul', 'blå'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['2025-26', 'serie'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'jersey-2025-preseason-hamar',
+    title: '2025 · Forsesong · Hyller Hamar',
+    slug: '2025-forsesong-hyller-hamar',
+    summary: 'Retroinspirert treningskampdrakt med «Hamar» på brystet og SIL-merket flyttet til skuldrene.',
+    body: [
+      'Drakten ble lansert 12. august 2025 som en hyllest til hjembyen. Storhamar beskrev designet som klassisk og retroinspirert, med Hamar på hedersplass på brystet.',
+      'Settet ble brukt i fire treningskamper: to borte mot Mora 13. og 14. august, hjemme mot BIK Karlskoga 18. august og hjemme mot Frisk Asker 21. august. Etter disse kampene ble draktene tatt ut av bruk og gjort tilgjengelige gjennom draktauksjon.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [
+      media(
+        'media-jersey-2025-preseason-hamar',
+        'https://www.sil.no/wp-content/uploads/2025/08/treningskamp25-1-310x465.jpg',
+        'Storhamars treningskampdrakt 2025 med Hamar på brystet',
+        'https://www.sil.no/hyller-hamar/',
+        'Den retroinspirerte «Hyller Hamar»-drakten fra forsesongen 2025.',
+      ),
+    ],
+    related: [{ kind: 'season', id: seasonId }],
+    fromSeasonId: seasonId,
+    toSeasonId: seasonId,
+    seasonIds: [seasonId],
+    usage: ['preseason'],
+    colours: ['gul', 'blå'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['2025', 'forsesong', 'Hamar', 'retro'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'jersey-2025-pink-cancer',
+    title: '2025 · Rosa sløyfe',
+    slug: '2025-rosa-sloyfe',
+    summary: 'Rosa spesialdrakt brukt kun i hjemmekampen mot Frisk Asker 16. oktober 2025 til støtte for kampen mot kreft.',
+    body: [
+      'Storhamar markerte oktober og kampen mot kreft ved å spille i rosa drakter mot Frisk Asker 16. oktober 2025.',
+      'Draktene ble kun brukt i denne ene kampen og deretter auksjonert bort. Klubben opplyste at overskuddet skulle gå i sin helhet til Kreftforeningen.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [
+      media(
+        'media-jersey-2025-pink-cancer',
+        'https://www.sil.no/wp-content/uploads/2025/10/rosadrakt1-310x465.jpg',
+        'Storhamars rosa spesialdrakt fra oktober 2025',
+        'https://www.sil.no/i-rosa-for-kampen-mot-kreft/',
+        'Rosa spesialdrakt brukt mot Frisk Asker 16. oktober 2025.',
+      ),
+    ],
+    related: [{ kind: 'season', id: seasonId }],
+    fromSeasonId: seasonId,
+    toSeasonId: seasonId,
+    seasonIds: [seasonId],
+    usage: ['special'],
+    colours: ['rosa'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['2025', 'Rosa sløyfe', 'Kreftforeningen', 'spesialdrakt'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'jersey-2025-hockey-classic',
+    title: '2025 · Hockey Classic',
+    slug: '2025-hockey-classic',
+    summary: 'Én-kamps retrodrakt i gult og blått, laget som en tenkt Storhamar-look fra omtrent 60 år tidligere.',
+    body: [
+      'Til Hockey Classic i oktober 2025 laget Storhamar igjen et eget draktsett. Etter den helsvarte og gule full-retroen året før gikk klubben tilbake til dagens gule og blå farger, men beholdt et tydelig historisk uttrykk.',
+      'Klubben beskrev designet som en drakt de kunne forestille seg at Storhamar hadde brukt rundt 60 år tidligere. Draktene ble kun brukt i denne ene kampen og ble lagt ut på auksjon.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [
+      media(
+        'media-jersey-2025-hockey-classic',
+        'https://www.sil.no/wp-content/uploads/2025/10/hcdrakt1-310x465.jpg',
+        'Storhamars Hockey Classic-drakt 2025',
+        'https://www.sil.no/hc-draktene-klare/',
+        'Retroinspirert Hockey Classic-drakt fra 2025.',
+      ),
+    ],
+    related: [{ kind: 'season', id: seasonId }, { kind: 'arena', id: 'arena-hakons-hall' }],
+    fromSeasonId: seasonId,
+    toSeasonId: seasonId,
+    seasonIds: [seasonId],
+    usage: ['special'],
+    colours: ['gul', 'blå'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['2025', 'Hockey Classic', 'retro', 'spesialdrakt'],
+    lastVerifiedAt: verifiedAt,
+  },
+]
