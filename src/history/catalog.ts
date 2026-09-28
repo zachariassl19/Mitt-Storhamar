@@ -110,6 +110,7 @@ import { rafterLegends, rafterTimeline } from './legendsRafters'
 import { withRafterStatus } from './rafterStatus'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
+import { applyVerifiedRosterResearch, buildRosterSupplementPlayers } from './rosterBridge'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
 import { jerseys2025To2026 } from './jerseys2025to2026'
@@ -209,10 +210,10 @@ const corePlayers = [
   ...players2023To2026,
 ]
 const corePlayerNames = new Set(corePlayers.map((player) => player.fullName))
-const allPlayers = [
-  ...corePlayers,
-  ...careerLeaderboardProfiles.filter((player) => !corePlayerNames.has(player.fullName)),
-]
+const careerPlayers = careerLeaderboardProfiles.filter((player) => !corePlayerNames.has(player.fullName))
+const playersBeforeRosterBridge = [...corePlayers, ...careerPlayers]
+const rosterSupplementPlayers = buildRosterSupplementPlayers(playersBeforeRosterBridge)
+const allPlayers = [...playersBeforeRosterBridge, ...rosterSupplementPlayers]
 
 const baseEuropeCampaigns = [
   ...europe1994To1997,
@@ -247,11 +248,15 @@ const rawTimeline = [
   ...additionalHistoricMoments,
 ]
 
+const resolvedSeasons = rawSeasons
+  .map(resolveSeasonResearch)
+  .map((season) => applyVerifiedRosterResearch(season, allPlayers))
+
 // Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
   sources: historySources,
-  seasons: rawSeasons.map(resolveSeasonResearch),
+  seasons: resolvedSeasons,
   honours: rawHonours.map(resolveHonourResearch),
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys, ...jerseys2025To2026],
   legends: allLegends.map(resolveLegendResearch).map(withRafterStatus),
