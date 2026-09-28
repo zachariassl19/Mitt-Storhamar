@@ -56,11 +56,11 @@ import {
   honours1997To2000,
   jerseys1997To2000,
   legends1997To2000,
-  players1997To2000,
   records1997To2000,
   seasons1997To2000,
   timeline1997To2000,
 } from './history1997to2000'
+import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { jerseys1960s } from './jerseys1960s'
 import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
@@ -97,7 +97,7 @@ export const historyArchive: HistoryArchive = {
   honours: [...earlyHonours, ...honours1990To1994, ...honours1994To1997, ...honours1997To2000],
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000],
   legends: [...earlyLegends, ...legends1990To1994, ...legends1997To2000],
-  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...players1997To2000],
+  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...verifiedPlayers1997To2000],
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994],
   europe: [...europe1994To1997, ...europe1997To2000],
   records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000],
