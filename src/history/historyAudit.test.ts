@@ -44,4 +44,21 @@ describe('full Storhamar history audit', () => {
     expect(league2026?.decidingGame).toContain('26.02.2026')
     expect(larrivee?.honouredAt).toBe('2022-08-27')
   })
+
+  it('reports the seven-point archive pass without hiding genuine research gaps', () => {
+    const coverage = historyAudit.sevenPointCoverage
+
+    expect(coverage.jerseysAndRealImages.silEntriesMappedToArchive).toBe(coverage.jerseysAndRealImages.silIndexEntries)
+    expect(coverage.jerseysAndRealImages.newerOfficialVariantsTracked).toBe(4)
+    expect(coverage.rafters.legendsPresent).toBe(coverage.rafters.canonicalLegends)
+    expect(coverage.rafters.legendsWithRealMedia).toBe(coverage.rafters.canonicalLegends)
+    expect(coverage.honours.leagueChampionshipsPresent).toBe(coverage.honours.leagueChampionshipsExpected)
+    expect(coverage.honours.norwegianChampionshipsPresent).toBe(coverage.honours.norwegianChampionshipsExpected)
+    expect(coverage.europe.verifiedCampaigns).toBe(coverage.europe.completedCampaignsExpected)
+    expect(coverage.playersAndRosters.documentedNorwegianChampions).toBe(129)
+    expect(coverage.playersAndRosters.championsRepresentedInArchive).toBe(129)
+    expect(coverage.playersAndRosters.partialTitleRosters).toContain('season-2025-26')
+    expect(coverage.seasonBySeasonControl.presentCompletedSeasons).toBe(69)
+    expect(coverage.seasonBySeasonControl.openConflictIds.length).toBeGreaterThan(0)
+  })
 })
