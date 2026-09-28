@@ -36,13 +36,19 @@ describe('History 1–7 full-control pass', () => {
     }
   })
 
-  it('3: contains the complete canonical championship sets', () => {
+  it('3: contains all league/NM titles and real media for every NM title', () => {
     const ids = new Set(historyArchive.honours.map((honour) => honour.id))
     for (const id of [...canonicalLeagueChampionshipIds, ...canonicalNorwegianChampionshipIds]) {
       expect(ids.has(id), id).toBe(true)
       const honour = historyArchive.honours.find((entry) => entry.id === id)
       expect(honour?.sources.length ?? 0, id).toBeGreaterThan(0)
       expect((honour?.body?.length ?? 0) + (honour?.summary ? 1 : 0), id).toBeGreaterThan(0)
+    }
+
+    for (const id of canonicalNorwegianChampionshipIds) {
+      const honour = historyArchive.honours.find((entry) => entry.id === id)
+      expect(honour?.media.length ?? 0, id).toBeGreaterThan(0)
+      expect(honour?.media.every((item) => Boolean(item.src && item.sourceUrl && item.credit)), id).toBe(true)
     }
   })
 
