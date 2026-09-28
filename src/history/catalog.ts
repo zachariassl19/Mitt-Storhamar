@@ -68,6 +68,15 @@ import {
   seasons2000To2005,
   timeline2000To2005,
 } from './history2000to2005'
+import {
+  honours2005To2010,
+  jerseys2005To2010,
+  legends2005To2010,
+  players2005To2010,
+  records2005To2010,
+  seasons2005To2010,
+  timeline2005To2010,
+} from './history2005to2010'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { jerseys1960s } from './jerseys1960s'
 import { historySources } from './sources'
@@ -101,13 +110,13 @@ export const historyCategories: HistoryCategory[] = [
 // Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
 export const historyArchive: HistoryArchive = {
   sources: historySources,
-  seasons: [...earlySeasons, ...seasons1961To1967, ...seasons1967To1977, ...seasons1977To1984, ...seasons1984To1990, ...seasons1990To1994, ...seasons1994To1997, ...seasons1997To2000, ...seasons2000To2005],
-  honours: [...earlyHonours, ...honours1990To1994, ...honours1994To1997, ...honours1997To2000, ...honours2000To2005],
-  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000],
-  legends: [...earlyLegends, ...legends1990To1994, ...legends1997To2000],
-  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...verifiedPlayers1997To2000, ...players2000To2005],
+  seasons: [...earlySeasons, ...seasons1961To1967, ...seasons1967To1977, ...seasons1977To1984, ...seasons1984To1990, ...seasons1990To1994, ...seasons1994To1997, ...seasons1997To2000, ...seasons2000To2005, ...seasons2005To2010],
+  honours: [...earlyHonours, ...honours1990To1994, ...honours1994To1997, ...honours1997To2000, ...honours2000To2005, ...honours2005To2010],
+  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010],
+  legends: [...earlyLegends, ...legends1990To1994, ...legends1997To2000, ...legends2005To2010],
+  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...verifiedPlayers1997To2000, ...players2000To2005, ...players2005To2010],
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994],
   europe: [...europe1994To1997, ...europe1997To2000, ...europe2000To2005],
-  records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005],
-  timeline: [...earlyTimeline, ...timeline1961To1967, ...timeline1967To1977, ...timeline1977To1984, ...timeline1984To1990, ...timeline1990To1994, ...timeline1994To1997, ...timeline1997To2000, ...timeline2000To2005],
+  records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010],
+  timeline: [...earlyTimeline, ...timeline1961To1967, ...timeline1967To1977, ...timeline1977To1984, ...timeline1984To1990, ...timeline1990To1994, ...timeline1994To1997, ...timeline1997To2000, ...timeline2000To2005, ...timeline2005To2010],
 }
