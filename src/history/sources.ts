@@ -1,5 +1,10 @@
 import type { ArchiveSource } from './types'
 
+// Kildehierarki for Historie:
+// 1. SIL-arkivet er hovedkilden og pekepinnen for klubbhistorien.
+// 2. Storhamar Hockey, NIHF/EHL/CHL og andre primærkilder brukes som kontroll og supplement.
+// 3. Redaksjonelle kilder (f.eks. TV 2 Hockey, HA, VG) brukes når de tilfører dokumentert kontekst som primærkildene ikke dekker.
+// Ved reell kildekonflikt skal konflikten merkes i innholdet; vi skal ikke velge et tall eller en versjon uten forklaring.
 export const historySources: ArchiveSource[] = [
   {
     id: 'silarkivet',
@@ -7,7 +12,7 @@ export const historySources: ArchiveSource[] = [
     url: 'https://silarkivet.no/',
     publisher: 'SIL-arkivet',
     primary: true,
-    note: 'Hovedkilde for Storhamar-historikk, sesonger, spillerhistorie, drakter, rekorder og kuriosa. Materiale herfra kan brukes i Mitt Storhamar etter avtale med prosjekteier.',
+    note: 'HOVEDKILDE og pekepinn for Storhamar-historikk, sesonger, spillere, drakter, arenaer, rekorder og kuriosa. SIL-arkivet regner seg som offisiell Storhamar-historikk. Materiale herfra kan brukes i Mitt Storhamar etter avtale med prosjekteier.',
   },
   {
     id: 'storhamar-official',
@@ -15,7 +20,15 @@ export const historySources: ArchiveSource[] = [
     url: 'https://www.sil.no/',
     publisher: 'Storhamar Hockey',
     primary: true,
-    note: 'Offisiell klubbkilde. Brukes til kontroll av nyere historikk, nyheter, profiler og klubbopplysninger.',
+    note: 'Offisiell klubbkilde. Brukes som kontroll og supplement, særlig for nyere historikk, nyheter, profiler og klubbopplysninger. SIL-arkivet er fortsatt hovedpekepinnen for selve historiearkivet.',
+  },
+  {
+    id: 'nihf',
+    title: 'Norges Ishockeyforbund',
+    url: 'https://www.hockey.no/',
+    publisher: 'Norges Ishockeyforbund',
+    primary: true,
+    note: 'Primær kontrollkilde for offisielle mesterskap, seriemestere, NM, landslag, Gullpucken og nyere norsk hockeyhistorikk.',
   },
   {
     id: 'eliteprospects',
