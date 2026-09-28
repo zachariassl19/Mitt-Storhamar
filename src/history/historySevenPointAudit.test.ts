@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { historyArchive } from './catalog'
+import { championPlayers } from './championPlayers'
 import { canonicalEuropeCampaignIds } from './europeRegistry'
 import { canonicalLeagueChampionshipIds, canonicalNorwegianChampionshipIds } from './honoursRegistry'
 import { canonicalRafterLegendIds } from './legendRegistry'
@@ -56,14 +57,22 @@ describe('History 1–7 full-control pass', () => {
     }
   })
 
-  it('5: connects every verified-complete researched championship roster to person IDs', () => {
+  it('5: connects verified title rosters and represents all 129 documented champions', () => {
     const playerIds = new Set(historyArchive.players.map((player) => player.id))
+    const playerNames = new Set(historyArchive.players.map((player) => player.fullName))
+
     for (const research of championshipRosterResearch.filter((entry) => entry.status === 'verified-complete')) {
       const season = historyArchive.seasons.find((entry) => entry.id === research.seasonId)
       expect(season, research.seasonId).toBeDefined()
       expect(season?.roster.length, research.seasonId).toBe(research.players.length)
       expect(new Set(season?.roster.map((entry) => entry.personId)).size, research.seasonId).toBe(research.players.length)
       expect(season?.roster.every((entry) => playerIds.has(entry.personId)), research.seasonId).toBe(true)
+    }
+
+    expect(championPlayers).toHaveLength(129)
+    expect(new Set(championPlayers.map((entry) => entry.archiveName)).size).toBe(129)
+    for (const champion of championPlayers) {
+      expect(playerNames.has(champion.archiveName), champion.sourceName).toBe(true)
     }
   })
 
@@ -72,7 +81,11 @@ describe('History 1–7 full-control pass', () => {
     const recordIds = new Set(historyArchive.records.map((record) => record.id))
     const timelineIds = new Set(historyArchive.timeline.map((event) => event.id))
 
-    for (const id of ['arena-storhamarbana', 'arena-storhamar-kunstisbane', 'arena-storhamar-ishall', 'arena-hamar-ol-amfi', 'arena-gjovik-fjellhall', 'arena-hakons-hall']) {
+    for (const id of [
+      'arena-storhamarbana', 'arena-storhamar-kunstisbane', 'arena-storhamar-ishall', 'arena-hamar-ol-amfi',
+      'arena-gjovik-fjellhall', 'arena-hakons-hall', 'arena-jordal-amfi-old', 'arena-jordal-amfi-new',
+      'arena-sparta-amfi', 'arena-leangen-ishall', 'arena-manglerudhallen', 'arena-lorenskog-ishall', 'arena-dnb-arena',
+    ]) {
       expect(arenaIds.has(id), id).toBe(true)
     }
     for (const id of ['record-2017-world-longest-game', 'record-2023-hockey-classic-attendance', 'record-2024-28-straight-wins', 'record-2024-117-points', 'record-2025-perfect-playoffs', 'record-2026-seven-straight-finals']) {
