@@ -112,6 +112,7 @@ import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
+import { jerseys2025To2026 } from './jerseys2025to2026'
 import { detailedEuropeCampaigns } from './europeDetailed'
 import { europe1996Detail } from './europe1996Detail'
 import {
@@ -252,7 +253,7 @@ export const historyArchive: HistoryArchive = {
   sources: historySources,
   seasons: rawSeasons.map(resolveSeasonResearch),
   honours: rawHonours.map(resolveHonourResearch),
-  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys],
+  jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys, ...jerseys2025To2026],
   legends: allLegends.map(resolveLegendResearch).map(withRafterStatus),
   players: allPlayers,
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas],
