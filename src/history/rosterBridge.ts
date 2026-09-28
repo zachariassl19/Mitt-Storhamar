@@ -66,12 +66,11 @@ export function applyVerifiedRosterResearch(season: ArchiveSeason, players: Arch
   if (!research) return season
 
   const playerIdByName = new Map(players.map((player) => [player.fullName, player.id]))
-  const roster: SeasonPersonRef[] = research.players
-    .map((fullName) => {
-      const personId = playerIdByName.get(fullName)
-      return personId ? { personId, role: 'spiller' } : null
-    })
-    .filter((entry): entry is SeasonPersonRef => entry !== null)
+  const roster = research.players.reduce<SeasonPersonRef[]>((entries, fullName) => {
+    const personId = playerIdByName.get(fullName)
+    if (personId) entries.push({ personId, role: 'spiller' })
+    return entries
+  }, [])
 
   const missingNames = research.players.filter((fullName) => !playerIdByName.has(fullName))
   const body = [...(season.body ?? [])]
