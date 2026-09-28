@@ -1,7 +1,9 @@
 import { historyArchive } from './catalog'
+import { championPlayers } from './championPlayers'
 import { canonicalEuropeCampaignIds } from './europeRegistry'
 import { canonicalLeagueChampionshipIds, canonicalNorwegianChampionshipIds } from './honoursRegistry'
 import { canonicalRafterLegendIds } from './legendRegistry'
+import { canonicalJerseyCoverageLinks, officialJerseyCoverageLinks } from './jerseyCanonicalCoverage'
 import { silJerseyCoverage } from './jerseyCoverage'
 import { historyResearchConflicts } from './researchConflicts'
 import { championshipRosterResearch } from './rosterResearch'
@@ -22,6 +24,20 @@ function missingIds(expected: readonly string[], actual: string[]) {
   return expected.filter((id) => !actualSet.has(id))
 }
 
+const archiveJerseyIds = new Set(historyArchive.jerseys.map((jersey) => jersey.id))
+const mappedSilJerseyLabels = canonicalJerseyCoverageLinks.filter((link) => link.archiveIds.every((id) => archiveJerseyIds.has(id)))
+const officialJerseyLabels = officialJerseyCoverageLinks.filter((link) => link.archiveIds.every((id) => archiveJerseyIds.has(id)))
+const championNames = new Set(historyArchive.players.map((player) => player.fullName))
+const representedChampions = championPlayers.filter((entry) => championNames.has(entry.archiveName))
+const rafterLegendsWithMedia = canonicalRafterLegendIds.filter((id) => {
+  const legend = historyArchive.legends.find((entry) => entry.id === id)
+  return Boolean(legend && legend.media.length > 0)
+})
+const verifiedEuropeCampaigns = canonicalEuropeCampaignIds.filter((id) => {
+  const campaign = historyArchive.europe.find((entry) => entry.id === id)
+  return campaign?.completeness === 'verified'
+})
+
 export const historyAudit = {
   generatedAt: '2026-09-28',
   seasonCoverage: {
@@ -37,6 +53,52 @@ export const historyAudit = {
     missingNorwegianChampionships: missingIds(canonicalNorwegianChampionshipIds, historyArchive.honours.map((honour) => honour.id)),
     missingEuropeCampaigns: missingIds(canonicalEuropeCampaignIds, historyArchive.europe.map((campaign) => campaign.id)),
     missingRafterLegends: missingIds(canonicalRafterLegendIds, historyArchive.legends.map((legend) => legend.id)),
+  },
+  sevenPointCoverage: {
+    jerseysAndRealImages: {
+      silIndexEntries: silJerseyCoverage.length,
+      silEntriesMappedToArchive: mappedSilJerseyLabels.length,
+      newerOfficialVariantsTracked: officialJerseyLabels.length,
+      archiveJerseys: historyArchive.jerseys.length,
+      archiveJerseysWithRealImages: historyArchive.jerseys.filter((jersey) => jersey.media.length > 0).length,
+      openResearch: ['Dedikert 2025/26 CHL-drakt er ikke opprettet uten en sikker draktkilde.'],
+    },
+    rafters: {
+      canonicalLegends: canonicalRafterLegendIds.length,
+      legendsPresent: canonicalRafterLegendIds.length - missingIds(canonicalRafterLegendIds, historyArchive.legends.map((legend) => legend.id)).length,
+      legendsWithRealMedia: rafterLegendsWithMedia.length,
+    },
+    honours: {
+      leagueChampionshipsExpected: canonicalLeagueChampionshipIds.length,
+      leagueChampionshipsPresent: canonicalLeagueChampionshipIds.length - missingIds(canonicalLeagueChampionshipIds, historyArchive.honours.map((honour) => honour.id)).length,
+      norwegianChampionshipsExpected: canonicalNorwegianChampionshipIds.length,
+      norwegianChampionshipsPresent: canonicalNorwegianChampionshipIds.length - missingIds(canonicalNorwegianChampionshipIds, historyArchive.honours.map((honour) => honour.id)).length,
+      openResearch: ['Flere merittsider kan fortsatt få flere ekte gullbilder selv om merittregisteret er komplett.'],
+    },
+    europe: {
+      completedCampaignsExpected: canonicalEuropeCampaignIds.length,
+      verifiedCampaigns: verifiedEuropeCampaigns.length,
+    },
+    playersAndRosters: {
+      documentedNorwegianChampions: championPlayers.length,
+      championsRepresentedInArchive: representedChampions.length,
+      titleSeasonsTracked: championshipRosterResearch.length,
+      verifiedCompleteTitleRosters: championshipRosterResearch.filter((entry) => entry.status === 'verified-complete').length,
+      partialTitleRosters: championshipRosterResearch.filter((entry) => entry.status !== 'verified-complete').map((entry) => entry.seasonId),
+      openResearch: ['Komplette spillerstaller for alle 69 sesonger er fortsatt et eget forskningsarbeid; gull-/mesterskapsstallene er kommet lengst.'],
+    },
+    arenasRecordsMoments: {
+      arenas: historyArchive.arenas.length,
+      records: historyArchive.records.length,
+      timelineEvents: historyArchive.timeline.length,
+      keyAwayArenaArchiveAdded: ['arena-jordal-amfi-old', 'arena-jordal-amfi-new', 'arena-sparta-amfi', 'arena-leangen-ishall', 'arena-manglerudhallen', 'arena-lorenskog-ishall', 'arena-dnb-arena'],
+    },
+    seasonBySeasonControl: {
+      expectedCompletedSeasons: expectedCompletedSeasonIds.length,
+      presentCompletedSeasons: historyArchive.seasons.length,
+      partialSeasonIds: partialIds(historyArchive.seasons),
+      openConflictIds: historyResearchConflicts.filter((conflict) => conflict.status === 'open').map((conflict) => conflict.id),
+    },
   },
   partialEntities: {
     seasons: partialIds(historyArchive.seasons),
