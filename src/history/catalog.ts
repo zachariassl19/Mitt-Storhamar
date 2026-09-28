@@ -122,6 +122,7 @@ import {
   additionalHistoricMoments,
   modernHistoryRecords,
 } from './historyHighlights'
+import { domesticHistoricArenas } from './arenasDomestic'
 import { records2024Detailed } from './records2024Detailed'
 import {
   resolveHonourResearch,
@@ -262,7 +263,7 @@ export const historyArchive: HistoryArchive = {
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys, ...jerseys2025To2026],
   legends: allLegends.map(resolveLegendResearch).map(withRafterStatus).map(withLegendMedia),
   players: allPlayers,
-  arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas],
+  arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas, ...domesticHistoricArenas],
   europe: allEuropeCampaigns,
   records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010, ...records2010To2015, ...records2015To2020, ...modernHistoryRecords, ...records2024Detailed],
   timeline: rawTimeline.map(resolveTimelineResearch),
