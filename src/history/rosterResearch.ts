@@ -68,9 +68,9 @@ export const championshipRosterResearch: SeasonRosterResearch[] = [
   },
   {
     seasonId: 'season-2025-26', displayName: '2025/26', status: 'partial',
-    players: ['Markus Stensrud', 'Henrik Fayen-Vestavik', 'Joe Gatenby', 'Sverre Rønningen', 'Andreas Hjelm', 'Amil Krupic', 'Stefan Espeland', 'Sander Hurrød', 'Christian Bull', 'Mathias Papuga', 'Mathias K. Strand', 'Zach O’Brien', 'Colin Campbell', 'Andreas Martinsen', 'Jacob Berglund', 'Austin Cangelosi', 'Martin Rønnild', 'David Aas-Larsen', 'Kenneth Pappalardo', 'Marcus Bryhnisveen', 'Mats Bakke Olsen', 'Axel Sandnes', 'Isac Skedung', 'Olle Liss', 'Oliver Nilsgård', 'Kristoffer Sandnes', 'Andreas Dahl'],
+    players: ['Markus Stensrud', 'Henrik Fayen-Vestavik', 'Joe Gatenby', 'Sverre Rønningen', 'Andreas Hjelm', 'Amil Krupic', 'Stefan Espeland', 'Sander Hurrød', 'Christian Bull', 'Mathias Papuga', 'Mathias K. Strand', 'Zach O’Brien', 'Colin Campbell', 'Andreas Martinsen', 'Jacob Berglund', 'Austin Cangelosi', 'Martin Rønnild', 'David Aas-Larsen', 'Kenneth Pappalardo', 'Marcus Bryhnisveen', 'Mats Bakke Olsen', 'Axel Sandnes', 'Isac Skedung', 'Olle Liss', 'Oliver Nilsgård', 'Kristoffer Sandnes', 'Marcus Fjeld', 'Andreas Dahl'],
     coaches: ['Petter Thoresen'], sourceUrl: 'https://silarkivet.no/20-tallet/2025-26/ehl/',
-    note: 'Navnene er kontrollert mot både SIL-arkivets EHL-kampoppstillinger og sluttspillmateriale. Mathias K. Strand og Kristoffer Sandnes er dokumentert i EHL-oppstillinger, selv om de ikke var med i det tidligere sluttspillutvalget. Full sesongstall beholdes som partial til hele sesongens spillerregister er kontrollert for korte innhopp og juniorspillere.',
+    note: 'Navnene er kontrollert mot SIL-arkivets EHL-kampoppstillinger og sluttspillmateriale. Mathias K. Strand, Kristoffer Sandnes og Marcus Fjeld er dokumentert i EHL-oppstillinger selv om de ikke var med i det tidligere sluttspillutvalget. Full sesongstall beholdes som partial til hele sesongens spillerregister er kontrollert for alle korte innhopp og juniorspillere.',
   },
 ]
 
