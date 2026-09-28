@@ -23,13 +23,15 @@ describe('History 1–7 full-control pass', () => {
     }
   })
 
-  it('2: contains every canonical I taket profile exactly once', () => {
+  it('2: contains every canonical I taket profile exactly once with sourced real media', () => {
     const ids = historyArchive.legends.map((legend) => legend.id)
     for (const id of canonicalRafterLegendIds) {
       expect(ids.filter((candidate) => candidate === id), id).toHaveLength(1)
       const legend = historyArchive.legends.find((entry) => entry.id === id)
       expect((legend?.body?.length ?? 0) + (legend?.summary ? 1 : 0), id).toBeGreaterThan(0)
       expect(legend?.rafterStatus, id).toBeDefined()
+      expect(legend?.media.length ?? 0, id).toBeGreaterThan(0)
+      expect(legend?.media.every((item) => Boolean(item.src && item.sourceUrl && item.credit)), id).toBe(true)
     }
   })
 
@@ -37,13 +39,20 @@ describe('History 1–7 full-control pass', () => {
     const ids = new Set(historyArchive.honours.map((honour) => honour.id))
     for (const id of [...canonicalLeagueChampionshipIds, ...canonicalNorwegianChampionshipIds]) {
       expect(ids.has(id), id).toBe(true)
+      const honour = historyArchive.honours.find((entry) => entry.id === id)
+      expect(honour?.sources.length ?? 0, id).toBeGreaterThan(0)
+      expect((honour?.body?.length ?? 0) + (honour?.summary ? 1 : 0), id).toBeGreaterThan(0)
     }
   })
 
-  it('4: keeps every completed Europe campaign verified', () => {
+  it('4: keeps every completed Europe campaign verified and documented', () => {
     const byId = new Map(historyArchive.europe.map((campaign) => [campaign.id, campaign]))
     for (const id of canonicalEuropeCampaignIds) {
-      expect(byId.get(id)?.completeness, id).toBe('verified')
+      const campaign = byId.get(id)
+      expect(campaign?.completeness, id).toBe('verified')
+      expect(campaign?.sources.length ?? 0, id).toBeGreaterThan(0)
+      expect(campaign?.opponentNames.length ?? 0, id).toBeGreaterThan(0)
+      expect(campaign?.outcome, id).toBeTruthy()
     }
   })
 
