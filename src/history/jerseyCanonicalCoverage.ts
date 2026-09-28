@@ -1,0 +1,75 @@
+export interface CanonicalJerseyCoverageLink {
+  label: string
+  archiveIds: string[]
+}
+
+// One explicit bridge from SIL-arkivets jersey index to the objects rendered by Mitt Storhamar.
+// A period can intentionally map to multiple season-level objects. Keeping this explicit makes
+// missing CHL/playoff/preseason/testimonial variants visible instead of relying on fuzzy dates.
+export const canonicalJerseyCoverageLinks: CanonicalJerseyCoverageLink[] = [
+  { label: '2024/25 serie', archiveIds: ['jersey-season-2024-25'] },
+  { label: '2024/25 CHL', archiveIds: ['jersey-2024-25-chl'] },
+  { label: '2024 Pride', archiveIds: ['jersey-2024-pride'] },
+  { label: '2023/24', archiveIds: ['jersey-season-2023-24'] },
+  { label: '2023 forsesong', archiveIds: ['jersey-2023-preseason'] },
+  { label: '2023 sluttspill', archiveIds: ['jersey-2023-playoff'] },
+  { label: '2022/23', archiveIds: ['jersey-season-2022-23'] },
+  { label: '2022 forsesong', archiveIds: ['jersey-2022-preseason'] },
+  { label: '2022 sluttspill', archiveIds: ['jersey-2022-playoff'] },
+  { label: '2021/22', archiveIds: ['jersey-season-2021-22'] },
+  { label: '2021 forsesong', archiveIds: ['jersey-2021-preseason'] },
+  { label: '2020/21', archiveIds: ['jersey-season-2020-21'] },
+  { label: '2020 forsesong', archiveIds: ['jersey-2020-preseason'] },
+  { label: '2019/20', archiveIds: ['jersey-season-2019-20'] },
+  { label: '2019 forsesong', archiveIds: ['jersey-2019-preseason'] },
+  { label: '2019 sluttspill', archiveIds: ['jersey-2019-playoff'] },
+  { label: '2018/19 CHL', archiveIds: ['jersey-2018-19-chl'] },
+  { label: '2018 forsesong', archiveIds: ['jersey-2018-preseason'] },
+  { label: '2018/19', archiveIds: ['jersey-2018-19-ccm'] },
+  { label: '2017/18', archiveIds: ['jersey-season-2017-18', 'jersey-2018-19-ccm'] },
+  { label: '2017 forsesong', archiveIds: ['jersey-2017-preseason'] },
+  { label: '2016/17', archiveIds: ['jersey-season-2016-17'] },
+  { label: '2016 forsesong', archiveIds: ['jersey-2016-preseason'] },
+  { label: '2015/16', archiveIds: ['jersey-season-2015-16'] },
+  { label: '2015/16 CHL', archiveIds: ['jersey-2015-16-chl'] },
+  { label: '2015 forsesong', archiveIds: ['jersey-2015-preseason'] },
+  { label: '2015 sluttspill', archiveIds: ['jersey-2015-playoff'] },
+  { label: '2014/15', archiveIds: ['jersey-season-2014-15'] },
+  { label: '2013/14', archiveIds: ['jersey-2012-14-bauer'] },
+  { label: '2012/13', archiveIds: ['jersey-2012-14-bauer'] },
+  { label: '2012/14 forsesong', archiveIds: ['jersey-2012-14-preseason'] },
+  { label: '2010–12', archiveIds: ['jersey-era-2010-12'] },
+  { label: '2007–10', archiveIds: ['jersey-era-2007-10'] },
+  { label: '2006/07', archiveIds: ['jersey-season-2006-07'] },
+  { label: '2004–06 bonus', archiveIds: ['jersey-2004-06-bonus'] },
+  { label: '2003–06', archiveIds: ['jersey-season-2003-04-mission', 'jersey-season-2004-05-mission', 'jersey-season-2005-06-mission'] },
+  { label: '2002/03', archiveIds: ['jersey-season-2002-03-mission'] },
+  { label: '1998–02', archiveIds: ['jersey-season-1998-99-dragons', 'jersey-season-1999-00-dragons', 'jersey-season-2000-01-dragons', 'jersey-season-2001-02-dragons'] },
+  { label: '1997/98 EHL', archiveIds: ['jersey-1997-98-ehl'] },
+  { label: '1989–98', archiveIds: ['jersey-1989-98'] },
+  { label: '1987–89', archiveIds: ['jersey-season-1987-88', 'jersey-season-1988-89'] },
+  { label: '1985–87', archiveIds: ['jersey-1985-87'] },
+  { label: '1984/85', archiveIds: ['jersey-1984-85'] },
+  { label: '1983/84', archiveIds: ['jersey-1983-84'] },
+  { label: '1980–83', archiveIds: ['jersey-1980-83'] },
+  { label: '1977–80', archiveIds: ['jersey-1977-80'] },
+  { label: '1967–77', archiveIds: ['jersey-1967-77'] },
+  { label: '1957–67', archiveIds: ['jersey-1957-67'] },
+  { label: '2020 sluttspill', archiveIds: ['jersey-2020-playoff'] },
+  { label: '2015/16 hvit', archiveIds: ['jersey-2015-16-white-third'] },
+  { label: '2015 sluttspill blå', archiveIds: ['jersey-2015-playoff-blue-away'] },
+  { label: '2000–02 reserve', archiveIds: ['jersey-2000-02-reserve'] },
+  { label: 'HamKam-drakta', archiveIds: ['jersey-hamkam-60-70'] },
+  { label: '2018 Eirik Skadsdammen testimonial', archiveIds: ['jersey-testimonial-eirik-skadsdammen-2018'] },
+  { label: '2015 Pål Johnsen testimonial', archiveIds: ['jersey-testimonial-pal-johnsen-2015'] },
+  { label: '2009 Jonas Norgren testimonial', archiveIds: ['jersey-testimonial-jonas-norgren-2010'] },
+  { label: '2006 Tom Erik Olsen testimonial', archiveIds: ['jersey-testimonial-tom-erik-olsen-2006'] },
+]
+
+// Newer verified club variants that are not yet present in SIL-arkivets jersey index.
+export const officialJerseyCoverageLinks: CanonicalJerseyCoverageLink[] = [
+  { label: '2025/26 serie', archiveIds: ['jersey-2025-26-series'] },
+  { label: '2025 forsesong · Hyller Hamar', archiveIds: ['jersey-2025-preseason-hamar'] },
+  { label: '2025 Rosa sløyfe', archiveIds: ['jersey-2025-pink-cancer'] },
+  { label: '2025 Hockey Classic', archiveIds: ['jersey-2025-hockey-classic'] },
+]
