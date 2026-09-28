@@ -1,4 +1,4 @@
-export type DataCompleteness = 'stub' | 'partial' | 'verified'
+export type ArchiveCompleteness = 'stub' | 'partial' | 'verified'
 
 export type ArchiveEntityKind =
   | 'season'
@@ -15,18 +15,21 @@ export type ArchiveEntityKind =
   | 'identity'
   | 'supporter-culture'
 
+export type ArchiveMediaType = 'photo' | 'jersey' | 'logo' | 'programme' | 'poster' | 'document' | 'other'
+
 export interface ArchiveSource {
   id: string
-  name: string
-  url?: string
-  sourceType: 'silarkivet' | 'club' | 'league' | 'federation' | 'europe' | 'media' | 'database' | 'book' | 'other'
-  role: 'primary' | 'supplementary' | 'verification-only'
-  notes?: string
+  title: string
+  url: string
+  publisher?: string
+  accessedAt?: string
+  note?: string
+  primary?: boolean
 }
 
 export interface ArchiveMedia {
   id: string
-  type: 'photo' | 'jersey' | 'logo' | 'trophy' | 'arena' | 'document' | 'other'
+  type: ArchiveMediaType
   src: string
   alt: string
   caption?: string
@@ -39,7 +42,7 @@ export interface ArchiveMedia {
   rightsNote?: string
 }
 
-export interface ArchiveRelation {
+export interface ArchiveLink {
   kind: ArchiveEntityKind
   id: string
   label?: string
@@ -49,52 +52,51 @@ export interface ArchiveBase {
   id: string
   title: string
   slug: string
-  summary: string
+  summary?: string
   body?: string[]
-  completeness: DataCompleteness
+  completeness: ArchiveCompleteness
   sources: string[]
   media: ArchiveMedia[]
-  related: ArchiveRelation[]
+  related: ArchiveLink[]
   tags?: string[]
   lastVerifiedAt?: string
 }
 
-export interface ArchiveStanding {
+export interface SeasonStanding {
   competition: string
   position?: number
   gamesPlayed?: number
   wins?: number
   draws?: number
+  losses?: number
   overtimeWins?: number
   overtimeLosses?: number
-  losses?: number
   goalsFor?: number
   goalsAgainst?: number
   points?: number
   note?: string
 }
 
-export interface ArchiveTopScorer {
-  personId?: string
-  name?: string
-  goals?: number
-  assists?: number
-  points?: number
-  note?: string
+export interface SeasonPersonRef {
+  personId: string
+  role?: string
+  number?: string | number
+  captaincy?: 'captain' | 'assistant'
 }
 
 export interface ArchiveSeason extends ArchiveBase {
-  displayName: string
   startYear: number
   endYear: number
+  displayName: string
   competitions: string[]
   coaches: string[]
   captains: string[]
-  roster: string[]
-  standings?: ArchiveStanding[]
+  roster: SeasonPersonRef[]
+  standings: SeasonStanding[]
   playoffSummary?: string
   europeSummary?: string
-  topScorers?: ArchiveTopScorer[]
+  trainingSummary?: string
+  topScorers?: Array<{ personId: string; points?: number; goals?: number; assists?: number; note?: string }>
   honourIds: string[]
   jerseyIds: string[]
   arenaIds: string[]
@@ -160,9 +162,29 @@ export interface ArchiveArena extends ArchiveBase {
   city?: string
   opened?: string
   closed?: string
+  capacity?: number
+  latitude?: number
+  longitude?: number
   homeFromSeasonId?: string
   homeToSeasonId?: string
   notableMomentIds: string[]
+}
+
+export interface ArchiveRecord extends ArchiveBase {
+  recordType: 'team' | 'player' | 'game' | 'season' | 'streak' | 'attendance' | 'other'
+  value?: string | number
+  unit?: string
+  date?: string
+  seasonId?: string
+  personIds?: string[]
+  gameIds?: string[]
+}
+
+export interface ArchiveTimelineEvent extends ArchiveBase {
+  date?: string
+  year?: number
+  era?: string
+  importance: 'major' | 'notable' | 'context'
 }
 
 export interface ArchiveEuropeCampaign extends ArchiveBase {
@@ -170,26 +192,8 @@ export interface ArchiveEuropeCampaign extends ArchiveBase {
   competition: string
   stage?: string
   opponentNames: string[]
-  gameIds: string[]
+  gameIds?: string[]
   outcome?: string
-}
-
-export type RecordType = 'team' | 'player' | 'game' | 'streak' | 'attendance' | 'other'
-
-export interface ArchiveRecord extends ArchiveBase {
-  recordType: RecordType
-  value?: string | number
-  unit?: string
-  date?: string
-  seasonId?: string
-  personIds?: string[]
-}
-
-export interface ArchiveTimelineEvent extends ArchiveBase {
-  date?: string
-  year: number
-  era?: string
-  importance: 'major' | 'notable' | 'context'
 }
 
 export interface HistoryArchive {
