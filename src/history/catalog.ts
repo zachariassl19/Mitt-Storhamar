@@ -111,6 +111,7 @@ import { withRafterStatus } from './rafterStatus'
 import { withLegendMedia } from './legendMedia'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
+import { buildChampionSupplementPlayers } from './championPlayers'
 import { applyVerifiedRosterResearch, buildRosterSupplementPlayers } from './rosterBridge'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
@@ -215,7 +216,9 @@ const corePlayerNames = new Set(corePlayers.map((player) => player.fullName))
 const careerPlayers = careerLeaderboardProfiles.filter((player) => !corePlayerNames.has(player.fullName))
 const playersBeforeRosterBridge = [...corePlayers, ...careerPlayers]
 const rosterSupplementPlayers = buildRosterSupplementPlayers(playersBeforeRosterBridge)
-const allPlayers = [...playersBeforeRosterBridge, ...rosterSupplementPlayers]
+const playersBeforeChampionBridge = [...playersBeforeRosterBridge, ...rosterSupplementPlayers]
+const championSupplementPlayers = buildChampionSupplementPlayers(playersBeforeChampionBridge)
+const allPlayers = [...playersBeforeChampionBridge, ...championSupplementPlayers]
 
 const baseEuropeCampaigns = [
   ...europe1994To1997,
