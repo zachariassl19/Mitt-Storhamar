@@ -112,6 +112,7 @@ import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
 import { detailedEuropeCampaigns } from './europeDetailed'
+import { europe1996Detail } from './europe1996Detail'
 import { historySources } from './sources'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
@@ -156,10 +157,11 @@ const baseEuropeCampaigns = [
   ...europe2000To2005,
   ...europe2015To2020,
 ]
-const detailedEuropeIds = new Set(detailedEuropeCampaigns.map((campaign) => campaign.id))
+const verifiedEuropeDetails = [...europe1996Detail, ...detailedEuropeCampaigns]
+const detailedEuropeIds = new Set(verifiedEuropeDetails.map((campaign) => campaign.id))
 const allEuropeCampaigns = [
   ...baseEuropeCampaigns.filter((campaign) => !detailedEuropeIds.has(campaign.id)),
-  ...detailedEuropeCampaigns,
+  ...verifiedEuropeDetails,
 ]
 
 // Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
