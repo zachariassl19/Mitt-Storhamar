@@ -2,7 +2,7 @@ import type { ArchiveSource } from './types'
 
 // Kildehierarki for Historie:
 // 1. SIL-arkivet er hovedkilden og pekepinnen for klubbhistorien.
-// 2. Storhamar Hockey, NIHF/EHL/CHL og andre primærkilder brukes som kontroll og supplement.
+// 2. Storhamar Hockey, NIHF/EHL/CHL/IIHF og andre primærkilder brukes som kontroll og supplement.
 // 3. Redaksjonelle kilder (f.eks. TV 2 Hockey, HA, VG) brukes når de tilfører dokumentert kontekst som primærkildene ikke dekker.
 // Ved reell kildekonflikt skal konflikten merkes i innholdet; vi skal ikke velge et tall eller en versjon uten forklaring.
 export const historySources: ArchiveSource[] = [
@@ -29,6 +29,14 @@ export const historySources: ArchiveSource[] = [
     publisher: 'Norges Ishockeyforbund',
     primary: true,
     note: 'Primær kontrollkilde for offisielle mesterskap, seriemestere, NM, landslag, Gullpucken og nyere norsk hockeyhistorikk.',
+  },
+  {
+    id: 'iihf',
+    title: 'International Ice Hockey Federation',
+    url: 'https://www.iihf.com/',
+    publisher: 'IIHF',
+    primary: true,
+    note: 'Primær kontrollkilde for eldre europeiske klubbturneringer, særlig Continental Cup, turneringsoppsett og historiske resultater.',
   },
   {
     id: 'eliteprospects',
