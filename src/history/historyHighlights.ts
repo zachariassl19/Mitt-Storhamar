@@ -1,0 +1,132 @@
+import type { ArchiveArena, ArchiveRecord, ArchiveTimelineEvent } from './types'
+
+const verifiedAt = '2026-09-28'
+
+export const additionalHistoricArenas: ArchiveArena[] = [
+  {
+    id: 'arena-gjovik-fjellhall',
+    title: 'Gjøvik Fjellhall',
+    name: 'Gjøvik Fjellhall',
+    slug: 'gjovik-fjellhall',
+    summary: 'En sjelden reservearena i Storhamar-historien. Hallen ble brukt til en hjemmekamp i NM-sluttspillet i 2002 da hallene på Hamar var opptatt.',
+    body: [
+      'SIL-arkivets arenaoversikt beskriver 2002-kampen som den eneste gangen Storhamar måtte flytte en ordinær hjemmekamp helt ut av Hamar-området i denne epoken. Begge hallene på Hamar var opptatt av VM i kunstløp, og kvartfinalen mot Sparta ble derfor lagt til Gjøvik Fjellhall.',
+      'Fjellhallen har også en annen plass i Storhamar-historien: Furuset la sin «hjemmekamp» mot Storhamar dit 14. november 1993. Storhamar vant 7–3 og sikret seriemesterskapet i Eliteseriens første del foran et stort gul-blått reisefølge.',
+    ],
+    completeness: 'verified',
+    sources: ['silarkivet', 'storhamar-official'],
+    media: [],
+    related: [{ kind: 'season', id: 'season-1993-94' }, { kind: 'season', id: 'season-2001-02' }],
+    city: 'Gjøvik',
+    notableMomentIds: ['timeline-1993-series-title-gjovik'],
+    tags: ['reservearena', 'historisk bortearena', 'sluttspill'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'arena-hakons-hall',
+    title: 'Håkons Hall',
+    name: 'Håkons Hall',
+    slug: 'hakons-hall',
+    summary: 'Lillehammers storstue og arenaen for Hockey Classic, med den største dokumenterte tilskuermengden Storhamar har spilt foran.',
+    body: [
+      '28. oktober 2023 slo Storhamar Lillehammer 4–2 i Hockey Classic foran 10 348 tilskuere. Storhamar Hockey og SIL-arkivet omtaler dette som det største publikummet Storhamar har spilt foran.',
+      'Håkons Hall er derfor mer enn en vanlig bortearena i arkivet og kobles både til Mjøsderbyet, Hockey Classic og publikumsrekorden.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [],
+    related: [{ kind: 'season', id: 'season-2023-24' }, { kind: 'record', id: 'record-2023-hockey-classic-attendance' }],
+    city: 'Lillehammer',
+    notableMomentIds: ['timeline-2023-hockey-classic-record'],
+    tags: ['Hockey Classic', 'Mjøsderby', 'publikumsrekord'],
+    lastVerifiedAt: verifiedAt,
+  },
+]
+
+export const modernHistoryRecords: ArchiveRecord[] = [
+  {
+    id: 'record-2023-hockey-classic-attendance',
+    title: '10 348 · største publikum Storhamar har spilt foran',
+    slug: '10348-hockey-classic-publikum',
+    summary: 'Hockey Classic mellom Lillehammer og Storhamar i Håkons Hall 28. oktober 2023 samlet 10 348 tilskuere.',
+    completeness: 'verified',
+    sources: ['storhamar-official'],
+    media: [],
+    related: [{ kind: 'arena', id: 'arena-hakons-hall' }, { kind: 'season', id: 'season-2023-24' }, { kind: 'timeline', id: 'timeline-2023-hockey-classic-record' }],
+    recordType: 'attendance', value: 10348, unit: 'tilskuere', date: '2023-10-28', seasonId: 'season-2023-24', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'record-2024-28-straight-wins',
+    title: '28 strake seire',
+    slug: '28-strake-seire-2023-24',
+    summary: 'Storhamar vant 28 kamper på rad fra høsten 2023 til sluttfasen av grunnserien 2023/24.',
+    body: ['Storhamar Hockey omtaler rekka som en av de sentrale rekordene i rekordåret 2023/24. Den gamle klubb- og ligarekorden på 21 strake seire ble først tangert og deretter passert.'],
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2023-24' }], recordType: 'streak', value: 28, unit: 'strake seire', seasonId: 'season-2023-24', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'record-2024-117-points',
+    title: '117 poeng · ny ligarekord',
+    slug: '117-poeng-2023-24',
+    summary: 'Storhamar avsluttet EHL 2023/24 med 117 poeng og satte ny poengrekord.',
+    completeness: 'verified', sources: ['storhamar-official', 'silarkivet'], media: [],
+    related: [{ kind: 'season', id: 'season-2023-24' }, { kind: 'honour', id: 'honour-2024-league' }], recordType: 'season', value: 117, unit: 'poeng', seasonId: 'season-2023-24', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'record-2025-perfect-playoffs',
+    title: '12–0 · perfekt sluttspill',
+    slug: 'perfekt-sluttspill-2025',
+    summary: 'Storhamar vant alle de 12 kampene som krevdes for NM-gull i 2025: 4–0 i kvartfinale, 4–0 i semifinale og 4–0 i finale.',
+    body: ['Storhamar Hockey beskriver dette som første gang et lag gikk perfekt gjennom hele sluttspillet i æraen med best-av-sju i alle tre rundene.'],
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2024-25' }, { kind: 'honour', id: 'honour-2025-nm' }, { kind: 'timeline', id: 'timeline-2025-perfect-playoffs' }],
+    recordType: 'streak', value: 12, unit: 'strake sluttspillseire', seasonId: 'season-2024-25', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'record-2026-seven-straight-finals',
+    title: 'Sju strake NM-finaler',
+    slug: 'sju-strake-nm-finaler',
+    summary: 'I 2026 nådde Storhamar sin sjuende strake NM-finale og tangerte sin egen klubbrekord.',
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2025-26' }], recordType: 'streak', value: 7, unit: 'strake NM-finaler', seasonId: 'season-2025-26', lastVerifiedAt: verifiedAt,
+  },
+]
+
+export const additionalHistoricMoments: ArchiveTimelineEvent[] = [
+  {
+    id: 'timeline-1993-series-title-gjovik',
+    title: 'Seriemester på «bortebane» i Gjøvik',
+    slug: '1993-seriegull-gjovik',
+    summary: '14. november 1993 slo Storhamar Furuset 7–3 i Gjøvik Fjellhall og sikret seriemesterskapet i Eliteseriens første del.',
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-1993-94' }, { kind: 'honour', id: 'honour-1993-first-series' }, { kind: 'arena', id: 'arena-gjovik-fjellhall' }],
+    date: '1993-11-14', year: 1993, era: 'Gullalderen', importance: 'major', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'timeline-2023-hockey-classic-record',
+    title: '10 348 ser Storhamar vinne Hockey Classic',
+    slug: '2023-hockey-classic-publikumsrekord',
+    summary: '28. oktober 2023 slo Storhamar Lillehammer 4–2 i Håkons Hall foran 10 348 tilskuere.',
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2023-24' }, { kind: 'arena', id: 'arena-hakons-hall' }, { kind: 'record', id: 'record-2023-hockey-classic-attendance' }],
+    date: '2023-10-28', year: 2023, era: 'Veien mot gullrekka', importance: 'major', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'timeline-2025-perfect-playoffs',
+    title: 'Det perfekte sluttspillet',
+    slug: '2025-perfekt-sluttspill',
+    summary: 'Storhamar gikk 12–0 gjennom sluttspillet i 2025 og tok NM-gull uten ett eneste tap.',
+    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2024-25' }, { kind: 'honour', id: 'honour-2025-nm' }, { kind: 'record', id: 'record-2025-perfect-playoffs' }],
+    date: '2025-04-10', year: 2025, era: 'Tre strake dobler', importance: 'major', lastVerifiedAt: verifiedAt,
+  },
+  {
+    id: 'timeline-2026-third-straight-double',
+    title: 'Tre strake serie- og NM-dobler',
+    slug: '2026-tre-strake-dobler',
+    summary: 'NM-gullet 15. april 2026 fullførte Storhamars tredje strake sesong med både seriegull og NM-gull.',
+    completeness: 'verified', sources: ['silarkivet', 'storhamar-official'], media: [],
+    related: [{ kind: 'season', id: 'season-2025-26' }, { kind: 'honour', id: 'honour-2026-league' }, { kind: 'honour', id: 'honour-2026-nm' }],
+    date: '2026-04-15', year: 2026, era: 'Tre strake dobler', importance: 'major', lastVerifiedAt: verifiedAt,
+  },
+]
