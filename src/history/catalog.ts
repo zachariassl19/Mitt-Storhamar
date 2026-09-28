@@ -109,6 +109,7 @@ import { womenHistoryLegends, womenHistoryTimeline } from './historyWomen'
 import { rafterLegends, rafterTimeline } from './legendsRafters'
 import { withRafterStatus } from './rafterStatus'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
+import { careerLeaderboardProfiles } from './playerCareerSupplement'
 import { jerseys1960s } from './jerseys1960s'
 import { detailedJerseys } from './jerseysDetailed'
 import { detailedEuropeCampaigns } from './europeDetailed'
@@ -118,6 +119,7 @@ import {
   additionalHistoricMoments,
   modernHistoryRecords,
 } from './historyHighlights'
+import { records2024Detailed } from './records2024Detailed'
 import {
   resolveHonourResearch,
   resolveLegendResearch,
@@ -190,6 +192,27 @@ const allLegends = [
   ...rafterLegends,
 ]
 
+const corePlayers = [
+  ...earlyPlayers,
+  ...players1961To1967,
+  ...players1967To1977,
+  ...players1977To1984,
+  ...players1984To1990,
+  ...players1990To1994,
+  ...players1994To1997,
+  ...verifiedPlayers1997To2000,
+  ...players2000To2005,
+  ...players2005To2010,
+  ...players2010To2015,
+  ...players2015To2020,
+  ...players2023To2026,
+]
+const corePlayerNames = new Set(corePlayers.map((player) => player.fullName))
+const allPlayers = [
+  ...corePlayers,
+  ...careerLeaderboardProfiles.filter((player) => !corePlayerNames.has(player.fullName)),
+]
+
 const baseEuropeCampaigns = [
   ...europe1994To1997,
   ...europe1997To2000,
@@ -231,9 +254,9 @@ export const historyArchive: HistoryArchive = {
   honours: rawHonours.map(resolveHonourResearch),
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys],
   legends: allLegends.map(resolveLegendResearch).map(withRafterStatus),
-  players: [...earlyPlayers, ...players1961To1967, ...players1967To1977, ...players1977To1984, ...players1984To1990, ...players1990To1994, ...players1994To1997, ...verifiedPlayers1997To2000, ...players2000To2005, ...players2005To2010, ...players2010To2015, ...players2015To2020, ...players2023To2026],
+  players: allPlayers,
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas],
   europe: allEuropeCampaigns,
-  records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010, ...records2010To2015, ...records2015To2020, ...modernHistoryRecords],
+  records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010, ...records2010To2015, ...records2015To2020, ...modernHistoryRecords, ...records2024Detailed],
   timeline: rawTimeline.map(resolveTimelineResearch),
 }
