@@ -18,7 +18,6 @@ export const europe1996Detail: ArchiveEuropeCampaign[] = [
     media: [],
     related: [
       { kind: 'season', id: 'season-1996-97' },
-      { kind: 'timeline', id: 'timeline-1996-first-official-away-europe' },
       { kind: 'jersey', id: 'jersey-season-1996-97' },
     ],
     seasonId: 'season-1996-97',
