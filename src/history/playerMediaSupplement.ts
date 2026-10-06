@@ -409,6 +409,76 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     credit: 'Storhamar Hockey',
     sourceId: 'storhamar-official',
   },
+  'Morten Fjeld': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/morten_fjeld.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Morten Fjeld i Storhamar-drakt',
+  },
+  'Sven Ole Flensborg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/soflensborg.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Sven Ole Flensborg i Storhamar-drakt',
+  },
+  'Fredrik Fleischer': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ffleischer.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Fredrik Fleischer i Storhamar-drakt',
+  },
+  'Klas Forfang': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/klas_forfang.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Klas Forfang i Storhamar-drakt',
+  },
+  'Stig Frydenlund': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/frydenlund_stig.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Stig Frydenlund i Storhamar-drakt',
+  },
+  'Kjell Åge Furuholt': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/kaafuruholt.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Kjell Åge Furuholt i Storhamar-drakt',
+  },
+  'Harald Bastiansen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/hbastiansen-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Harald Bastiansen i Storhamar-drakt',
+  },
+  'Thomas Berg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/tberg.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Thomas Berg i Storhamar-drakt',
+  },
+  'Knut Ivar Berger': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/kiberger-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Knut Ivar Berger i Storhamar-drakt',
+  },
+  'Øystein Bertheussen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/bertheussen.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Øystein Bertheussen i Storhamar-drakt',
+  },
+  'Gunnar Bingen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/gbingen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Gunnar Bingen i Storhamar-drakt',
+  },
+  'Petter Birkheim': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/birkheim-petter.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Petter Birkheim i Storhamar-drakt',
+  },
+  'Sondre Bjerke': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/bjerke-sondre.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'Sondre Bjerke i Storhamar-drakt',
+  },
+  'David Booth': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/booth-david.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-b/',
+    alt: 'David Booth i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
