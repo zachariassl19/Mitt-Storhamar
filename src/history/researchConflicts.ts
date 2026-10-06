@@ -37,26 +37,35 @@ export const historyResearchConflicts: HistoryResearchConflict[] = [
     id: 'conflict-1991-92-rune-gulliksen-points',
     entityId: 'season-1991-92',
     field: 'topScorers.points',
-    status: 'open',
+    status: 'resolved',
+    preferredValue: '57 totalt / 53 Eliteserien + 4 sluttspill',
     alternatives: [
       {
         value: '53',
         source: 'SIL-arkivet – samlet sesongoversikt',
         url: 'https://silarkivet.no/sesonger/',
+        note: 'Dette tallet samsvarer med Rune Gulliksens spillerprofil for Eliteserien alene: 31 mål + 22 assist = 53 poeng.',
       },
       {
         value: '57',
         source: 'SIL-arkivet – detaljsiden for 1991/92',
         url: 'https://silarkivet.no/sesonger/90-tallet/1991-92/',
+        note: 'Detaljsidens sesongtall inkluderer sluttspillet. Spillerprofilen fører ytterligere 4 sluttspillpoeng, slik at 53 + 4 = 57.',
+      },
+      {
+        value: '53 serie + 4 sluttspill = 57 totalt',
+        source: 'SIL-arkivet – Rune Gulliksen spillerprofil',
+        url: 'https://silarkivet.no/alumni/alumni-g/',
       },
     ],
-    lastCheckedAt: '2026-09-28',
+    resolutionNote: 'Tallene motsier ikke hverandre når avgrensningen gjøres eksplisitt. Bruk 53 for Eliteserien alene og 57 for serie + sluttspill.',
+    lastCheckedAt: '2026-10-06',
   },
   {
     id: 'conflict-1996-97-dahlstrom-points',
     entityId: 'season-1996-97',
     field: 'topScorers.points',
-    status: 'open',
+    status: 'resolved',
     preferredValue: '92 totalt / 88 serie+sluttspill',
     alternatives: [
       {
@@ -72,6 +81,7 @@ export const historyResearchConflicts: HistoryResearchConflict[] = [
         note: 'Avviker fra både detaljsiden og spillerbiografien og må avstemmes mot kamp-for-kamp-statistikken.',
       },
     ],
-    lastCheckedAt: '2026-09-28',
+    resolutionNote: 'Detaljsiden for 1996/97 oppgir eksplisitt 92 poeng i alle turneringer og 88 i serie + sluttspill. Dahlstrøms spillerprofil bekrefter 92 totalt. Tallet 94 i den samlede sesongindeksen behandles derfor som en indeksfeil, men beholdes som dokumentert alternativ.',
+    lastCheckedAt: '2026-10-06',
   },
 ]
