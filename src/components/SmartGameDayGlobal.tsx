@@ -12,6 +12,13 @@ import {
 } from '../lib/smartGameDaySettings'
 import { classifyArenaProximityWithAccuracy, distanceMeters, eventFromPosition, isReliableArenaPosition } from '../lib/smartGameDay'
 import { lastProximityForGame, publishSmartLocationStatus } from '../lib/locationRuntime'
+import {
+  drainNativeSmartGameDayEvents,
+  getNativeSmartGameDayStatus,
+  isNativeAndroid,
+  startNativeSmartGameDay,
+  stopNativeSmartGameDay,
+} from '../lib/nativeSmartGameDay'
 import { saveSmartGameDayEvent } from '../lib/storage'
 import type { ArenaProximity } from '../types'
 
@@ -46,6 +53,86 @@ export function SmartGameDayManager() {
 
   useEffect(() => {
     let disposed = false
+
+    if (isNativeAndroid()) {
+      async function syncNative(game: (typeof games)[number]) {
+        try {
+          const status = await getNativeSmartGameDayStatus()
+          if (!disposed && status.gameId === game.id) {
+            publishSmartLocationStatus({
+              gameId: game.id,
+              state: status.running ? 'watching' : 'idle',
+              proximity: status.proximity ?? 'outside',
+              distanceMeters: status.distanceMeters ?? null,
+              accuracyMeters: status.accuracyMeters ?? null,
+              observedAt: status.observedAt ?? null,
+              reliable: status.reliable ?? false,
+            })
+          }
+
+          const events = await drainNativeSmartGameDayEvents()
+          for (const event of events) {
+            saveSmartGameDayEvent(event)
+            window.dispatchEvent(new CustomEvent('mitt-storhamar:smart-gameday-event', { detail: event }))
+          }
+        } catch {
+          // Native status kan være utilgjengelig helt i starten av appen.
+        }
+      }
+
+      async function ensureNativeService() {
+        const game = games.find((candidate) => isGameDay(candidate))
+        if (!settings.enabled || !settings.autoStartOnGameDay || !game) {
+          try {
+            await stopNativeSmartGameDay()
+          } catch {
+            // Tjenesten er allerede stoppet / ikke klar.
+          }
+          return
+        }
+
+        try {
+          await startNativeSmartGameDay(game)
+          await syncNative(game)
+        } catch (error) {
+          if (!disposed) {
+            publishSmartLocationStatus({
+              gameId: game.id,
+              state: 'error',
+              proximity: 'outside',
+              distanceMeters: null,
+              accuracyMeters: null,
+              observedAt: new Date().toISOString(),
+              reliable: false,
+              error: error instanceof Error ? error.message : 'Kunne ikke starte native Smart Kampdag.',
+            })
+          }
+        }
+      }
+
+      const onVisible = () => {
+        if (!document.hidden) void ensureNativeService()
+      }
+      const onPageShow = () => void ensureNativeService()
+
+      void ensureNativeService()
+      document.addEventListener('visibilitychange', onVisible)
+      window.addEventListener('pageshow', onPageShow)
+
+      const timer = window.setInterval(() => {
+        if (document.hidden) return
+        const game = games.find((candidate) => isGameDay(candidate))
+        if (game) void syncNative(game)
+      }, 15_000)
+
+      return () => {
+        disposed = true
+        window.clearInterval(timer)
+        document.removeEventListener('visibilitychange', onVisible)
+        window.removeEventListener('pageshow', onPageShow)
+        // Ikke stopp foreground-service her. Den skal overleve at webview-en går i bakgrunnen.
+      }
+    }
 
     function stopWatch() {
       if (watchId.current != null && 'geolocation' in navigator) {
