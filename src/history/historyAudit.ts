@@ -61,23 +61,35 @@ export const historyAudit = {
       newerOfficialVariantsTracked: officialJerseyLabels.length,
       archiveJerseys: historyArchive.jerseys.length,
       archiveJerseysWithRealImages: historyArchive.jerseys.filter((jersey) => jersey.media.length > 0).length,
-      openResearch: ['Dedikert 2025/26 CHL-drakt er ikke opprettet uten en sikker draktkilde.'],
+      archiveJerseysWithoutRealImages: historyArchive.jerseys.filter((jersey) => jersey.media.length === 0).map((jersey) => jersey.id),
+      openResearch: ['Alle kontrollistevariantene er koblet til arkivet, inkludert CHL 2025/26. Eldre draktperioder uten media og perioder der ett arkivobjekt dekker flere sesonger bør fortsatt få flere sikre originalbilder og mer variantspesifikk dokumentasjon.'],
     },
     rafters: {
       canonicalLegends: canonicalRafterLegendIds.length,
       legendsPresent: canonicalRafterLegendIds.length - missingIds(canonicalRafterLegendIds, historyArchive.legends.map((legend) => legend.id)).length,
       legendsWithRealMedia: rafterLegendsWithMedia.length,
+      partialLegendIds: canonicalRafterLegendIds.filter((id) => historyArchive.legends.find((legend) => legend.id === id)?.completeness !== 'verified'),
+      missingHonouredNumberIds: canonicalRafterLegendIds.filter((id) => {
+        const legend = historyArchive.legends.find((entry) => entry.id === id)
+        return Boolean(legend && legend.honouredNumber === undefined)
+      }),
+      openResearch: ['Lars Løkken Østli og Lars Erik Hesbråten er dokumentert hedret i 2019, men tilgjengelig tekstkilde oppgir ikke eksplisitt hvilket av deres tidligere draktnumre som står på banneret. Dette må avgjøres fra foto/originalmateriale før honouredNumber fylles inn.'],
     },
     honours: {
       leagueChampionshipsExpected: canonicalLeagueChampionshipIds.length,
       leagueChampionshipsPresent: canonicalLeagueChampionshipIds.length - missingIds(canonicalLeagueChampionshipIds, historyArchive.honours.map((honour) => honour.id)).length,
       norwegianChampionshipsExpected: canonicalNorwegianChampionshipIds.length,
       norwegianChampionshipsPresent: canonicalNorwegianChampionshipIds.length - missingIds(canonicalNorwegianChampionshipIds, historyArchive.honours.map((honour) => honour.id)).length,
-      openResearch: ['Flere merittsider kan fortsatt få flere ekte gullbilder selv om merittregisteret er komplett.'],
+      leagueChampionshipsWithRealMedia: historyArchive.honours.filter((honour) => canonicalLeagueChampionshipIds.includes(honour.id as (typeof canonicalLeagueChampionshipIds)[number]) && honour.media.length > 0).length,
+      norwegianChampionshipsWithRealMedia: historyArchive.honours.filter((honour) => canonicalNorwegianChampionshipIds.includes(honour.id as (typeof canonicalNorwegianChampionshipIds)[number]) && honour.media.length > 0).length,
+      openResearch: ['Merittregisteret er komplett, men seriemesterskapene mangler fortsatt i stor grad egne ekte gull-/avgjørelsesbilder. NM-gullene har langt bedre bildedekning.'],
     },
     europe: {
       completedCampaignsExpected: canonicalEuropeCampaignIds.length,
       verifiedCampaigns: verifiedEuropeCampaigns.length,
+      campaignsWithGameLinks: historyArchive.europe.filter((campaign) => (campaign.gameIds?.length ?? 0) > 0).length,
+      campaignsWithRealMedia: historyArchive.europe.filter((campaign) => campaign.media.length > 0).length,
+      openResearch: ['Alle 13 ferdigspilte Europa-kampanjer finnes og er verifisert på kampanjenivå, men gameIds og ekte kampbilder er fortsatt svakt dekket. Neste dybdepass bør gjøre kamp-for-kamp-kobling i stedet for bare kampanjeoppsummering.'],
     },
     playersAndRosters: {
       documentedNorwegianChampions: championPlayers.length,
@@ -92,6 +104,10 @@ export const historyAudit = {
       records: historyArchive.records.length,
       timelineEvents: historyArchive.timeline.length,
       keyAwayArenaArchiveAdded: ['arena-jordal-amfi-old', 'arena-jordal-amfi-new', 'arena-sparta-amfi', 'arena-leangen-ishall', 'arena-manglerudhallen', 'arena-lorenskog-ishall', 'arena-dnb-arena'],
+      arenasWithRealMedia: historyArchive.arenas.filter((arena) => arena.media.length > 0).length,
+      recordsWithRealMedia: historyArchive.records.filter((record) => record.media.length > 0).length,
+      timelineEventsWithRealMedia: historyArchive.timeline.filter((event) => event.media.length > 0).length,
+      openResearch: ['Arena-, rekord- og øyeblikksarkivet har mange verifiserte tekster, men lite media. Bortearena-listen er heller ikke ment som komplett kampstedregister ennå; prioriter historisk viktige arenaer og koble dem til konkrete øyeblikk.'],
     },
     seasonBySeasonControl: {
       expectedCompletedSeasons: expectedCompletedSeasonIds.length,
