@@ -159,7 +159,7 @@ export function HistoryArchivePage() {
       key: 'seasons',
       title: 'Sesong for sesong',
       shortTitle: 'Sesonger',
-      description: 'Alle ferdigspilte sesonger fra 1957/58 til 2025/26, med tydelig merking når historiske kilder ikke er komplette.',
+      description: 'Alle sesonger fra 1957/58 til 2025/26, med tydelig merking av avbrutte sesonger og når historiske kilder ikke er komplette.',
       count: `${historyArchive.seasons.length} sesonger`,
       status: `${historyResearchConflicts.filter((item) => item.status === 'open').length} åpent kildeavvik`,
       icon: CalendarDays,
