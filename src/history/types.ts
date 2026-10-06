@@ -84,6 +84,29 @@ export interface SeasonPersonRef {
   captaincy?: 'captain' | 'assistant'
 }
 
+export interface SeasonPlayerStat {
+  playerName: string
+  playerId?: string
+  position?: string
+  role: 'skater' | 'goalie'
+  competition: string
+  scope: 'regular-season' | 'playoffs' | 'overall'
+  gamesPlayed?: number
+  goals?: number
+  assists?: number
+  points?: number
+  penaltyMinutes?: number
+  plusMinus?: number
+  goalsAgainstAverage?: number
+  savePercentage?: number
+  wins?: number
+  losses?: number
+  shutouts?: number
+  sourceUrl: string
+  sourceLabel: string
+  verifiedAt: string
+}
+
 export interface ArchiveSeason extends ArchiveBase {
   startYear: number
   endYear: number
