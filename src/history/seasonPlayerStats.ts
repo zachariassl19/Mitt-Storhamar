@@ -1,4 +1,4 @@
-import type { SeasonPlayerStat } from './types'
+import type { ArchivePerson, SeasonPlayerStat } from './types'
 
 const verifiedAt = '2026-10-06'
 
@@ -245,4 +245,92 @@ export const seasonStatsCoverage = Object.entries(seasonPlayerStatsBySeasonId).m
 
 export function statsForSeason(seasonId: string) {
   return seasonPlayerStatsBySeasonId[seasonId] ?? []
+}
+
+
+function slugifyName(name: string) {
+  return name
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/æ/gi, 'ae')
+    .replace(/ø/gi, 'o')
+    .replace(/å/gi, 'a')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+function statsByPlayerName() {
+  const map = new Map<string, { seasonIds: Set<string>; positions: Set<string>; sources: Set<string> }>()
+  for (const [seasonId, entries] of Object.entries(seasonPlayerStatsBySeasonId)) {
+    for (const entry of entries) {
+      const current = map.get(entry.playerName) ?? {
+        seasonIds: new Set<string>(),
+        positions: new Set<string>(),
+        sources: new Set<string>(),
+      }
+      current.seasonIds.add(seasonId)
+      if (entry.position) current.positions.add(entry.position)
+      current.sources.add(entry.sourceUrl)
+      map.set(entry.playerName, current)
+    }
+  }
+  return map
+}
+
+export function buildSeasonStatSupplementPlayers(existingPlayers: ArchivePerson[]): ArchivePerson[] {
+  const existingNames = new Set(existingPlayers.map((player) => player.fullName))
+  return [...statsByPlayerName().entries()]
+    .filter(([fullName]) => !existingNames.has(fullName))
+    .map(([fullName, evidence]) => {
+      const seasonIds = [...evidence.seasonIds].sort()
+      const position = [...evidence.positions][0]
+      return {
+        id: `player-stat-${slugifyName(fullName)}`,
+        title: fullName,
+        fullName,
+        slug: `${slugifyName(fullName)}-storhamar`,
+        summary: `${fullName} er dokumentert i Elite Prospects-statistikken for ${seasonIds.length === 1 ? 'én Storhamar-sesong' : `${seasonIds.length} Storhamar-sesonger`}.`,
+        body: [
+          'Profilen er opprettet fra sesongstatistikk slik at korte innhopp og spillere uten egen biografiprofil ikke forsvinner fra sesongarkivet.',
+          'Biografi, draktnummer, komplette Storhamar-perioder og bilde fylles først når de er kontrollert mot spillerprofil og klubbarkiv.',
+        ],
+        completeness: 'partial',
+        sources: ['elite-prospects'],
+        media: [],
+        related: seasonIds.map((id) => ({ kind: 'season' as const, id })),
+        position: position === 'Forward' ? 'Løper' : position,
+        storhamarPeriods: [],
+        seasonIds,
+        honourIds: [],
+        roles: ['spiller', 'sesongstatistikk'],
+        tags: ['elite-prospects', 'sesongstatistikk', ...evidence.sources],
+        lastVerifiedAt: verifiedAt,
+      }
+    })
+}
+
+export function applySeasonStatEvidence(players: ArchivePerson[]): ArchivePerson[] {
+  const evidence = statsByPlayerName()
+  return players.map((player) => {
+    const match = evidence.get(player.fullName)
+    if (!match) return player
+
+    const seasonIds = [...new Set([...player.seasonIds, ...match.seasonIds])].sort()
+    const statPosition = [...match.positions][0]
+    const position = player.position || (statPosition === 'Forward' ? 'Løper' : statPosition)
+
+    return {
+      ...player,
+      position,
+      seasonIds,
+      related: [
+        ...player.related,
+        ...[...match.seasonIds]
+          .filter((seasonId) => !player.related.some((link) => link.kind === 'season' && link.id === seasonId))
+          .map((id) => ({ kind: 'season' as const, id })),
+      ],
+      tags: [...new Set([...(player.tags ?? []), 'season-stats-reviewed'])],
+    }
+  })
 }
