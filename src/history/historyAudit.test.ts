@@ -81,6 +81,35 @@ describe('full Storhamar history audit', () => {
     expect(new Set(classicSources).size).toBeLessThan(classicSources.length)
   })
 
+  it('reuses the same verified person media across player and legend views', () => {
+    const commonNames = historyArchive.players
+      .map((player) => player.fullName)
+      .filter((name) => historyArchive.legends.some((legend) => legend.fullName === name))
+
+    expect(commonNames.length).toBeGreaterThan(0)
+
+    for (const name of commonNames) {
+      const player = historyArchive.players.find((entry) => entry.fullName === name)
+      const legend = historyArchive.legends.find((entry) => entry.fullName === name)
+      const playerSources = new Set(player?.media.map((media) => media.src))
+      const legendSources = new Set(legend?.media.map((media) => media.src))
+      const shared = [...playerSources].filter((src) => legendSources.has(src))
+      expect(shared.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('tracks media coverage for every archive section', () => {
+    const coverage = historyAudit.mediaCoverage
+    expect(coverage.players.total).toBe(historyArchive.players.length)
+    expect(coverage.seasons.total).toBe(69)
+    expect(coverage.players.withMedia).toBeGreaterThan(75)
+    expect(coverage.honours.withMedia).toBeGreaterThan(0)
+    expect(coverage.jerseys.withMedia).toBeGreaterThan(0)
+    expect(coverage.europe.withMedia).toBeGreaterThan(0)
+    expect(coverage.records.withMedia).toBeGreaterThan(0)
+    expect(coverage.timeline.withMedia).toBeGreaterThan(0)
+  })
+
   it('reports the seven-point archive pass without hiding genuine research gaps', () => {
     const coverage = historyAudit.sevenPointCoverage
 
