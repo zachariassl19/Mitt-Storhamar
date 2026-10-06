@@ -60,52 +60,8 @@ const seasonStatNames = new Set(
 const archivePlayerNames = new Set(historyArchive.players.map((player) => player.fullName))
 const unmatchedSeasonStatNames = [...seasonStatNames].filter((name) => !archivePlayerNames.has(name)).sort()
 
-const mediaCoverage = {
-  players: {
-    total: historyArchive.players.length,
-    withMedia: historyArchive.players.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.players.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  seasons: {
-    total: historyArchive.seasons.length,
-    withMedia: historyArchive.seasons.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.seasons.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  honours: {
-    total: historyArchive.honours.length,
-    withMedia: historyArchive.honours.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.honours.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  jerseys: {
-    total: historyArchive.jerseys.length,
-    withMedia: historyArchive.jerseys.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.jerseys.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  europe: {
-    total: historyArchive.europe.length,
-    withMedia: historyArchive.europe.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.europe.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  arenas: {
-    total: historyArchive.arenas.length,
-    withMedia: historyArchive.arenas.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.arenas.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  records: {
-    total: historyArchive.records.length,
-    withMedia: historyArchive.records.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.records.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-  timeline: {
-    total: historyArchive.timeline.length,
-    withMedia: historyArchive.timeline.filter((item) => item.media.length > 0).length,
-    missingIds: historyArchive.timeline.filter((item) => item.media.length === 0).map((item) => item.id),
-  },
-}
-
 export const historyAudit = {
   generatedAt: '2026-10-06',
-  mediaCoverage,
   seasonCoverage: {
     expectedCompletedSeasons: expectedCompletedSeasonIds.length,
     actualCompletedSeasons: historyArchive.seasons.length,
@@ -202,46 +158,55 @@ export const historyAudit = {
     seasons: {
       total: historyArchive.seasons.length,
       withMedia: historyArchive.seasons.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.seasons.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.seasons.reduce((sum, item) => sum + item.media.length, 0),
     },
     honours: {
       total: historyArchive.honours.length,
       withMedia: historyArchive.honours.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.honours.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.honours.reduce((sum, item) => sum + item.media.length, 0),
     },
     jerseys: {
       total: historyArchive.jerseys.length,
       withMedia: historyArchive.jerseys.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.jerseys.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.jerseys.reduce((sum, item) => sum + item.media.length, 0),
     },
     legends: {
       total: historyArchive.legends.length,
       withMedia: historyArchive.legends.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.legends.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.legends.reduce((sum, item) => sum + item.media.length, 0),
     },
     players: {
       total: historyArchive.players.length,
       withMedia: historyArchive.players.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.players.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.players.reduce((sum, item) => sum + item.media.length, 0),
     },
     arenas: {
       total: historyArchive.arenas.length,
       withMedia: historyArchive.arenas.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.arenas.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.arenas.reduce((sum, item) => sum + item.media.length, 0),
     },
     europe: {
       total: historyArchive.europe.length,
       withMedia: historyArchive.europe.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.europe.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.europe.reduce((sum, item) => sum + item.media.length, 0),
     },
     records: {
       total: historyArchive.records.length,
       withMedia: historyArchive.records.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.records.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.records.reduce((sum, item) => sum + item.media.length, 0),
     },
     timeline: {
       total: historyArchive.timeline.length,
       withMedia: historyArchive.timeline.filter((item) => item.media.length > 0).length,
+      missingIds: historyArchive.timeline.filter((item) => item.media.length === 0).map((item) => item.id),
       imageCount: historyArchive.timeline.reduce((sum, item) => sum + item.media.length, 0),
     },
   },
