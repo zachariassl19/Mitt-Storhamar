@@ -267,6 +267,81 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
     alt: 'Emil Frøshaug i Storhamar-drakt',
   },
+  'Markus Stensrud': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/35-stensrud-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/35-markus-stensrud/',
+    alt: 'Markus Stensrud i Storhamar-drakt 2025/26',
+  },
+  'Henrik Fayen-Vestavik': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/25-fayen-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/25-henrik-fayen-vestavik/',
+    alt: 'Henrik Fayen-Vestavik i Storhamar-drakt 2025/26',
+  },
+  'Joe Gatenby': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/5-gatenby-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/5-joe-gatenby/',
+    alt: 'Joe Gatenby i Storhamar-drakt 2025/26',
+  },
+  'Amil Krupic': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/19-krupic-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/19-amil-krupic/',
+    alt: 'Amil Krupic i Storhamar-drakt 2025/26',
+  },
+  'Mathias Papuga': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/26-papuga-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/26-mathias-papuga/',
+    alt: 'Mathias Papuga i Storhamar-drakt 2025/26',
+  },
+  'Christian Bull': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/28-bull-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/28-christian-bull/',
+    alt: 'Christian Bull i Storhamar-drakt 2025/26',
+  },
+  'Sander Hurrød': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/54-hurrod-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/54-sander-hurrod/',
+    alt: 'Sander Hurrød i Storhamar-drakt 2025/26',
+  },
+  'Andreas Hjelm': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/88-hjelm-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/88-andreas-hjelm/',
+    alt: 'Andreas Hjelm i Storhamar-drakt 2025/26',
+  },
+  'Martin Rønnild': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/22-ronnild-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/22-martin-ronnild/',
+    alt: 'Martin Rønnild i Storhamar-drakt 2025/26',
+  },
+  'Andreas Martinsen': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/27-martinsen-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/27-andreas-martinsen/',
+    alt: 'Andreas Martinsen i Storhamar-drakt 2025/26',
+  },
+  'Isac Skedung': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/40-skedung-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/40-isac-skedung/',
+    alt: 'Isac Skedung i Storhamar-drakt 2025/26',
+  },
+  'Axel Sandnes': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/45-sandnes-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/45-axel-sandnes/',
+    alt: 'Axel Sandnes i Storhamar-drakt 2025/26',
+  },
+  'Kenneth Pappalardo': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/83-pappalardo-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/83-kenneth-pappalardo/',
+    alt: 'Kenneth Pappalardo i Storhamar-drakt 2025/26',
+  },
+  'Austin Cangelosi': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/86-cangelosi-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/86-austin-cangelosi/',
+    alt: 'Austin Cangelosi i Storhamar-drakt 2025/26',
+  },
+  'Oliver Nilsgård': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/92-nilsgard-25-26.png',
+    sourceUrl: 'https://www.sil.no/laget/92-oliver-nilsgard/',
+    alt: 'Oliver Nilsgård i Storhamar-drakt 2025/26',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
