@@ -180,7 +180,7 @@ function SeasonStatsTable({
         <div className="season-stats-table-wrap">
           <table className="season-stats-table">
             <thead>
-              <tr><th>Spiller</th><th>P</th><th>GP</th><th>G</th><th>A</th><th>TP</th><th>+/-</th></tr>
+              <tr><th>Spiller</th><th>GP</th><th>G</th><th>A</th><th>TP</th><th>+/-</th></tr>
             </thead>
             <tbody>
               {skaters.map((stat) => (
@@ -190,7 +190,6 @@ function SeasonStatsTable({
                       <span className="stat-position">{statPosition(stat)}</span>{stat.playerName}
                     </button>
                   </td>
-                  <td>{statPosition(stat)}</td>
                   <td>{stat.gamesPlayed ?? '—'}</td>
                   <td>{stat.goals ?? '—'}</td>
                   <td>{stat.assists ?? '—'}</td>
@@ -330,7 +329,6 @@ export function HistoryArchivePage() {
   ]
 
   useEffect(() => {
-    setQuery('')
     setSelectedId(null)
     setPageIndex(0)
     setPlayerPosition('all')
@@ -748,7 +746,7 @@ export function HistoryArchivePage() {
                 type="button"
                 className="archive-section-card"
                 key={item.key}
-                onClick={() => setSection(item.key)}
+                onClick={() => { setQuery(''); setSection(item.key) }}
               >
                 {item.cover && <img src={item.cover} alt="" aria-hidden="true" className="archive-section-cover" />}
                 <div className="archive-section-overlay" />
@@ -781,7 +779,7 @@ export function HistoryArchivePage() {
 
   return (
     <section className="page-section history-archive">
-      <button className="archive-back" type="button" onClick={() => setSection(null)}>
+      <button className="archive-back" type="button" onClick={() => { setQuery(''); setSection(null) }}>
         <ArrowLeft size={17} /> Hele arkivet
       </button>
 
