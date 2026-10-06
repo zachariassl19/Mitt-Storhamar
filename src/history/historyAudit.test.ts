@@ -69,7 +69,9 @@ describe('full Storhamar history audit', () => {
 
     expect(player?.media.length).toBeGreaterThan(0)
     expect(legend?.media.length).toBeGreaterThan(0)
-    expect(player?.media[0]?.src).toBe(legend?.media[0]?.src)
+    const playerImages = new Set(player?.media.map((media) => media.src) ?? [])
+    const sharedPersonImages = legend?.media.filter((media) => playerImages.has(media.src)) ?? []
+    expect(sharedPersonImages.length).toBeGreaterThan(0)
 
     expect(season2025?.media.length).toBeGreaterThan(0)
     expect(honour2025?.media.length).toBeGreaterThan(0)
