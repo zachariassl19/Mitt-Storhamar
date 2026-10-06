@@ -462,3 +462,183 @@
 @media (min-width: 520px) {
   .archive-gallery { grid-template-columns: repeat(2, 1fr); }
 }
+
+
+.gold-season-celebration {
+  position: relative;
+  overflow: hidden;
+  min-height: 92px;
+  margin: 13px 0 10px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 12px;
+  align-items: center;
+  border-radius: 16px;
+  border: 1px solid rgba(242,201,76,.45);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255,226,138,.24), transparent 34%),
+    linear-gradient(135deg, rgba(120,84,15,.78), rgba(35,29,13,.94));
+  box-shadow: 0 15px 38px rgba(242,201,76,.12);
+  animation: gold-season-in .48s cubic-bezier(.2,.8,.2,1) both;
+}
+.gold-season-celebration > *:not(.gold-confetti) { position: relative; z-index: 2; }
+.gold-trophy {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #102348;
+  background: linear-gradient(145deg, #ffe99e, #f2c94c);
+  box-shadow: 0 7px 18px rgba(0,0,0,.2);
+  animation: gold-trophy-pop .7s cubic-bezier(.2,1.35,.35,1) both;
+}
+.gold-season-celebration strong { display: block; margin-top: 4px; color: #fff0b7; font-size: 15px; }
+.gold-season-celebration small { display: block; margin-top: 3px; color: #d8c899; font-size: 9px; }
+.gold-confetti { position: absolute; inset: 0; pointer-events: none; }
+.gold-confetti i {
+  position: absolute;
+  top: -14px;
+  width: 5px;
+  height: 11px;
+  border-radius: 2px;
+  background: #f2c94c;
+  opacity: 0;
+  animation: gold-confetti-fall 1.7s ease-out both;
+}
+.gold-confetti i:nth-child(1) { left: 7%; animation-delay: .05s; transform: rotate(14deg); }
+.gold-confetti i:nth-child(2) { left: 15%; animation-delay: .19s; background: #fff0b7; }
+.gold-confetti i:nth-child(3) { left: 25%; animation-delay: .09s; transform: rotate(48deg); }
+.gold-confetti i:nth-child(4) { left: 34%; animation-delay: .27s; background: #cfa731; }
+.gold-confetti i:nth-child(5) { left: 43%; animation-delay: .14s; }
+.gold-confetti i:nth-child(6) { left: 52%; animation-delay: .32s; background: #fff0b7; }
+.gold-confetti i:nth-child(7) { left: 61%; animation-delay: .03s; transform: rotate(25deg); }
+.gold-confetti i:nth-child(8) { left: 69%; animation-delay: .23s; background: #cfa731; }
+.gold-confetti i:nth-child(9) { left: 77%; animation-delay: .12s; }
+.gold-confetti i:nth-child(10) { left: 84%; animation-delay: .36s; background: #fff0b7; }
+.gold-confetti i:nth-child(11) { left: 91%; animation-delay: .18s; transform: rotate(61deg); }
+.gold-confetti i:nth-child(12) { left: 96%; animation-delay: .29s; background: #cfa731; }
+
+@keyframes gold-season-in {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes gold-trophy-pop {
+  0% { opacity: 0; transform: scale(.55) rotate(-8deg); }
+  68% { opacity: 1; transform: scale(1.12) rotate(3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes gold-confetti-fall {
+  0% { opacity: 0; transform: translateY(-4px) rotate(0); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(108px) rotate(250deg); }
+}
+
+.season-stats-block {
+  margin: 15px 0 4px;
+  padding: 13px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  background: rgba(4,17,37,.44);
+}
+.season-stats-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 10px;
+}
+.season-stats-heading h3 { margin: 4px 0 0; font-size: 15px; }
+.season-stats-source {
+  min-width: 32px;
+  padding: 5px 7px;
+  border-radius: 8px;
+  text-align: center;
+  color: #d9e7fa;
+  background: rgba(255,255,255,.06);
+  font-size: 8px;
+  font-weight: 900;
+}
+.season-stats-subtitle {
+  display: block;
+  margin: 14px 0 6px;
+  color: #9eb2d0;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+.season-stats-table-wrap {
+  overflow-x: auto;
+  border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.075);
+  scrollbar-width: thin;
+}
+.season-stats-table {
+  width: 100%;
+  min-width: 470px;
+  border-collapse: collapse;
+  font-size: 9px;
+}
+.season-stats-table th {
+  padding: 7px 8px;
+  text-align: right;
+  color: #8198b9;
+  background: rgba(255,255,255,.035);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+.season-stats-table th:first-child,
+.season-stats-table td:first-child { text-align: left; }
+.season-stats-table td {
+  padding: 8px;
+  text-align: right;
+  color: #bed0e7;
+  border-top: 1px solid rgba(255,255,255,.055);
+  white-space: nowrap;
+}
+.season-stats-table tbody tr:first-child td { border-top: 0; }
+.season-stats-table td strong { color: var(--gold-soft); }
+.season-stats-table td button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #eef5ff;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+}
+.season-stats-table td button:hover { color: var(--gold-soft); }
+.stat-position {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  border-radius: 6px;
+  color: #9db2d2;
+  background: rgba(255,255,255,.06);
+  font-size: 7px;
+}
+.goalie-table { min-width: 420px; }
+.season-stats-link {
+  min-height: 34px;
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  color: #9cb2d1;
+  text-decoration: none;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-season-celebration,
+  .gold-trophy,
+  .gold-confetti i { animation: none !important; }
+  .gold-confetti { display: none; }
+}
