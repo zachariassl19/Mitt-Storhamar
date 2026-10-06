@@ -12,7 +12,7 @@ import {
 } from '../lib/notificationSettings'
 import { loadSmartGameDaySettings } from '../lib/smartGameDaySettings'
 import { loadGameDayRecords } from '../lib/storage'
-import { loadTrips } from '../lib/trips'
+import { loadTrips, TRIPS_CHANGED_EVENT } from '../lib/trips'
 
 const SENT_KEY = 'mitt-storhamar:notifications-sent:v1'
 
@@ -71,7 +71,7 @@ export function NotificationManager() {
     let disposed = false
 
     async function check() {
-      if (disposed || document.hidden || !settings.enabled) return
+      if (disposed || !settings.enabled) return
       if (!('Notification' in window) || Notification.permission !== 'granted') return
 
       const sent = readSent()
@@ -96,9 +96,16 @@ export function NotificationManager() {
 
     const onVisible = () => { if (!document.hidden) void check() }
     const onFocus = () => void check()
+    const onPageShow = () => void check()
+    const onOnline = () => void check()
+    const onTripChanged = () => void check()
     const timer = window.setInterval(() => void check(), 30_000)
+
     document.addEventListener('visibilitychange', onVisible)
     window.addEventListener('focus', onFocus)
+    window.addEventListener('pageshow', onPageShow)
+    window.addEventListener('online', onOnline)
+    window.addEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     void check()
 
     return () => {
@@ -106,6 +113,9 @@ export function NotificationManager() {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
       window.removeEventListener('focus', onFocus)
+      window.removeEventListener('pageshow', onPageShow)
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     }
   }, [settings])
 
