@@ -154,6 +154,53 @@ export const historyAudit = {
       openConflictIds: historyResearchConflicts.filter((conflict) => conflict.status === 'open').map((conflict) => conflict.id),
     },
   },
+  mediaCoverage: {
+    seasons: {
+      total: historyArchive.seasons.length,
+      withMedia: historyArchive.seasons.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.seasons.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    honours: {
+      total: historyArchive.honours.length,
+      withMedia: historyArchive.honours.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.honours.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    jerseys: {
+      total: historyArchive.jerseys.length,
+      withMedia: historyArchive.jerseys.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.jerseys.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    legends: {
+      total: historyArchive.legends.length,
+      withMedia: historyArchive.legends.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.legends.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    players: {
+      total: historyArchive.players.length,
+      withMedia: historyArchive.players.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.players.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    arenas: {
+      total: historyArchive.arenas.length,
+      withMedia: historyArchive.arenas.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.arenas.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    europe: {
+      total: historyArchive.europe.length,
+      withMedia: historyArchive.europe.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.europe.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    records: {
+      total: historyArchive.records.length,
+      withMedia: historyArchive.records.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.records.reduce((sum, item) => sum + item.media.length, 0),
+    },
+    timeline: {
+      total: historyArchive.timeline.length,
+      withMedia: historyArchive.timeline.filter((item) => item.media.length > 0).length,
+      imageCount: historyArchive.timeline.reduce((sum, item) => sum + item.media.length, 0),
+    },
+  },
   partialEntities: {
     seasons: partialIds(historyArchive.seasons),
     honours: partialIds(historyArchive.honours),
