@@ -254,8 +254,17 @@ function SeasonStatsTable({
               {skaters.map((stat) => (
                 <tr key={`${stat.playerName}-skater`}>
                   <td>
-                    <button type="button" onClick={() => onPlayer(stat.playerName)}>
-                      <span className="stat-position">{statPosition(stat)}</span>{stat.playerName}
+                    <button type="button" onClick={() => onPlayer(stat.playerName)} className="stat-player-button">
+                      {mediaForPlayer(stat.playerName, playerByName(stat.playerName)?.media)?.src ? (
+                        <img
+                          src={mediaForPlayer(stat.playerName, playerByName(stat.playerName)?.media)?.src}
+                          alt=""
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="stat-position">{statPosition(stat)}</span>
+                      )}
+                      <span>{stat.playerName}</span>
                     </button>
                   </td>
                   <td>{stat.gamesPlayed ?? '—'}</td>
@@ -284,7 +293,20 @@ function SeasonStatsTable({
                   const hasRecord = stat.wins !== undefined && stat.losses !== undefined
                   return (
                     <tr key={`${stat.playerName}-goalie`}>
-                      <td><button type="button" onClick={() => onPlayer(stat.playerName)}>{stat.playerName}</button></td>
+                      <td>
+                        <button type="button" onClick={() => onPlayer(stat.playerName)} className="stat-player-button">
+                          {mediaForPlayer(stat.playerName, playerByName(stat.playerName)?.media)?.src ? (
+                            <img
+                              src={mediaForPlayer(stat.playerName, playerByName(stat.playerName)?.media)?.src}
+                              alt=""
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span className="stat-position">K</span>
+                          )}
+                          <span>{stat.playerName}</span>
+                        </button>
+                      </td>
                       <td>{stat.gamesPlayed ?? '—'}</td>
                       <td>{played && stat.goalsAgainstAverage !== undefined ? stat.goalsAgainstAverage.toFixed(2) : '—'}</td>
                       <td>{played && stat.savePercentage !== undefined ? `${(stat.savePercentage * 100).toFixed(1)}%` : '—'}</td>
@@ -466,6 +488,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? item.honourReason ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'portrait',
             chips: [item.honouredAt ? dateLabel(item.honouredAt) : '', item.position ?? '', rafterStatus].filter(Boolean),
             body: item.body ?? [],
@@ -496,6 +519,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'event',
             chips: [item.year ? String(item.year) : '', item.finalOpponent ? `Mot ${item.finalOpponent}` : '', item.competition ?? ''].filter(Boolean),
             body: item.body ?? [],
@@ -525,6 +549,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'event',
             chips: [compactSeasonName(item.seasonId), item.stage ?? '', `${item.opponentNames.length} motstandere`].filter(Boolean),
             body: item.body ?? [],
@@ -644,6 +669,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'event',
             chips: [item.city ?? '', item.opened ? `Åpnet ${item.opened}` : '', item.capacity ? `${item.capacity.toLocaleString('nb-NO')} plasser` : ''].filter(Boolean),
             body: item.body ?? [],
@@ -672,6 +698,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'compact',
             chips: [item.value !== undefined ? `${item.value} ${item.unit ?? ''}`.trim() : '', compactSeasonName(item.seasonId)].filter(Boolean),
             body: item.body ?? [],
@@ -700,6 +727,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             imageLayout: 'event',
             chips: [item.date ? dateLabel(item.date) : item.year ? String(item.year) : '', item.era ?? ''].filter(Boolean),
             body: item.body ?? [],
