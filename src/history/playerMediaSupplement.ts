@@ -197,11 +197,6 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
     alt: 'Chris Marinucci i Storhamar-drakt',
   },
-  'Jim Marthinsen': {
-    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jmarthninsen.jpg?resize=600%2C408',
-    sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
-    alt: 'Jim Marthinsen i Storhamar-drakt',
-  },
   'Joakim Persson': {
     src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jpersson.jpg?resize=600%2C408',
     sourceUrl: 'https://silarkivet.no/alumni/alumni-p/',
