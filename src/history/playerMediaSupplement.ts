@@ -689,6 +689,66 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://www.sil.no/statpack-semifinale-3/',
     alt: "Zach O'Brien i Storhamar-drakt 2025/26",
   },
+  'Martin Åhlberg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mahlberg2.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-a/',
+    alt: 'Martin Åhlberg i Storhamar-drakt',
+  },
+  'Håkan Åhlund': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/haahlund3.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-a/',
+    alt: 'Håkan Åhlund i Storhamar-drakt',
+  },
+  'Hermann Aarflot': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/haarflot.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-a/',
+    alt: 'Hermann Aarflot i Storhamar-drakt',
+  },
+  'Andreas Paulsen Aas': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/apaas2.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-a/',
+    alt: 'Andreas Paulsen Aas i Storhamar-drakt',
+  },
+  'Johan Åström': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/astrom_johan.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-a/',
+    alt: 'Johan Åström i Storhamar-drakt',
+  },
+  'Derek Eastman': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/deastman.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Derek Eastman i Storhamar-drakt',
+  },
+  'Tom Rune Edvardsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/tredvardsen.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Tom Rune Edvardsen i Storhamar-drakt',
+  },
+  'Björn Eide': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/beide.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Björn Eide i Storhamar-drakt',
+  },
+  'Patrick Eide': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/patrick_eide.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Patrick Eide i Storhamar-drakt',
+  },
+  'Bjørn Elisenberg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/belisenberg-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Bjørn Elisenberg i Storhamar-drakt',
+  },
+  'Åge Ellingsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/aaellingsen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Åge Ellingsen i Storhamar-drakt',
+  },
+  'Patrick Elvsveen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/elvsveen-patrick.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Patrick Elvsveen i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
