@@ -39,6 +39,7 @@ interface ArchiveCardItem {
   image?: string
   imageAlt?: string
   gallery?: Array<{ src: string; alt: string; caption?: string }>
+  imageLayout?: 'portrait' | 'jersey' | 'season' | 'event' | 'compact'
   chips: string[]
   body: string[]
   details: Array<{ label: string; value: string }>
@@ -126,6 +127,50 @@ function playerByName(name: string) {
 function mediaForPlayer(fullName: string, ownMedia?: { src: string; alt: string; sourceUrl?: string }[]) {
   if (ownMedia?.[0]) return ownMedia[0]
   return historyArchive.legends.find((legend) => legend.fullName === fullName)?.media[0]
+}
+
+function uniqueMedia(items: Array<{ src: string; alt: string; caption?: string; sourceUrl?: string } | undefined>) {
+  const seen = new Set<string>()
+  return items.filter((item): item is { src: string; alt: string; caption?: string; sourceUrl?: string } => {
+    if (!item?.src || seen.has(item.src)) return false
+    seen.add(item.src)
+    return true
+  })
+}
+
+function mediaForSeason(seasonId: string) {
+  const season = historyArchive.seasons.find((entry) => entry.id === seasonId)
+  const honourMedia = historyArchive.honours
+    .filter((entry) => entry.seasonId === seasonId)
+    .flatMap((entry) => entry.media)
+  const europeMedia = historyArchive.europe
+    .filter((entry) => entry.seasonId === seasonId)
+    .flatMap((entry) => entry.media)
+  const jerseyMedia = historyArchive.jerseys
+    .filter((entry) => entry.seasonIds.includes(seasonId))
+    .flatMap((entry) => entry.media)
+  const timelineMedia = historyArchive.timeline
+    .filter((entry) =>
+      entry.related.some((link) =>
+        (link.kind === 'season' && link.id === seasonId) ||
+        (link.kind === 'honour' && historyArchive.honours.some((honour) => honour.id === link.id && honour.seasonId === seasonId)),
+      ),
+    )
+    .flatMap((entry) => entry.media)
+
+  return uniqueMedia([
+    ...(season?.media ?? []),
+    ...honourMedia,
+    ...timelineMedia,
+    ...europeMedia,
+    ...jerseyMedia,
+  ]).slice(0, 6)
+}
+
+function contextualMediaForPlayer(fullName: string, seasonIds: string[]) {
+  const own = mediaForPlayer(fullName, playerByName(fullName)?.media)
+  const seasonMedia = seasonIds.flatMap((seasonId) => mediaForSeason(seasonId))
+  return uniqueMedia([own, ...seasonMedia]).slice(0, 5)
 }
 
 function rosterGroups(names: string[]) {
