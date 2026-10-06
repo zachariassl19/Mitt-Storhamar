@@ -94,10 +94,14 @@ export const historyAudit = {
     playersAndRosters: {
       documentedNorwegianChampions: championPlayers.length,
       championsRepresentedInArchive: representedChampions.length,
+      archivePlayerProfiles: historyArchive.players.length,
+      seasonsWithRosterLinks: historyArchive.seasons.filter((season) => season.roster.length > 0).length,
+      seasonsWithoutRosterLinks: historyArchive.seasons.filter((season) => season.roster.length === 0).map((season) => season.id),
       titleSeasonsTracked: championshipRosterResearch.length,
       verifiedCompleteTitleRosters: championshipRosterResearch.filter((entry) => entry.status === 'verified-complete').length,
       partialTitleRosters: championshipRosterResearch.filter((entry) => entry.status !== 'verified-complete').map((entry) => entry.seasonId),
-      openResearch: ['Komplette spillerstaller for alle 69 sesonger er fortsatt et eget forskningsarbeid; gull-/mesterskapsstallene er kommet lengst.'],
+      latestTitleRosterPlayersTracked: championshipRosterResearch.find((entry) => entry.seasonId === 'season-2025-26')?.players.length ?? 0,
+      openResearch: ['2025/26 har nå 28 navngitte spillere i researchregisteret, inkludert korte EHL-innhopp som Marcus Fjeld og Kristoffer Sandnes. Den beholdes som partial til samtlige offisielle opptredener i EHL, NM-sluttspill og CHL er avstemt. Komplette spillerstaller for alle 69 sesonger er fortsatt det største enkeltarbeidet i punkt 5.'],
     },
     arenasRecordsMoments: {
       arenas: historyArchive.arenas.length,
