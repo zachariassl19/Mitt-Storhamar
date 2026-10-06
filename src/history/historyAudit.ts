@@ -7,6 +7,7 @@ import { canonicalJerseyCoverageLinks, officialJerseyCoverageLinks } from './jer
 import { silJerseyCoverage } from './jerseyCoverage'
 import { historyResearchConflicts } from './researchConflicts'
 import { championshipRosterResearch } from './rosterResearch'
+import { seasonPlayerStatsBySeasonId, seasonStatsCoverage } from './seasonPlayerStats'
 import type { ArchiveBase } from './types'
 
 export const expectedCompletedSeasonIds = Array.from({ length: 69 }, (_, index) => {
@@ -38,8 +39,29 @@ const verifiedEuropeCampaigns = canonicalEuropeCampaignIds.filter((id) => {
   return campaign?.completeness === 'verified'
 })
 
+const playerResearchReview = historyArchive.players.map((player) => {
+  const missing: string[] = []
+  if (!player.position) missing.push('position')
+  if (player.seasonIds.length === 0) missing.push('season-links')
+  if (!player.storhamarPeriods?.length) missing.push('storhamar-periods')
+  if (!player.shirtNumbers?.length) missing.push('shirt-numbers')
+  if (player.media.length === 0) missing.push('media')
+  return {
+    id: player.id,
+    name: player.fullName,
+    completeness: player.completeness,
+    missing,
+  }
+})
+
+const seasonStatNames = new Set(
+  Object.values(seasonPlayerStatsBySeasonId).flat().map((entry) => entry.playerName),
+)
+const archivePlayerNames = new Set(historyArchive.players.map((player) => player.fullName))
+const unmatchedSeasonStatNames = [...seasonStatNames].filter((name) => !archivePlayerNames.has(name)).sort()
+
 export const historyAudit = {
-  generatedAt: '2026-09-28',
+  generatedAt: '2026-10-06',
   seasonCoverage: {
     expectedCompletedSeasons: expectedCompletedSeasonIds.length,
     actualCompletedSeasons: historyArchive.seasons.length,
@@ -95,13 +117,25 @@ export const historyAudit = {
       documentedNorwegianChampions: championPlayers.length,
       championsRepresentedInArchive: representedChampions.length,
       archivePlayerProfiles: historyArchive.players.length,
+      verifiedPlayerProfiles: historyArchive.players.filter((player) => player.completeness === 'verified').length,
+      partialPlayerProfiles: historyArchive.players.filter((player) => player.completeness !== 'verified').length,
+      profilesWithPosition: historyArchive.players.filter((player) => Boolean(player.position)).length,
+      profilesWithSeasonLinks: historyArchive.players.filter((player) => player.seasonIds.length > 0).length,
+      profilesWithStorhamarPeriods: historyArchive.players.filter((player) => Boolean(player.storhamarPeriods?.length)).length,
+      profilesWithShirtNumbers: historyArchive.players.filter((player) => Boolean(player.shirtNumbers?.length)).length,
+      profilesWithRealMedia: historyArchive.players.filter((player) => player.media.length > 0 || historyArchive.legends.some((legend) => legend.fullName === player.fullName && legend.media.length > 0)).length,
+      playerResearchReview,
+      profilesNeedingResearch: playerResearchReview.filter((entry) => entry.completeness !== 'verified' || entry.missing.length > 0).map((entry) => entry.id),
       seasonsWithRosterLinks: historyArchive.seasons.filter((season) => season.roster.length > 0).length,
       seasonsWithoutRosterLinks: historyArchive.seasons.filter((season) => season.roster.length === 0).map((season) => season.id),
       titleSeasonsTracked: championshipRosterResearch.length,
       verifiedCompleteTitleRosters: championshipRosterResearch.filter((entry) => entry.status === 'verified-complete').length,
       partialTitleRosters: championshipRosterResearch.filter((entry) => entry.status !== 'verified-complete').map((entry) => entry.seasonId),
       latestTitleRosterPlayersTracked: championshipRosterResearch.find((entry) => entry.seasonId === 'season-2025-26')?.players.length ?? 0,
-      openResearch: ['2025/26 har nå 28 navngitte spillere i researchregisteret, inkludert korte EHL-innhopp som Marcus Fjeld og Kristoffer Sandnes. Den beholdes som partial til samtlige offisielle opptredener i EHL, NM-sluttspill og CHL er avstemt. Komplette spillerstaller for alle 69 sesonger er fortsatt det største enkeltarbeidet i punkt 5.'],
+      seasonsWithPlayerStats: seasonStatsCoverage.length,
+      playerStatRows: seasonStatsCoverage.reduce((sum, entry) => sum + entry.rows, 0),
+      unmatchedSeasonStatNames,
+      openResearch: ['Spillerarkivet har nå en profil-for-profil audit og sesongstatistikk fra Elite Prospects er koblet inn for utvalgte mesterskapssesonger. Alle profiler som mangler posisjon, komplette Storhamar-perioder, sesongkoblinger, nummer eller bilde står eksplisitt i researchkøen. Målet er fortsatt full spiller- og stallkontroll for alle sesonger.'],
     },
     arenasRecordsMoments: {
       arenas: historyArchive.arenas.length,
