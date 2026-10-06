@@ -197,7 +197,7 @@ export const seasonPlayerStatsBySeasonId: Record<string, SeasonPlayerStat[]> = {
     skater('Noah Alme Bjerke-Narud', ep202425, 4, 0, 0, 0, 'Forward'),
     skater('Mathias Fahle Karlsen', ep202425, 7, 0, 0, 0, 'Forward'),
     goalie('Trym Gran', ep202425, 18, 1.34, 0.938, 12, 3, 1),
-    goalie('Henrik Fayen-Vestavik', ep202425, 0, 0, 0, 0, 0, 0, 0),
+    goalie('Henrik Fayen-Vestavik', ep202425, 0, 0, 0, 0, 0, 0),
   ],
 
   'season-2025-26': [
