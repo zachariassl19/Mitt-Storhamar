@@ -304,7 +304,7 @@ export function HistoryArchivePage() {
       shortTitle: 'Spillere',
       description: 'Spillerprofiler og sesongstaller. Gullsesongene er lengst kommet, mens hele arkivet bygges sesong for sesong.',
       count: `${historyArchive.players.length} profiler`,
-      status: `${championshipRosterResearch.filter((item) => item.status === 'verified-complete').length}/${championshipRosterResearch.length} gullstaller komplette`,
+      status: `${historyAudit.sevenPointCoverage.playersAndRosters.profilesNeedingResearch.length} profiler i researchkø`,
       icon: Users,
     },
     {
@@ -323,7 +323,7 @@ export function HistoryArchivePage() {
       shortTitle: 'Sesonger',
       description: 'Alle sesonger fra 1957/58 til 2025/26, med tydelig merking av avbrutte sesonger og når historiske kilder ikke er komplette.',
       count: `${historyArchive.seasons.length} sesonger`,
-      status: `${historyResearchConflicts.filter((item) => item.status === 'open').length} åpent kildeavvik`,
+      status: `${historyAudit.sevenPointCoverage.playersAndRosters.seasonsWithPlayerStats} sesonger med spillerstats · ${historyResearchConflicts.filter((item) => item.status === 'open').length} kildeavvik`,
       icon: CalendarDays,
     },
   ]
@@ -888,14 +888,6 @@ export function HistoryArchivePage() {
           </div>
         </div>
       )}
-      {section === 'people' && peopleView === 'players' && (
-        <div className="archive-position-filters" aria-label="Spillerposisjoner">
-          {([['all','Alle'],['keeper','Keepere'],['back','Backer'],['forward','Forwards'],['unknown','Uavklart']] as const).map(([value,label]) => (
-            <button type="button" key={value} className={playerPosition === value ? 'active' : ''}
-              aria-pressed={playerPosition === value} onClick={() => setPlayerPosition(value)}>{label}</button>
-          ))}
-        </div>
-      )}
       {section === 'people' && peopleView === 'rosters' && (
         <div className="archive-roster-explain">
           <strong>Velg en sesong</strong>
@@ -922,7 +914,7 @@ export function HistoryArchivePage() {
 
       <div className="archive-list">
         {visibleItems.map((item, index) => {
-          const expanded = selectedId === item.id
+          const expanded = selectedId === item.id || (section === 'people' && peopleView === 'rosters')
           const showPositionHeading =
             section === 'people' &&
             peopleView === 'players' &&
@@ -1012,6 +1004,16 @@ export function HistoryArchivePage() {
                         setSelectedId(null)
                       }}
                     />
+                  )}
+
+                  {section === 'seasons' && (!item.seasonStats || item.seasonStats.length === 0) && (
+                    <div className="season-stats-pending">
+                      <CircleDot size={16} />
+                      <div>
+                        <strong>Spillerstatistikk under gjennomgang</strong>
+                        <span>Sesongen er i arkivet, men spiller-for-spiller-tall er ikke ferdig importert og kontrollert ennå.</span>
+                      </div>
+                    </div>
                   )}
 
                   {item.rosterSections && (
