@@ -246,7 +246,12 @@ export function HistoryArchivePage() {
             sourceUrl: source?.url,
             sourceLabel: source?.label,
             verified: item.completeness === 'verified',
-            searchText: [item.title, item.summary, seasons, item.tags?.join(' ')].filter(Boolean).join(' ').toLowerCase(),
+            searchText: [item.title, item.summary, seasons, item.tags?.join(' '), item.colours?.join(' '), item.usage.join(' ')].filter(Boolean).join(' ').toLowerCase(),
+            filterTags: [
+              ...(item.colours ?? []).map((value) => value.toLowerCase()),
+              ...item.usage.map((value) => value.toLowerCase()),
+              ...(item.tags ?? []).map((value) => value.toLowerCase()),
+            ],
           }
         })
     }
@@ -344,51 +349,75 @@ export function HistoryArchivePage() {
     if (section === 'people' && peopleView === 'rosters') {
       return [...championshipRosterResearch]
         .sort((a, b) => seasonYear(b.seasonId) - seasonYear(a.seasonId))
-        .map((item) => ({
-          id: `roster-${item.seasonId}`,
-          title: `${item.displayName} · spillerstall`,
-          eyebrow: item.status === 'verified-complete' ? 'KONTROLLERT STALL' : 'STALL UNDER ARBEID',
-          summary: item.note ?? `${item.players.length} spillere og ${item.coaches.length} trener(e) er registrert i researchgrunnlaget.`,
-          chips: [`${item.players.length} spillere`, `${item.coaches.length} trener(e)`, item.status === 'verified-complete' ? 'Komplett' : 'Partial'],
-          body: item.note ? [item.note] : [],
-          details: [
-            { label: 'Spillere', value: item.players.join(', ') },
-            { label: 'Trenere', value: item.coaches.join(', ') },
-          ],
-          sourceUrl: item.sourceUrl,
-          sourceLabel: 'Åpne stallkilde',
-          verified: item.status === 'verified-complete',
-          searchText: [item.displayName, item.players.join(' '), item.coaches.join(' '), item.note].filter(Boolean).join(' ').toLowerCase(),
-        }))
+        .map((item) => {
+          const groups = rosterGroups(item.players)
+          const imagePlayer = item.players
+            .map((name) => playerByName(name))
+            .find((player) => mediaForPlayer(player?.fullName ?? '', player?.media)?.src)
+          const media = imagePlayer ? mediaForPlayer(imagePlayer.fullName, imagePlayer.media) : undefined
+          return {
+            id: `roster-${item.seasonId}`,
+            title: `${item.displayName} · spillerstall`,
+            eyebrow: item.status === 'verified-complete' ? 'KONTROLLERT STALL' : 'STALL UNDER ARBEID',
+            summary: item.note ?? `${item.players.length} spillere og ${item.coaches.length} trener(e) er registrert i researchgrunnlaget.`,
+            image: media?.src,
+            imageAlt: media?.alt,
+            chips: [
+              `${item.players.length} spillere`,
+              `${groups.keeper.length} K · ${groups.back.length} B · ${groups.forward.length} F`,
+              item.status === 'verified-complete' ? 'Komplett' : 'Partial',
+            ],
+            body: item.note ? [item.note] : [],
+            details: [
+              ...(groups.keeper.length ? [{ label: 'Keepere', value: groups.keeper.join(', ') }] : []),
+              ...(groups.back.length ? [{ label: 'Backer', value: groups.back.join(', ') }] : []),
+              ...(groups.forward.length ? [{ label: 'Forwards', value: groups.forward.join(', ') }] : []),
+              ...(groups.unknown.length ? [{ label: 'Ikke ferdig klassifisert', value: groups.unknown.join(', ') }] : []),
+              { label: 'Trenere', value: item.coaches.join(', ') },
+            ],
+            sourceUrl: item.sourceUrl,
+            sourceLabel: 'Åpne stallkilde',
+            verified: item.status === 'verified-complete' && groups.unknown.length === 0,
+            searchText: [item.displayName, item.players.join(' '), item.coaches.join(' '), item.note].filter(Boolean).join(' ').toLowerCase(),
+          }
+        })
     }
 
     if (section === 'people') {
       return [...historyArchive.players]
-        .sort((a, b) => a.fullName.localeCompare(b.fullName, 'nb'))
+        .sort((a, b) => {
+          const groupOrder = { keeper: 0, back: 1, forward: 2, unknown: 3, all: 4 }
+          const positionDiff = groupOrder[playerPositionGroup(a.position)] - groupOrder[playerPositionGroup(b.position)]
+          return positionDiff || a.fullName.localeCompare(b.fullName, 'nb')
+        })
         .map((item) => {
-          const media = item.media[0]
+          const media = mediaForPlayer(item.fullName, item.media)
           const source = sourceFor(item.sources, media?.sourceUrl)
+          const group = playerPositionGroup(item.position)
+          const seasons = item.seasonIds.length
           return {
             id: item.id,
             title: item.fullName,
-            eyebrow: (item.position ?? 'SPILLER').toUpperCase(),
+            eyebrow: group === 'unknown' ? 'POSISJON UNDER KONTROLL' : positionLabel(group).toUpperCase(),
             summary: item.summary ?? 'Storhamar-spiller i historiearkivet.',
             image: media?.src,
             imageAlt: media?.alt,
             chips: [
               item.shirtNumbers?.length ? `#${item.shirtNumbers.join(' / #')}` : '',
-              `${item.seasonIds.length} sesonger`,
+              seasons ? `${seasons} sesonger` : 'Sesonger under research',
               item.honourIds.length ? `${item.honourIds.length} meritter` : '',
             ].filter(Boolean),
             body: item.body ?? [],
             details: [
               ...(item.position ? [{ label: 'Posisjon', value: item.position }] : []),
               ...(item.storhamarPeriods?.length ? [{ label: 'Storhamar-perioder', value: item.storhamarPeriods.map((period) => [compactSeasonName(period.fromSeasonId), compactSeasonName(period.toSeasonId)].filter(Boolean).join('–') || period.note).filter(Boolean).join(', ') }] : []),
+              ...(item.seasonIds.length ? [{ label: 'Registrerte sesonger', value: item.seasonIds.map(compactSeasonName).join(', ') }] : []),
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
             verified: item.completeness === 'verified',
-            searchText: [item.fullName, item.summary, item.position, item.shirtNumbers?.join(' ')].filter(Boolean).join(' ').toLowerCase(),
+            searchText: [item.fullName, item.summary, item.position, item.shirtNumbers?.join(' '), item.seasonIds.join(' ')].filter(Boolean).join(' ').toLowerCase(),
+            group,
           }
         })
     }
@@ -507,9 +536,26 @@ export function HistoryArchivePage() {
 
   const filteredItems = useMemo(() => {
     const cleaned = query.trim().toLowerCase()
-    if (!cleaned) return items
-    return items.filter((item) => item.searchText.includes(cleaned))
-  }, [items, query])
+    return items.filter((item) => {
+      if (cleaned && !item.searchText.includes(cleaned)) return false
+      if (section === 'people' && peopleView === 'players' && playerPosition !== 'all' && item.group !== playerPosition) return false
+      if (section === 'jerseys' && jerseyFilter !== 'all') {
+        const tags = item.filterTags ?? []
+        const matches =
+          jerseyFilter === 'yellow' ? tags.includes('gul') :
+          jerseyFilter === 'blue' ? tags.includes('blå') :
+          jerseyFilter === 'white' ? tags.includes('hvit') :
+          jerseyFilter === 'series' ? tags.includes('home') || tags.includes('away') || tags.includes('serie') :
+          jerseyFilter === 'europe' ? tags.includes('europe') || tags.some((tag) => tag.includes('chl')) :
+          jerseyFilter === 'special' ? tags.includes('special') || tags.some((tag) => tag.includes('spesial')) :
+          jerseyFilter === 'testimonial' ? tags.includes('testimonial') || tags.some((tag) => tag.includes('testimonial')) :
+          jerseyFilter === 'preseason' ? tags.includes('preseason') || tags.some((tag) => tag.includes('forsesong')) :
+          true
+        if (!matches) return false
+      }
+      return true
+    })
+  }, [items, query, section, peopleView, playerPosition, jerseyFilter])
 
   const currentSection = sections.find((item) => item.key === section)
   const visibleItems = filteredItems.slice(0, visibleCount)
