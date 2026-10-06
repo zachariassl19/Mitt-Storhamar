@@ -408,6 +408,7 @@ export function HistoryArchivePage() {
           const source = sourceFor(item.sources, media?.sourceUrl)
           const group = playerPositionGroup(item.position)
           const seasons = item.seasonIds.length
+          const verifiedCareer = item.completeness === 'verified'
           return {
             id: item.id,
             title: item.fullName,
@@ -417,14 +418,14 @@ export function HistoryArchivePage() {
             imageAlt: media?.alt,
             chips: [
               item.shirtNumbers?.length ? `#${item.shirtNumbers.join(' / #')}` : '',
-              seasons ? `${seasons} sesonger` : 'Sesonger under research',
+              seasons ? (verifiedCareer ? `${seasons} sesonger` : `${seasons} dokumenterte sesonger`) : 'Sesonger under research',
               item.honourIds.length ? `${item.honourIds.length} meritter` : '',
             ].filter(Boolean),
             body: item.body ?? [],
             details: [
               ...(item.position ? [{ label: 'Posisjon', value: item.position }] : []),
               ...(item.storhamarPeriods?.length ? [{ label: 'Storhamar-perioder', value: item.storhamarPeriods.map((period) => [compactSeasonName(period.fromSeasonId), compactSeasonName(period.toSeasonId)].filter(Boolean).join('–') || period.note).filter(Boolean).join(', ') }] : []),
-              ...(item.seasonIds.length ? [{ label: 'Registrerte sesonger', value: item.seasonIds.map(compactSeasonName).join(', ') }] : []),
+              ...(item.seasonIds.length ? [{ label: verifiedCareer ? 'Registrerte sesonger' : 'Dokumenterte sesonger så langt', value: item.seasonIds.map(compactSeasonName).join(', ') }] : []),
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
