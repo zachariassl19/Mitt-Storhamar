@@ -399,6 +399,7 @@ export function HistoryArchivePage() {
             image: media?.src,
             imageAlt: media?.alt,
             gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
+            imageLayout: 'jersey',
             seasonStart: seasonYear(item.fromSeasonId ?? item.seasonIds[0]),
             chips: [seasons, ...(item.colours ?? [])].filter(Boolean).slice(0, 4),
             body: item.body ?? [],
@@ -438,6 +439,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? item.honourReason ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'portrait',
             chips: [item.honouredAt ? dateLabel(item.honouredAt) : '', item.position ?? '', rafterStatus].filter(Boolean),
             body: item.body ?? [],
             details: [
@@ -467,6 +469,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'event',
             chips: [item.year ? String(item.year) : '', item.finalOpponent ? `Mot ${item.finalOpponent}` : '', item.competition ?? ''].filter(Boolean),
             body: item.body ?? [],
             details: [
@@ -495,6 +498,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'event',
             chips: [compactSeasonName(item.seasonId), item.stage ?? '', `${item.opponentNames.length} motstandere`].filter(Boolean),
             body: item.body ?? [],
             details: [
@@ -515,10 +519,8 @@ export function HistoryArchivePage() {
         .sort((a, b) => seasonYear(b.seasonId) - seasonYear(a.seasonId))
         .map((item) => {
           const groups = rosterGroups(item.players)
-          const imagePlayer = item.players
-            .map((name) => playerByName(name))
-            .find((player) => mediaForPlayer(player?.fullName ?? '', player?.media)?.src)
-          const media = imagePlayer ? mediaForPlayer(imagePlayer.fullName, imagePlayer.media) : undefined
+          const seasonMedia = mediaForSeason(item.seasonId)
+          const media = seasonMedia[0]
           return {
             id: `roster-${item.seasonId}`,
             title: `${item.displayName} · spillerstall`,
@@ -526,6 +528,8 @@ export function HistoryArchivePage() {
             summary: item.note ?? `${item.players.length} spillere og ${item.coaches.length} trener(e) er registrert i researchgrunnlaget.`,
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: seasonMedia.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
+            imageLayout: 'season',
             chips: [
               `${item.players.length} spillere`,
               `${groups.keeper.length} K · ${groups.back.length} B · ${groups.forward.length} F`,
@@ -562,6 +566,7 @@ export function HistoryArchivePage() {
         })
         .map((item) => {
           const media = mediaForPlayer(item.fullName, item.media)
+          const contextualMedia = contextualMediaForPlayer(item.fullName, item.seasonIds)
           const source = sourceFor(item.sources, media?.sourceUrl)
           const group = playerPositionGroup(item.position)
           const seasons = item.seasonIds.length
@@ -575,6 +580,8 @@ export function HistoryArchivePage() {
             summary: item.summary ?? 'Storhamar-spiller i historiearkivet.',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: contextualMedia.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
+            imageLayout: 'portrait',
             chips: [
               item.shirtNumbers?.length ? `#${item.shirtNumbers.join(' / #')}` : '',
               seasons ? (verifiedCareer ? `${seasons} sesonger` : `${seasons} dokumenterte sesonger`) : 'Sesonger under research',
@@ -610,6 +617,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'event',
             chips: [item.city ?? '', item.opened ? `Åpnet ${item.opened}` : '', item.capacity ? `${item.capacity.toLocaleString('nb-NO')} plasser` : ''].filter(Boolean),
             body: item.body ?? [],
             details: [
@@ -637,6 +645,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'compact',
             chips: [item.value !== undefined ? `${item.value} ${item.unit ?? ''}`.trim() : '', compactSeasonName(item.seasonId)].filter(Boolean),
             body: item.body ?? [],
             details: [
@@ -664,6 +673,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? '',
             image: media?.src,
             imageAlt: media?.alt,
+            imageLayout: 'event',
             chips: [item.date ? dateLabel(item.date) : item.year ? String(item.year) : '', item.era ?? ''].filter(Boolean),
             body: item.body ?? [],
             details: item.era ? [{ label: 'Epoke', value: item.era }] : [],
@@ -678,7 +688,8 @@ export function HistoryArchivePage() {
     return [...historyArchive.seasons]
       .sort((a, b) => b.startYear - a.startYear)
       .map((item) => {
-        const media = item.media[0]
+        const seasonMedia = mediaForSeason(item.id)
+        const media = seasonMedia[0]
         const source = sourceFor(item.sources, media?.sourceUrl)
         const conflicts = historyResearchConflicts.filter((conflict) => conflict.entityId === item.id && conflict.status === 'open')
         const seasonStats = statsForSeason(item.id)
@@ -693,6 +704,8 @@ export function HistoryArchivePage() {
           summary: item.summary ?? '',
           image: media?.src,
           imageAlt: media?.alt,
+          gallery: seasonMedia.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
+          imageLayout: 'season',
           seasonId: item.id,
           seasonStats,
           goldSeason: goldLabels.length > 0,
@@ -975,7 +988,7 @@ export function HistoryArchivePage() {
                   <small>{filteredItems.filter((candidate) => candidate.group === item.group).length}</small>
                 </div>
               )}
-              <article className={`archive-item ${expanded ? 'expanded' : ''}`}>
+              <article className={`archive-item media-${item.imageLayout ?? 'compact'} ${expanded ? 'expanded' : ''}`}>
               <button
                 type="button"
                 className="archive-item-main"
