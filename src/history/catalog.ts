@@ -137,6 +137,7 @@ import {
   resolveTimelineResearch,
 } from './researchResolutions'
 import { historySources } from './sources'
+import { reuseArchiveMedia } from './mediaReuse'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
 export interface HistoryCategory {
@@ -264,10 +265,7 @@ const resolvedSeasons = rawSeasons
   .map(resolveSeasonResearch)
   .map((season) => applyVerifiedRosterResearch(season, allPlayers))
 
-// Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
-// Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
-export const historyArchive: HistoryArchive = {
-  sources: historySources,
+const baseArchive = {
   seasons: resolvedSeasons,
   honours: rawHonours.map(resolveHonourResearch).map(withHonourMedia),
   jerseys: [...earlyJerseys, ...jerseys1960s, ...jerseys1977To1984, ...jerseys1984To1990, ...jerseys1997To2000, ...jerseys2005To2010, ...jerseys2010To2015, ...jerseys2015To2020, ...detailedJerseys, ...jerseys2025To2026],
@@ -277,4 +275,14 @@ export const historyArchive: HistoryArchive = {
   europe: allEuropeCampaigns,
   records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010, ...records2010To2015, ...records2015To2020, ...modernHistoryRecords, ...records2024Detailed],
   timeline: rawTimeline.map(resolveTimelineResearch),
+}
+
+const archiveWithReusedMedia = reuseArchiveMedia(baseArchive)
+
+// Arkivet fylles kun med verifisert eller tydelig markert ufullstendig research.
+// Bilder som tilhører samme person, sesong eller eksplisitt relaterte arkivposter kan gjenbrukes.
+// Ikke bruk 0, tom statistikk eller oppdiktede felter som erstatning for manglende data.
+export const historyArchive: HistoryArchive = {
+  sources: historySources,
+  ...archiveWithReusedMedia,
 }
