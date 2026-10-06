@@ -36,6 +36,7 @@ interface ArchiveCardItem {
   summary: string
   image?: string
   imageAlt?: string
+  gallery?: Array<{ src: string; alt: string; caption?: string }>
   chips: string[]
   body: string[]
   details: Array<{ label: string; value: string }>
@@ -236,6 +237,7 @@ export function HistoryArchivePage() {
             summary: item.summary ?? 'Historisk Storhamar-drakt.',
             image: media?.src,
             imageAlt: media?.alt,
+            gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
             chips: [seasons, ...(item.colours ?? [])].filter(Boolean).slice(0, 4),
             body: item.body ?? [],
             details: [
@@ -771,12 +773,21 @@ export function HistoryArchivePage() {
 
               {expanded && (
                 <div className="archive-item-detail">
-                  {item.image && (
+                  {item.gallery && item.gallery.length > 1 ? (
+                    <div className="archive-gallery">
+                      {item.gallery.map((asset) => (
+                        <figure key={asset.src}>
+                          <img src={asset.src} alt={asset.alt} loading="lazy" />
+                          <figcaption>{asset.caption ?? asset.alt}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  ) : item.image ? (
                     <figure>
                       <img src={item.image} alt={item.imageAlt ?? item.title} />
                       <figcaption>{item.imageAlt ?? item.title}</figcaption>
                     </figure>
-                  )}
+                  ) : null}
 
                   <div className={`archive-verification ${item.verified ? 'verified' : 'partial'}`}>
                     {item.verified ? <CircleCheck size={15} /> : <CircleDot size={15} />}
