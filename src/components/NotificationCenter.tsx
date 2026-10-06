@@ -12,7 +12,7 @@ import {
 } from '../lib/notificationSettings'
 import { loadSmartGameDaySettings } from '../lib/smartGameDaySettings'
 import { loadGameDayRecords } from '../lib/storage'
-import { loadTrips } from '../lib/trips'
+import { loadTrips, TRIPS_CHANGED_EVENT } from '../lib/trips'
 
 const SENT_KEY = 'mitt-storhamar:notifications-sent:v1'
 
@@ -71,7 +71,7 @@ export function NotificationManager() {
     let disposed = false
 
     async function check() {
-      if (disposed || document.hidden || !settings.enabled) return
+      if (disposed || !settings.enabled) return
       if (!('Notification' in window) || Notification.permission !== 'granted') return
 
       const sent = readSent()
@@ -96,9 +96,16 @@ export function NotificationManager() {
 
     const onVisible = () => { if (!document.hidden) void check() }
     const onFocus = () => void check()
+    const onPageShow = () => void check()
+    const onOnline = () => void check()
+    const onTripChanged = () => void check()
     const timer = window.setInterval(() => void check(), 30_000)
+
     document.addEventListener('visibilitychange', onVisible)
     window.addEventListener('focus', onFocus)
+    window.addEventListener('pageshow', onPageShow)
+    window.addEventListener('online', onOnline)
+    window.addEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     void check()
 
     return () => {
@@ -106,6 +113,9 @@ export function NotificationManager() {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
       window.removeEventListener('focus', onFocus)
+      window.removeEventListener('pageshow', onPageShow)
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     }
   }, [settings])
 
@@ -168,8 +178,23 @@ export function NotificationSettingsPortal() {
   const [settings, setSettings] = useState<NotificationSettings>(() => loadNotificationSettings())
   const [permission, setPermission] = useState<PermissionState>(() => permissionState())
   const [message, setMessage] = useState('')
+  const [serviceWorkerReady, setServiceWorkerReady] = useState(false)
 
   useEffect(() => subscribeNotificationSettings(setSettings), [])
+
+  useEffect(() => {
+    let mounted = true
+    if (!('serviceWorker' in navigator)) {
+      setServiceWorkerReady(false)
+      return () => { mounted = false }
+    }
+
+    navigator.serviceWorker.ready
+      .then(() => { if (mounted) setServiceWorkerReady(true) })
+      .catch(() => { if (mounted) setServiceWorkerReady(false) })
+
+    return () => { mounted = false }
+  }, [])
 
   function persist(next: NotificationSettings) {
     setSettings(next)
@@ -265,6 +290,17 @@ export function NotificationSettingsPortal() {
             <div><span>SYSTEMTILLATELSE</span><strong className={permission === 'granted' ? 'good' : permission === 'denied' ? 'bad' : ''}>{permissionLabel(permission)}</strong></div>
           </div>
 
+          <div className="notification-runtime-grid">
+            <div>
+              <span>SERVICE WORKER</span>
+              <strong className={serviceWorkerReady ? 'good' : ''}>{serviceWorkerReady ? 'Klar' : 'Ikke klar'}</strong>
+            </div>
+            <div>
+              <span>BAKGRUNNSMODUS</span>
+              <strong>Lokal PWA</strong>
+            </div>
+          </div>
+
           <div className="notification-setting-list">
             {rows.map((row) => (
               <label className="notification-setting-row" key={row.key}>
@@ -278,7 +314,7 @@ export function NotificationSettingsPortal() {
             <Bell size={16} /> Send testvarsel
           </button>
           {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
-          <p className="settings-panel-note">DRA krever lagret reisetid. PWA-varsler sjekkes når appen er aktiv eller åpnes.</p>
+          <p className="settings-panel-note">DRA krever lagret reisetid. Lokal varselsjekk fortsetter så lenge nettleseren lar PWA-prosessen kjøre. Hvis Android stopper appen helt, kreves ekte Web Push fra backend for garantert bakgrunnslevering.</p>
         </div>
       )}
     </div>,

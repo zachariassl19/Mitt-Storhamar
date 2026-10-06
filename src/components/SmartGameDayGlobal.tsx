@@ -10,7 +10,8 @@ import {
   subscribeSmartGameDaySettings,
   type SmartGameDaySettings,
 } from '../lib/smartGameDaySettings'
-import { classifyArenaProximity, distanceMeters, eventFromPosition } from '../lib/smartGameDay'
+import { classifyArenaProximityWithAccuracy, distanceMeters, eventFromPosition, isReliableArenaPosition } from '../lib/smartGameDay'
+import { lastProximityForGame, publishSmartLocationStatus } from '../lib/locationRuntime'
 import { saveSmartGameDayEvent } from '../lib/storage'
 import type { ArenaProximity } from '../types'
 
@@ -35,6 +36,7 @@ export function SmartGameDayManager() {
   const [settings, setSettings] = useState<SmartGameDaySettings>(() => loadSmartGameDaySettings())
   const watchId = useRef<number | null>(null)
   const proximity = useRef<ArenaProximity>('outside')
+  const activeGameId = useRef<string | null>(null)
 
   useEffect(() => subscribeSmartGameDaySettings(setSettings), [])
 
@@ -44,63 +46,139 @@ export function SmartGameDayManager() {
 
   useEffect(() => {
     let disposed = false
-    let activeGameId: string | null = null
 
     function stopWatch() {
       if (watchId.current != null && 'geolocation' in navigator) {
         navigator.geolocation.clearWatch(watchId.current)
       }
       watchId.current = null
-      activeGameId = null
+      activeGameId.current = null
       proximity.current = 'outside'
     }
 
-    function startWatch() {
-      if (disposed || document.hidden || !settings.enabled || !settings.autoStartOnGameDay) return
+    function processPosition(game: (typeof games)[number], position: GeolocationPosition, source: 'watching' | 'manual' = 'watching') {
+      const arena = arenaForGame(game)
+      if (!arena || arena.latitude == null || arena.longitude == null) return
+
+      const meters = distanceMeters(
+        position.coords.latitude,
+        position.coords.longitude,
+        arena.latitude,
+        arena.longitude,
+      )
+      const previous = proximity.current
+      const nextProximity = classifyArenaProximityWithAccuracy(
+        arena,
+        meters,
+        position.coords.accuracy,
+        previous,
+      )
+      const reliable = isReliableArenaPosition(arena, position)
+      const smartEvent = reliable ? eventFromPosition(game, position, previous) : null
+      proximity.current = nextProximity
+
+      publishSmartLocationStatus({
+        gameId: game.id,
+        state: source,
+        proximity: nextProximity,
+        distanceMeters: Math.round(meters),
+        accuracyMeters: Math.round(position.coords.accuracy),
+        observedAt: new Date(position.timestamp).toISOString(),
+        reliable,
+      })
+
+      if (smartEvent) {
+        saveSmartGameDayEvent(smartEvent)
+        window.dispatchEvent(new CustomEvent('mitt-storhamar:smart-gameday-event', { detail: smartEvent }))
+      }
+    }
+
+    function publishError(gameId: string, message: string) {
+      publishSmartLocationStatus({
+        gameId,
+        state: 'error',
+        proximity: proximity.current,
+        distanceMeters: null,
+        accuracyMeters: null,
+        observedAt: new Date().toISOString(),
+        reliable: false,
+        error: message,
+      })
+    }
+
+    function activeGame() {
+      return games.find((candidate) => isGameDay(candidate))
+    }
+
+    function refreshCurrentPosition(game: (typeof games)[number]) {
+      if (disposed || !window.isSecureContext || !('geolocation' in navigator)) return
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (!disposed) processPosition(game, position, 'manual')
+        },
+        (error) => {
+          if (error.code === error.PERMISSION_DENIED) {
+            publishError(game.id, errorText(error))
+            stopWatch()
+          }
+        },
+        { enableHighAccuracy: true, maximumAge: 15_000, timeout: 20_000 },
+      )
+    }
+
+    function startWatch({ refresh = false } = {}) {
+      if (disposed || !settings.enabled || !settings.autoStartOnGameDay) return
       if (!window.isSecureContext || !('geolocation' in navigator)) return
 
-      const game = games.find((candidate) => isGameDay(candidate))
+      const game = activeGame()
       if (!game) {
         stopWatch()
         return
       }
+
       const arena = arenaForGame(game)
-      if (!arena || arena.latitude == null || arena.longitude == null) return
-      if (watchId.current != null && activeGameId === game.id) return
+      if (!arena || arena.latitude == null || arena.longitude == null) {
+        publishError(game.id, 'Arenaen mangler GPS-punkt.')
+        return
+      }
 
-      stopWatch()
-      activeGameId = game.id
-      watchId.current = navigator.geolocation.watchPosition(
-        (position) => {
-          if (disposed) return
-          const meters = distanceMeters(
-            position.coords.latitude,
-            position.coords.longitude,
-            arena.latitude!,
-            arena.longitude!,
-          )
-          const nextProximity = classifyArenaProximity(arena, meters)
-          const smartEvent = eventFromPosition(game, position, proximity.current)
-          proximity.current = nextProximity
-          if (smartEvent) {
-            saveSmartGameDayEvent(smartEvent)
-            window.dispatchEvent(new CustomEvent('mitt-storhamar:smart-gameday-event', { detail: smartEvent }))
-          }
-        },
-        (error) => {
-          if (error.code === error.PERMISSION_DENIED) stopWatch()
-        },
-        { enableHighAccuracy: true, maximumAge: 15_000, timeout: 25_000 },
-      )
+      if (activeGameId.current !== game.id) {
+        if (watchId.current != null) navigator.geolocation.clearWatch(watchId.current)
+        watchId.current = null
+        activeGameId.current = game.id
+        proximity.current = lastProximityForGame(game.id)
+      }
+
+      if (watchId.current == null) {
+        watchId.current = navigator.geolocation.watchPosition(
+          (position) => {
+            if (!disposed) processPosition(game, position, 'watching')
+          },
+          (error) => {
+            publishError(game.id, errorText(error))
+            if (error.code === error.PERMISSION_DENIED) stopWatch()
+          },
+          { enableHighAccuracy: true, maximumAge: 15_000, timeout: 25_000 },
+        )
+      }
+
+      if (refresh) refreshCurrentPosition(game)
     }
 
+    // Ikke stopp watchPosition bare fordi appen blir skjult. Nettleseren/OS-et
+    // kan suspendere den, men appen skal ikke selv slå GPS av. Når appen blir
+    // synlig igjen henter vi en fersk fix og fortsetter med lagret nærhetsstatus.
     const onVisibility = () => {
-      if (document.hidden) stopWatch()
-      else startWatch()
+      if (!document.hidden) startWatch({ refresh: true })
     }
+    const onPageShow = () => startWatch({ refresh: true })
+    const onOnline = () => startWatch({ refresh: true })
 
-    startWatch()
+    startWatch({ refresh: true })
     document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('pageshow', onPageShow)
+    window.addEventListener('online', onOnline)
+
     const timer = window.setInterval(() => {
       if (!document.hidden) startWatch()
     }, 60_000)
@@ -109,6 +187,8 @@ export function SmartGameDayManager() {
       disposed = true
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('pageshow', onPageShow)
+      window.removeEventListener('online', onOnline)
       stopWatch()
     }
   }, [settings.enabled, settings.autoStartOnGameDay])
@@ -164,6 +244,8 @@ export function SmartGameDaySettingsPortal() {
 
   useEffect(() => {
     let mounted = true
+    let permissionStatus: PermissionStatus | null = null
+
     async function readPermission() {
       if (!window.isSecureContext || !('geolocation' in navigator)) {
         if (mounted) setPermission('unsupported')
@@ -174,14 +256,23 @@ export function SmartGameDaySettingsPortal() {
         return
       }
       try {
-        const result = await navigator.permissions.query({ name: 'geolocation' })
-        if (mounted) setPermission(result.state)
+        permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+        if (!mounted || !permissionStatus) return
+        const sync = () => {
+          if (mounted && permissionStatus) setPermission(permissionStatus.state)
+        }
+        sync()
+        permissionStatus.onchange = sync
       } catch {
         if (mounted) setPermission('prompt')
       }
     }
+
     void readPermission()
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+      if (permissionStatus) permissionStatus.onchange = null
+    }
   }, [target])
 
   const arenaCoverage = useMemo(() => {

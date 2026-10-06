@@ -89,3 +89,38 @@
   text-align: center;
   cursor: pointer;
 }
+
+
+.notification-runtime-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.notification-runtime-grid > div {
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.025);
+}
+.settings-list .notification-runtime-grid span {
+  display: block;
+  margin: 0;
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+.notification-runtime-grid strong {
+  display: block;
+  margin-top: 4px;
+  color: #c8d8ed;
+  font-size: 9px;
+}
+.notification-runtime-grid strong.good { color: #8fe0b6; }
+
+@media (max-width: 370px) {
+  .notification-runtime-grid {
+    grid-template-columns: 1fr;
+  }
+}

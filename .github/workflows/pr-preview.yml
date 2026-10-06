@@ -2,7 +2,7 @@ name: PR preview artifact
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, research/seven-point-depth-2026-10-06]
   workflow_dispatch:
 
 jobs:
