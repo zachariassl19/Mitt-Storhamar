@@ -114,6 +114,7 @@ import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
 import { applyVerifiedPlayerSupplements } from './playerVerifiedSupplement'
 import { withRosterEvidence } from './rosterPositions'
+import { withPlayerMediaSupplement } from './playerMediaSupplement'
 import { applySeasonStatEvidence, buildSeasonStatSupplementPlayers } from './seasonPlayerStats'
 import { buildChampionSupplementPlayers } from './championPlayers'
 import { applyVerifiedRosterResearch, buildRosterSupplementPlayers } from './rosterBridge'
@@ -224,7 +225,7 @@ const playersBeforeChampionBridge = [...playersBeforeRosterBridge, ...rosterSupp
 const championSupplementPlayers = buildChampionSupplementPlayers(playersBeforeChampionBridge)
 const verifiedPlayers = applyVerifiedPlayerSupplements([...playersBeforeChampionBridge, ...championSupplementPlayers])
 const seasonStatSupplementPlayers = buildSeasonStatSupplementPlayers(verifiedPlayers)
-const allPlayers = withRosterEvidence(applySeasonStatEvidence([...verifiedPlayers, ...seasonStatSupplementPlayers]))
+const allPlayers = withPlayerMediaSupplement(withRosterEvidence(applySeasonStatEvidence([...verifiedPlayers, ...seasonStatSupplementPlayers])))
 
 const baseEuropeCampaigns = [
   ...europe1994To1997,
