@@ -325,6 +325,8 @@ export function HistoryArchivePage() {
   const recentJersey = historyArchive.jerseys.find((jersey) => jersey.id === 'jersey-2025-26-chl')?.media[0]?.src
   const recentRafter = historyArchive.legends.find((legend) => legend.id === 'legend-patrick-thoresen')?.media[0]?.src
   const classic = historyArchive.timeline.find((event) => event.id === 'timeline-2023-hockey-classic-record')?.media[0]?.src
+  const recentSeason = historyArchive.honours.find((honour) => honour.id === 'honour-2025-league')?.media[0]?.src
+  const playerCover = mediaForPlayer('Adrian Saxrud-Danielsen', playerByName('Adrian Saxrud-Danielsen')?.media)?.src
 
   const sections: SectionDefinition[] = [
     {
@@ -375,6 +377,7 @@ export function HistoryArchivePage() {
       count: `${historyArchive.seasons.length} sesonger`,
       status: `${historyAudit.sevenPointCoverage.playersAndRosters.seasonsWithPlayerStats} sesonger med spillerstats · ${historyResearchConflicts.filter((item) => item.status === 'open').length} kildeavvik`,
       icon: CalendarDays,
+      cover: recentSeason,
     },
     {
       key: 'moments',
@@ -394,6 +397,7 @@ export function HistoryArchivePage() {
       count: `${historyArchive.players.length} profiler`,
       status: `${historyAudit.sevenPointCoverage.playersAndRosters.profilesNeedingResearch.length} profiler i researchkø`,
       icon: Users,
+      cover: playerCover,
     },
   ]
 
