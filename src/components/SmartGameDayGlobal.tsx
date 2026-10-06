@@ -244,6 +244,8 @@ export function SmartGameDaySettingsPortal() {
 
   useEffect(() => {
     let mounted = true
+    let permissionStatus: PermissionStatus | null = null
+
     async function readPermission() {
       if (!window.isSecureContext || !('geolocation' in navigator)) {
         if (mounted) setPermission('unsupported')
@@ -254,14 +256,23 @@ export function SmartGameDaySettingsPortal() {
         return
       }
       try {
-        const result = await navigator.permissions.query({ name: 'geolocation' })
-        if (mounted) setPermission(result.state)
+        permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+        if (!mounted || !permissionStatus) return
+        const sync = () => {
+          if (mounted && permissionStatus) setPermission(permissionStatus.state)
+        }
+        sync()
+        permissionStatus.onchange = sync
       } catch {
         if (mounted) setPermission('prompt')
       }
     }
+
     void readPermission()
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+      if (permissionStatus) permissionStatus.onchange = null
+    }
   }, [target])
 
   const arenaCoverage = useMemo(() => {
