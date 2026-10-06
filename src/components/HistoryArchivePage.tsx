@@ -16,6 +16,7 @@ import {
   Sparkles,
   Trophy,
   Users,
+  X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { historyArchive } from '../history/catalog'
@@ -428,6 +429,7 @@ export function HistoryArchivePage() {
     setPageIndex(0)
     setPlayerPosition('all')
     setJerseyFilter('all')
+    setActiveImage(null)
   }, [section])
 
   const items = useMemo<ArchiveCardItem[]>(() => {
@@ -1075,14 +1077,28 @@ export function HistoryArchivePage() {
                     <div className="archive-gallery">
                       {item.gallery.map((asset) => (
                         <figure key={asset.src}>
-                          <img src={asset.src} alt={asset.alt} loading="lazy" />
+                          <button
+                            type="button"
+                            className="archive-image-open"
+                            onClick={() => setActiveImage(asset)}
+                            aria-label={`Åpne bilde: ${asset.alt}`}
+                          >
+                            <img src={asset.src} alt={asset.alt} loading="lazy" />
+                          </button>
                           <figcaption>{asset.caption ?? asset.alt}</figcaption>
                         </figure>
                       ))}
                     </div>
                   ) : item.image ? (
                     <figure>
-                      <img src={item.image} alt={item.imageAlt ?? item.title} />
+                      <button
+                        type="button"
+                        className="archive-image-open"
+                        onClick={() => setActiveImage({ src: item.image!, alt: item.imageAlt ?? item.title, caption: item.imageAlt ?? item.title })}
+                        aria-label={`Åpne bilde: ${item.imageAlt ?? item.title}`}
+                      >
+                        <img src={item.image} alt={item.imageAlt ?? item.title} />
+                      </button>
                       <figcaption>{item.imageAlt ?? item.title}</figcaption>
                     </figure>
                   ) : null}
@@ -1222,6 +1238,18 @@ export function HistoryArchivePage() {
           <Search size={23} />
           <strong>Ingen treff</strong>
           <span>Prøv et annet navn, årstall eller søkeord.</span>
+        </div>
+      )}
+
+      {activeImage && (
+        <div className="archive-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.alt} onClick={() => setActiveImage(null)}>
+          <div className="archive-lightbox-panel" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="archive-lightbox-close" onClick={() => setActiveImage(null)} aria-label="Lukk bilde">
+              <X size={19} />
+            </button>
+            <img src={activeImage.src} alt={activeImage.alt} />
+            {(activeImage.caption || activeImage.alt) && <p>{activeImage.caption ?? activeImage.alt}</p>}
+          </div>
         </div>
       )}
     </section>
