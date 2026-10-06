@@ -46,6 +46,8 @@ interface ArchiveCardItem {
   searchText: string
   group?: PlayerPositionFilter
   filterTags?: string[]
+  seasonStart?: number
+  rosterSections?: Array<{ label: string; names: string[] }>
 }
 
 interface SectionDefinition {
@@ -131,7 +133,9 @@ export function HistoryArchivePage() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [peopleView, setPeopleView] = useState<PeopleView>('rosters')
   const [momentView, setMomentView] = useState<MomentView>('arenas')
-  const [visibleCount, setVisibleCount] = useState(18)
+  const [pageIndex, setPageIndex] = useState(0)
+  const [jerseyEra, setJerseyEra] = useState('all')
+  const [jerseySort, setJerseySort] = useState<'newest'|'oldest'>('newest')
   const [playerPosition, setPlayerPosition] = useState<PlayerPositionFilter>('all')
   const [jerseyFilter, setJerseyFilter] = useState<JerseyFilter>('all')
 
@@ -215,10 +219,10 @@ export function HistoryArchivePage() {
   useEffect(() => {
     setQuery('')
     setSelectedId(null)
-    setVisibleCount(18)
+    setPageIndex(0)
     setPlayerPosition('all')
     setJerseyFilter('all')
-  }, [section, peopleView, momentView])
+  }, [section])
 
   const items = useMemo<ArchiveCardItem[]>(() => {
     if (!section) return []
@@ -238,6 +242,7 @@ export function HistoryArchivePage() {
             image: media?.src,
             imageAlt: media?.alt,
             gallery: item.media.map((asset) => ({ src: asset.src, alt: asset.alt, caption: asset.caption })),
+            seasonStart: seasonYear(item.fromSeasonId ?? item.seasonIds[0]),
             chips: [seasons, ...(item.colours ?? [])].filter(Boolean).slice(0, 4),
             body: item.body ?? [],
             details: [
@@ -370,6 +375,12 @@ export function HistoryArchivePage() {
               item.status === 'verified-complete' ? 'Komplett' : 'Partial',
             ],
             body: item.note ? [item.note] : [],
+            rosterSections: [
+              { label: 'Keepere', names: groups.keeper },
+              { label: 'Backer', names: groups.back },
+              { label: 'Forwards', names: groups.forward },
+              { label: 'Posisjon under kontroll', names: groups.unknown },
+            ].filter((part) => part.names.length > 0),
             details: [
               ...(groups.keeper.length ? [{ label: 'Keepere', value: groups.keeper.join(', ') }] : []),
               ...(groups.back.length ? [{ label: 'Backer', value: groups.back.join(', ') }] : []),
@@ -541,26 +552,34 @@ export function HistoryArchivePage() {
     return items.filter((item) => {
       if (cleaned && !item.searchText.includes(cleaned)) return false
       if (section === 'people' && peopleView === 'players' && playerPosition !== 'all' && item.group !== playerPosition) return false
-      if (section === 'jerseys' && jerseyFilter !== 'all') {
+      if (section === 'jerseys') {
         const tags = item.filterTags ?? []
-        const matches =
-          jerseyFilter === 'yellow' ? tags.includes('gul') :
-          jerseyFilter === 'blue' ? tags.includes('blå') :
-          jerseyFilter === 'white' ? tags.includes('hvit') :
-          jerseyFilter === 'series' ? tags.includes('home') || tags.includes('away') || tags.includes('serie') :
-          jerseyFilter === 'europe' ? tags.includes('europe') || tags.some((tag) => tag.includes('chl')) :
-          jerseyFilter === 'special' ? tags.includes('special') || tags.some((tag) => tag.includes('spesial')) :
-          jerseyFilter === 'testimonial' ? tags.includes('testimonial') || tags.some((tag) => tag.includes('testimonial')) :
-          jerseyFilter === 'preseason' ? tags.includes('preseason') || tags.some((tag) => tag.includes('forsesong')) :
-          true
-        if (!matches) return false
+        if (jerseyFilter !== 'all') {
+          const matches =
+            jerseyFilter === 'yellow' ? tags.includes('gul') :
+            jerseyFilter === 'blue' ? tags.includes('blå') :
+            jerseyFilter === 'white' ? tags.includes('hvit') :
+            jerseyFilter === 'series' ? tags.includes('home') || tags.includes('away') || tags.includes('serie') :
+            jerseyFilter === 'europe' ? tags.includes('europe') || tags.some((tag) => tag.includes('chl')) :
+            jerseyFilter === 'special' ? tags.includes('special') || tags.some((tag) => tag.includes('spesial')) :
+            jerseyFilter === 'testimonial' ? tags.some((tag) => tag.includes('testimonial')) :
+            jerseyFilter === 'preseason' ? tags.includes('preseason') || tags.some((tag) => tag.includes('forsesong')) : true
+          if (!matches) return false
+        }
+        if (jerseyEra !== 'all' && String(Math.floor((item.seasonStart ?? 0) / 10) * 10) !== jerseyEra) return false
       }
       return true
-    })
-  }, [items, query, section, peopleView, playerPosition, jerseyFilter])
+    }).sort((a, b) => section === 'jerseys'
+      ? (jerseySort === 'newest' ? (b.seasonStart ?? 0) - (a.seasonStart ?? 0) : (a.seasonStart ?? 0) - (b.seasonStart ?? 0)) : 0)
+  }, [items, query, section, peopleView, playerPosition, jerseyFilter, jerseyEra, jerseySort])
 
   const currentSection = sections.find((item) => item.key === section)
-  const visibleItems = filteredItems.slice(0, visibleCount)
+  const pageSize = section === 'people' && peopleView === 'rosters' ? 1 : 9
+  const pageCount = Math.max(1, Math.ceil(filteredItems.length / pageSize))
+  const currentPage = Math.min(pageIndex, pageCount - 1)
+  const visibleItems = filteredItems.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+
+  useEffect(() => { setPageIndex(0); setSelectedId(null) }, [query, playerPosition, jerseyFilter, jerseyEra, jerseySort, peopleView, momentView])
 
   if (!section) {
     return (
@@ -712,6 +731,53 @@ export function HistoryArchivePage() {
         </div>
       )}
 
+      {section === 'jerseys' && (
+        <div className="archive-filter-panel">
+          <strong>Sorter drakter</strong>
+          <div className="archive-filter-grid">
+            <label>Drakttype
+              <select value={jerseyFilter} onChange={(e) => setJerseyFilter(e.target.value as JerseyFilter)}>
+                <option value="all">Alle drakter</option>
+                <option value="series">Serie / hjemme / borte</option>
+                <option value="europe">CHL / Europa</option>
+                <option value="preseason">Forsesong</option>
+                <option value="special">Spesialdrakter</option>
+                <option value="testimonial">Testimonial</option>
+                <option value="yellow">Gule drakter</option>
+                <option value="blue">Blå drakter</option>
+                <option value="white">Hvite drakter</option>
+              </select>
+            </label>
+            <label>Tiår
+              <select value={jerseyEra} onChange={(e) => setJerseyEra(e.target.value)}>
+                <option value="all">Alle tiår</option>
+                {[2020,2010,2000,1990,1980,1970,1960,1950].map((year) => <option key={year} value={String(year)}>{year}-tallet</option>)}
+              </select>
+            </label>
+            <label>Sortering
+              <select value={jerseySort} onChange={(e) => setJerseySort(e.target.value as 'newest'|'oldest')}>
+                <option value="newest">Nyeste først</option>
+                <option value="oldest">Eldste først</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      )}
+      {section === 'people' && peopleView === 'players' && (
+        <div className="archive-position-filters" aria-label="Spillerposisjoner">
+          {([['all','Alle'],['keeper','Keepere'],['back','Backer'],['forward','Forwards'],['unknown','Uavklart']] as const).map(([value,label]) => (
+            <button type="button" key={value} className={playerPosition === value ? 'active' : ''}
+              aria-pressed={playerPosition === value} onClick={() => setPlayerPosition(value)}>{label}</button>
+          ))}
+        </div>
+      )}
+      {section === 'people' && peopleView === 'rosters' && (
+        <div className="archive-roster-explain">
+          <strong>Velg en sesong</strong>
+          <p>Stallene vises én sesong av gangen, med egne grupper for keepere, backer og forwards. Bla med Forrige/Neste nederst.</p>
+        </div>
+      )}
+
       <label className="archive-search">
         <Search size={17} />
         <input
@@ -796,9 +862,33 @@ export function HistoryArchivePage() {
 
                   {item.body.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
 
+                  {item.rosterSections && (
+                    <div className="archive-roster-groups">
+                      {item.rosterSections.map((group) => (
+                        <section className="archive-roster-group" key={group.label}>
+                          <h3>{group.label} <span>{group.names.length}</span></h3>
+                          <div className="archive-roster-rows">
+                            {group.names.map((name) => {
+                              const player = playerByName(name)
+                              const photo = mediaForPlayer(name, player?.media)
+                              return (
+                                <button type="button" key={name} className="archive-roster-row" onClick={() => {
+                                  setPeopleView('players'); setPlayerPosition('all'); setQuery(name); setSelectedId(null)
+                                }}>
+                                  {photo?.src ? <img src={photo.src} alt="" loading="lazy" /> : <span className="archive-roster-avatar">#</span>}
+                                  <span><strong>{name}</strong><small>{player?.shirtNumbers?.length ? `#${player.shirtNumbers.join(', #')}` : 'Åpne spillerprofil'}</small></span>
+                                  <ChevronRight size={16} />
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  )}
                   {item.details.length > 0 && (
                     <dl className="archive-detail-list">
-                      {item.details.map((detail) => (
+                      {item.details.filter((detail) => !item.rosterSections || !['Keepere','Backer','Forwards','Ikke ferdig klassifisert'].includes(detail.label)).map((detail) => (
                         <div key={detail.label}>
                           <dt>{detail.label}</dt>
                           <dd>{detail.value}</dd>
@@ -820,10 +910,15 @@ export function HistoryArchivePage() {
         })}
       </div>
 
-      {visibleCount < filteredItems.length && (
-        <button className="archive-load-more" type="button" onClick={() => setVisibleCount((current) => current + 18)}>
-          Vis flere <span>{filteredItems.length - visibleCount} igjen</span>
-        </button>
+      {filteredItems.length > 0 && pageCount > 1 && (
+        <nav className="archive-pagination" aria-label="Bla gjennom arkivet">
+          <button type="button" disabled={currentPage === 0}
+            onClick={() => { setPageIndex(currentPage - 1); setSelectedId(null) }}>‹ Forrige</button>
+          <span>{section === 'people' && peopleView === 'rosters'
+            ? `Stall ${currentPage + 1} av ${pageCount}` : `Side ${currentPage + 1} av ${pageCount}`}</span>
+          <button type="button" disabled={currentPage + 1 >= pageCount}
+            onClick={() => { setPageIndex(currentPage + 1); setSelectedId(null) }}>Neste ›</button>
+        </nav>
       )}
 
       {filteredItems.length === 0 && (
