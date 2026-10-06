@@ -749,6 +749,66 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
     alt: 'Patrick Elvsveen i Storhamar-drakt',
   },
+  'Aaron Gavey': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/agavey.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Aaron Gavey i Storhamar-drakt',
+  },
+  'Brent Gauvreau': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/bgauvreau.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Brent Gauvreau i Storhamar-drakt',
+  },
+  'Miles Gendron': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/gendron-miles.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Miles Gendron i Storhamar-drakt',
+  },
+  'Luka Gračnar': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/gracnar-luka.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Luka Gračnar i Storhamar-drakt',
+  },
+  'Martin Gran': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mgran.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Martin Gran i Storhamar-drakt',
+  },
+  'Trym Gran': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/tgran.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Trym Gran i Storhamar-drakt',
+  },
+  'Andreas Øksnes': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/aoeksnes.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o/',
+    alt: 'Andreas Øksnes i Storhamar-drakt',
+  },
+  'Cato Ørbæk': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/corbaek.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o/',
+    alt: 'Cato Ørbæk i Storhamar-drakt',
+  },
+  'Geir Østberg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/goestberg.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o/',
+    alt: 'Geir Østberg i Storhamar-drakt',
+  },
+  'Morten Rakstad-Larsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/rakstad_morten.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-r/',
+    alt: 'Morten Rakstad-Larsen i Storhamar-drakt',
+  },
+  'Sjur Rakstad-Larsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/sjurrlarsen2.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-r/',
+    alt: 'Sjur Rakstad-Larsen i Storhamar-drakt',
+  },
+  'Svenn Rakstad-Larsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/svennrlarsen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-r/',
+    alt: 'Svenn Rakstad-Larsen i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
