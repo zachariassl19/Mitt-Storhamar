@@ -152,6 +152,71 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
     alt: 'Jim Marthinsen i Storhamar-drakt',
   },
+  'Tom Erik Olsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/teolsen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o1/',
+    alt: 'Tom Erik Olsen i Storhamar-drakt',
+  },
+  'Christian Olasveengen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/colasveengen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o1/',
+    alt: 'Christian Olasveengen i Storhamar-drakt',
+  },
+  'Christian A. Olasveengen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/colasveengen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o1/',
+    alt: 'Christian Olasveengen i Storhamar-drakt',
+  },
+  'Eskild Bakke Olsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/olsen-eskild.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o1/',
+    alt: 'Eskild Bakke Olsen i Storhamar-drakt',
+  },
+  'Urban Omark': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/uomark.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o1/',
+    alt: 'Urban Omark i Storhamar-drakt',
+  },
+  'Snorre Hallem': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/snhallem.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Snorre Hallem i Storhamar-drakt',
+  },
+  'Ola Johannessen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ojohannessen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-j/',
+    alt: 'Ola Johannessen i Storhamar-drakt',
+  },
+  'Ola Hoel Johannessen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ojohannessen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-j/',
+    alt: 'Ola Hoel Johannessen i Storhamar-drakt',
+  },
+  'Chris Marinucci': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/cmarinuccu.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
+    alt: 'Chris Marinucci i Storhamar-drakt',
+  },
+  'Jim Marthinsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jmarthninsen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
+    alt: 'Jim Marthinsen i Storhamar-drakt',
+  },
+  'Joakim Persson': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jpersson.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-p/',
+    alt: 'Joakim Persson i Storhamar-drakt',
+  },
+  'Mikael Tjälldén': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mtjaellden.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-t/',
+    alt: 'Mikael Tjälldén i Storhamar-drakt',
+  },
+  'Kristian Forsberg': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/kforsberg.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Kristian Forsberg i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
