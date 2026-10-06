@@ -58,6 +58,27 @@ describe('full Storhamar history audit', () => {
     expect(adrian?.seasonIds).toHaveLength(9)
   })
 
+  it('reuses the same verified media across related archive views', () => {
+    const player = historyArchive.players.find((item) => item.fullName === 'Eirik Skadsdammen')
+    const legend = historyArchive.legends.find((item) => item.fullName === 'Eirik Skadsdammen')
+    const season2025 = historyArchive.seasons.find((item) => item.id === 'season-2025-26')
+    const honour2025 = historyArchive.honours.find((item) => item.id === 'honour-2025-league')
+    const classicArena = historyArchive.arenas.find((item) => item.id === 'arena-hakons-hall')
+    const classicRecord = historyArchive.records.find((item) => item.id === 'record-2023-hockey-classic-attendance')
+    const classicTimeline = historyArchive.timeline.find((item) => item.id === 'timeline-2023-hockey-classic-record')
+
+    expect(player?.media.length).toBeGreaterThan(0)
+    expect(legend?.media.length).toBeGreaterThan(0)
+    expect(player?.media[0]?.src).toBe(legend?.media[0]?.src)
+
+    expect(season2025?.media.length).toBeGreaterThan(0)
+    expect(honour2025?.media.length).toBeGreaterThan(0)
+
+    const classicSources = [classicArena, classicRecord, classicTimeline]
+      .flatMap((item) => item?.media.map((media) => media.src) ?? [])
+    expect(new Set(classicSources).size).toBeLessThan(classicSources.length)
+  })
+
   it('reports the seven-point archive pass without hiding genuine research gaps', () => {
     const coverage = historyAudit.sevenPointCoverage
 
