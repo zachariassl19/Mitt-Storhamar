@@ -969,12 +969,39 @@ export function HistoryArchivePage() {
                     </figure>
                   ) : null}
 
+                  {item.goldSeason && (
+                    <div className="gold-season-celebration" aria-label="Mesterskapssesong">
+                      <div className="gold-confetti" aria-hidden="true">
+                        {Array.from({ length: 12 }, (_, index) => <i key={index} />)}
+                      </div>
+                      <span className="gold-trophy"><Trophy size={28} /></span>
+                      <div>
+                        <span className="eyebrow">MESTERSKAPSSESONG</span>
+                        <strong>{item.goldLabels?.join(' + ')}</strong>
+                        <small>Storhamar tok gull denne sesongen</small>
+                      </div>
+                    </div>
+                  )}
+
                   <div className={`archive-verification ${item.verified ? 'verified' : 'partial'}`}>
                     {item.verified ? <CircleCheck size={15} /> : <CircleDot size={15} />}
                     <span>{statusLabel(item.verified)}</span>
                   </div>
 
                   {item.body.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+
+                  {item.seasonStats && item.seasonStats.length > 0 && (
+                    <SeasonStatsTable
+                      stats={item.seasonStats}
+                      onPlayer={(name) => {
+                        setSection('people')
+                        setPeopleView('players')
+                        setPlayerPosition('all')
+                        setQuery(name)
+                        setSelectedId(null)
+                      }}
+                    />
+                  )}
 
                   {item.rosterSections && (
                     <div className="archive-roster-groups">
