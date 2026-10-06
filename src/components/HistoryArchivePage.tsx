@@ -55,6 +55,7 @@ interface ArchiveCardItem {
   seasonId?: string
   goldSeason?: boolean
   goldLabels?: string[]
+  seasonFaces?: Array<{ name: string; src: string; alt: string }>
 }
 
 interface SectionDefinition {
@@ -171,6 +172,28 @@ function contextualMediaForPlayer(fullName: string, seasonIds: string[]) {
   const own = mediaForPlayer(fullName, playerByName(fullName)?.media)
   const seasonMedia = seasonIds.flatMap((seasonId) => mediaForSeason(seasonId))
   return uniqueMedia([own, ...seasonMedia]).slice(0, 5)
+}
+
+function playerFacesForSeason(seasonId: string) {
+  const season = historyArchive.seasons.find((entry) => entry.id === seasonId)
+  const rosterNames = season?.roster
+    .map((entry) => historyArchive.players.find((player) => player.id === entry.personId)?.fullName)
+    .filter((name): name is string => Boolean(name)) ?? []
+  const candidateNames = rosterNames.length
+    ? rosterNames
+    : historyArchive.players.filter((player) => player.seasonIds.includes(seasonId)).map((player) => player.fullName)
+
+  const seen = new Set<string>()
+  return candidateNames
+    .map((name) => {
+      if (seen.has(name)) return undefined
+      seen.add(name)
+      const player = playerByName(name)
+      const media = mediaForPlayer(name, player?.media)
+      return media?.src ? { name, src: media.src, alt: media.alt } : undefined
+    })
+    .filter((entry): entry is { name: string; src: string; alt: string } => Boolean(entry))
+    .slice(0, 10)
 }
 
 function rosterGroups(names: string[]) {
@@ -710,6 +733,7 @@ export function HistoryArchivePage() {
           seasonStats,
           goldSeason: goldLabels.length > 0,
           goldLabels,
+          seasonFaces: playerFacesForSeason(item.id),
           chips: [
             item.standings[0]?.position ? `${item.standings[0].position}. plass` : '',
             goldLabels.length ? goldLabels.join(' + ') : item.honourIds.length ? `${item.honourIds.length} meritter` : '',
@@ -1051,6 +1075,33 @@ export function HistoryArchivePage() {
                   </div>
 
                   {item.body.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+
+                  {item.seasonFaces && item.seasonFaces.length > 0 && (
+                    <section className="season-face-strip">
+                      <div className="season-face-heading">
+                        <span className="eyebrow">SPILLERE FRA SESONGEN</span>
+                        <small>{item.seasonFaces.length} med bilde</small>
+                      </div>
+                      <div className="season-face-grid">
+                        {item.seasonFaces.map((face) => (
+                          <button
+                            type="button"
+                            key={face.name}
+                            onClick={() => {
+                              setSection('people')
+                              setPeopleView('players')
+                              setPlayerPosition('all')
+                              setQuery(face.name)
+                              setSelectedId(null)
+                            }}
+                          >
+                            <img src={face.src} alt={face.alt} loading="lazy" />
+                            <span>{face.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+                  )}
 
                   {item.seasonStats && item.seasonStats.length > 0 && (
                     <SeasonStatsTable
