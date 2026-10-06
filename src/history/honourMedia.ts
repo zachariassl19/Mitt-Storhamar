@@ -60,7 +60,7 @@ const honourPhotos: Record<string, HonourPhoto> = {
     src: 'https://www.sil.no/wp-content/uploads/2026/04/botte-champagne-finale-4-26-1024x683.jpg',
     alt: 'Storhamar feirer det tiende NM-gullet i 2026',
     caption: 'Champagnejubel etter det tredje strake og tiende NM-gullet i 2026.',
-  },,
+  },
   'honour-2018-league': {
     src: 'https://www.sil.no/wp-content/uploads/2025/02/seriegull-1718-scaled.jpg',
     alt: 'Storhamar feirer seriegullet i 2017/18',
