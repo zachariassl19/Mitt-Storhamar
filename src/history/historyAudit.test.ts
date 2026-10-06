@@ -45,6 +45,19 @@ describe('full Storhamar history audit', () => {
     expect(larrivee?.honouredAt).toBe('2022-08-27')
   })
 
+  it('audits every player profile and connects verified season statistics', () => {
+    const coverage = historyAudit.sevenPointCoverage.playersAndRosters
+    const adrian = historyArchive.players.find((player) => player.fullName === 'Adrian Saxrud-Danielsen')
+
+    expect(coverage.playerResearchReview).toHaveLength(historyArchive.players.length)
+    expect(coverage.seasonsWithPlayerStats).toBeGreaterThanOrEqual(5)
+    expect(coverage.playerStatRows).toBeGreaterThan(100)
+    expect(coverage.unmatchedSeasonStatNames).toEqual([])
+    expect(adrian?.completeness).toBe('verified')
+    expect(adrian?.position).toBe('Back')
+    expect(adrian?.seasonIds).toHaveLength(9)
+  })
+
   it('reports the seven-point archive pass without hiding genuine research gaps', () => {
     const coverage = historyAudit.sevenPointCoverage
 
