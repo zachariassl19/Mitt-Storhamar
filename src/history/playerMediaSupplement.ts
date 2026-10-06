@@ -127,6 +127,16 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-r/',
     alt: 'Antti Rahkonen i Storhamar-drakt',
   },
+  'Samuel Solem': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ssolem.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
+    alt: 'Samuel Solem i Storhamar-drakt',
+  },
+  'Victor Svensson': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/vsvensson2.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
+    alt: 'Victor Svensson i Storhamar-drakt',
+  },
   'Remo Martinsen': {
     src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/remo_martinsen.jpg?resize=200%2C254',
     sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
