@@ -20,6 +20,7 @@ import './purchases.css'
 import './cloudSync.css'
 import './gameCards.css'
 import './minStorhamar.css'
+import './historyArchive.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
