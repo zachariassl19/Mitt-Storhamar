@@ -37,9 +37,6 @@ export function reuseArchiveMedia(input: {
   records: ArchiveRecord[]
   timeline: ArchiveTimelineEvent[]
 }) {
-  const playerById = new Map(input.players.map((item) => [item.id, item]))
-  const legendById = new Map(input.legends.map((item) => [item.id, item]))
-
   const players = input.players.map((player) => {
     const samePersonLegend = input.legends.find((legend) => legend.fullName === player.fullName)
     return { ...player, media: capped(mergeMedia(player.media, samePersonLegend?.media), 8) }
@@ -49,6 +46,9 @@ export function reuseArchiveMedia(input: {
     const samePersonPlayer = players.find((player) => player.fullName === legend.fullName)
     return { ...legend, media: capped(mergeMedia(legend.media, samePersonPlayer?.media), 8) }
   })
+
+  const playerById = new Map(players.map((item) => [item.id, item]))
+  const legendById = new Map(legends.map((item) => [item.id, item]))
 
   const personMedia = (ids?: string[]) =>
     capped(mergeMedia(...(ids ?? []).map((id) => playerById.get(id)?.media ?? legendById.get(id)?.media)), 8)
