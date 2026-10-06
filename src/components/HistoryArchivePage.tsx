@@ -22,6 +22,8 @@ import { historyArchive } from '../history/catalog'
 import { historyAudit } from '../history/historyAudit'
 import { championshipRosterResearch } from '../history/rosterResearch'
 import { historyResearchConflicts } from '../history/researchConflicts'
+import { statsForSeason } from '../history/seasonPlayerStats'
+import type { SeasonPlayerStat } from '../history/types'
 
 type ArchiveSection = 'jerseys' | 'rafters' | 'honours' | 'europe' | 'people' | 'moments' | 'seasons'
 type PeopleView = 'rosters' | 'players'
@@ -48,6 +50,10 @@ interface ArchiveCardItem {
   filterTags?: string[]
   seasonStart?: number
   rosterSections?: Array<{ label: string; names: string[] }>
+  seasonStats?: SeasonPlayerStat[]
+  seasonId?: string
+  goldSeason?: boolean
+  goldLabels?: string[]
 }
 
 interface SectionDefinition {
@@ -520,17 +526,26 @@ export function HistoryArchivePage() {
         const media = item.media[0]
         const source = sourceFor(item.sources, media?.sourceUrl)
         const conflicts = historyResearchConflicts.filter((conflict) => conflict.entityId === item.id && conflict.status === 'open')
+        const seasonStats = statsForSeason(item.id)
+        const goldHonours = item.honourIds
+          .map((id) => historyArchive.honours.find((honour) => honour.id === id))
+          .filter((honour) => honour?.honourType === 'league-championship' || honour?.honourType === 'norwegian-championship')
+        const goldLabels = goldHonours.map((honour) => honour?.honourType === 'league-championship' ? 'SERIEGULL' : 'NM-GULL')
         return {
           id: item.id,
           title: item.displayName,
-          eyebrow: conflicts.length ? 'KILDEAVVIK' : 'SESONG',
+          eyebrow: goldLabels.length ? goldLabels.join(' + ') : conflicts.length ? 'KILDEAVVIK' : 'SESONG',
           summary: item.summary ?? '',
           image: media?.src,
           imageAlt: media?.alt,
+          seasonId: item.id,
+          seasonStats,
+          goldSeason: goldLabels.length > 0,
+          goldLabels,
           chips: [
             item.standings[0]?.position ? `${item.standings[0].position}. plass` : '',
-            item.honourIds.length ? `${item.honourIds.length} meritter` : '',
-            conflicts.length ? `${conflicts.length} åpent avvik` : statusLabel(item.completeness === 'verified'),
+            goldLabels.length ? goldLabels.join(' + ') : item.honourIds.length ? `${item.honourIds.length} meritter` : '',
+            seasonStats.length ? `${seasonStats.length} spillere med stats` : conflicts.length ? `${conflicts.length} åpent avvik` : statusLabel(item.completeness === 'verified'),
           ].filter(Boolean),
           body: item.body ?? [],
           details: [
