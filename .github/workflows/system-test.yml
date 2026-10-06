@@ -2,9 +2,9 @@ name: System tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, research/seven-point-depth-2026-10-06]
   pull_request:
-    branches: [main]
+    branches: [main, research/seven-point-depth-2026-10-06]
   workflow_dispatch:
 
 jobs:
