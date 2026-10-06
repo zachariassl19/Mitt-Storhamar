@@ -213,14 +213,15 @@ function SeasonStatsTable({
               <tbody>
                 {goalies.map((stat) => {
                   const played = (stat.gamesPlayed ?? 0) > 0
+                  const hasRecord = stat.wins !== undefined && stat.losses !== undefined
                   return (
                     <tr key={`${stat.playerName}-goalie`}>
                       <td><button type="button" onClick={() => onPlayer(stat.playerName)}>{stat.playerName}</button></td>
                       <td>{stat.gamesPlayed ?? '—'}</td>
                       <td>{played && stat.goalsAgainstAverage !== undefined ? stat.goalsAgainstAverage.toFixed(2) : '—'}</td>
                       <td>{played && stat.savePercentage !== undefined ? `${(stat.savePercentage * 100).toFixed(1)}%` : '—'}</td>
-                      <td>{played ? `${stat.wins ?? 0}-${stat.losses ?? 0}` : '—'}</td>
-                      <td>{played ? stat.shutouts ?? 0 : '—'}</td>
+                      <td>{played && hasRecord ? `${stat.wins}-${stat.losses}` : '—'}</td>
+                      <td>{played && stat.shutouts !== undefined ? stat.shutouts : '—'}</td>
                     </tr>
                   )
                 })}
