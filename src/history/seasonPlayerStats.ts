@@ -37,9 +37,9 @@ function goalie(
   gamesPlayed: number,
   goalsAgainstAverage: number,
   savePercentage: number,
-  wins: number,
-  losses: number,
-  shutouts: number,
+  wins?: number,
+  losses?: number,
+  shutouts?: number,
 ): SeasonPlayerStat {
   return {
     playerName,
@@ -59,13 +59,43 @@ function goalie(
   }
 }
 
+const ep200001 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2000-2001'
 const ep200304 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2003-2004'
+const ep200506 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2005-2006'
 const ep201718 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2017-2018'
 const ep202324 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2023-2024'
 const ep202425 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2024-2025'
 const ep202526 = 'https://www.eliteprospects.com/team/181/storhamar/stats/2025-2026'
 
 export const seasonPlayerStatsBySeasonId: Record<string, SeasonPlayerStat[]> = {
+  'season-2000-01': [
+    skater('Ole Eskild Dahlstrøm', ep200001, 39, 21, 39, 60, 'Forward', 34, 37),
+    skater('Tom Erik Olsen', ep200001, 32, 31, 25, 56, 'Forward', 39, 43),
+    skater('Henrik Pettersson', ep200001, 41, 26, 19, 45, 'Forward', 30, 41),
+    skater('Patrick Thoresen', ep200001, 40, 18, 27, 45, 'Forward', 24, 44),
+    skater('Carl Oscar Bøe Andersen', ep200001, 41, 9, 31, 40, 'Back', 42, 39),
+    skater('Mads Hansen', ep200001, 42, 18, 19, 37, 'Forward', 83, 23),
+    skater('Johnny Bruun', ep200001, 42, 16, 19, 35, 'Forward', 12, 35),
+    skater('Geir Svendsberget', ep200001, 39, 19, 12, 31, 'Forward', 132, 31),
+    skater('Alexander Smirnov', ep200001, 42, 9, 21, 30, 'Back', 46, 29),
+    skater('Joakim Persson', ep200001, 21, 9, 14, 23, 'Forward', 2, 20),
+    skater('Michael Smithurst', ep200001, 41, 3, 17, 20, 'Back', 12, 32),
+    skater('Snorre Hallem', ep200001, 42, 7, 9, 16, 'Forward', 85, 20),
+    skater('Dimitri Lavrentiev', ep200001, 25, 6, 7, 13, 'Forward', 28, 10),
+    skater('Per Kristian Jonassen', ep200001, 40, 6, 7, 13, 'Back', 30, 36),
+    skater('Magnus Østeraas', ep200001, 41, 4, 8, 12, 'Back', 102, 26),
+    skater('Eirik Skadsdammen', ep200001, 40, 5, 4, 9, 'Forward', 8, 9),
+    skater('Anders Kolbuholen', ep200001, 35, 2, 6, 8, 'Back', 10, 13),
+    skater('Henning Paulsen', ep200001, 21, 1, 3, 4, 'Forward', 2, 4),
+    skater('Christian Olasveengen', ep200001, 7, 1, 1, 2, 'Forward', 0, 2),
+    skater('Ole Fredrik Kirkebye', ep200001, 33, 1, 1, 2, 'Back', 18, 18),
+    skater('Jouri Leonov', ep200001, 8, 1, 0, 1, 'Forward', 6, -2),
+    skater('Stian Hoelseth', ep200001, 29, 1, 0, 1, 'Back', 0),
+    skater('Ola Sætrang', ep200001, 1, 0, 0, 0, 'Forward', 0),
+    goalie('Jonas Norgren', ep200001, 39, 1.70, 0.922),
+    goalie('Geir Østberg', ep200001, 9, 2.52, 0.856),
+  ],
+
   'season-2003-04': [
     skater('Tom Erik Olsen', ep200304, 40, 28, 16, 44, 'Forward', 18, 32),
     skater('Antti Rahkonen', ep200304, 37, 10, 23, 33, 'Back', 16, 21),
@@ -94,6 +124,35 @@ export const seasonPlayerStatsBySeasonId: Record<string, SeasonPlayerStat[]> = {
     skater('Christian Saxrud', ep200304, 38, 1, 1, 2, 'Forward', 16, -5),
     skater('Teddy Midttun', ep200304, 4, 0, 0, 0, 'Back', 2, 0),
     skater('Espen Kristiansen', ep200304, 5, 0, 0, 0, 'Back', 6, -1),
+  ],
+
+  'season-2005-06': [
+    skater('Patrick Yetman', ep200506, 42, 42, 27, 69, 'Forward', 16, 53),
+    skater('Mads Hansen', ep200506, 41, 21, 46, 67, 'Forward', 24, 53),
+    skater('Urban Omark', ep200506, 42, 12, 25, 37, 'Forward', 30, 36),
+    skater('Steffen Thoresen', ep200506, 42, 17, 19, 36, 'Forward', 65, 33),
+    skater('Antti Rahkonen', ep200506, 41, 8, 25, 33, 'Back', 14, 46),
+    skater('Pål Johnsen', ep200506, 40, 14, 19, 33, 'Forward', 37, 17),
+    skater('Geir Svendsberget', ep200506, 40, 13, 17, 30, 'Forward', 134, 35),
+    skater('Knut Henrik Spets', ep200506, 42, 14, 10, 24, 'Forward', 26, 19),
+    skater('Eirik Skadsdammen', ep200506, 42, 12, 11, 23, 'Forward', 22, 21),
+    skater('Jaakko Harikkala', ep200506, 39, 7, 14, 21, 'Back', 89, 40),
+    skater('Mattias Livf', ep200506, 42, 5, 15, 20, 'Back', 36, 39),
+    skater('Alexander Smirnov', ep200506, 41, 6, 13, 19, 'Back', 36, 8),
+    skater('Tom Erik Olsen', ep200506, 36, 5, 12, 17, 'Forward', 12, 16),
+    skater('Hans Stubrud', ep200506, 34, 5, 9, 14, 'Forward', 18, 13),
+    skater('Christian Olasveengen', ep200506, 31, 9, 2, 11, 'Forward', 10, 5),
+    skater('Lars Løkken Østli', ep200506, 33, 3, 7, 10, 'Back', 18, 17),
+    skater('Kristian Forsberg', ep200506, 41, 6, 3, 9, 'Forward', 6, 17),
+    skater('Cato Ørbæk', ep200506, 39, 2, 6, 8, 'Back', 34, 18),
+    skater('Mikael Tjälldén', ep200506, 23, 0, 5, 5, 'Back', 53, 15),
+    skater('Ola Johannessen', ep200506, 26, 0, 4, 4, 'Back', 26, 10),
+    skater('Simen Saxrud', ep200506, 14, 1, 1, 2, 'Forward', 2, 5),
+    skater('Espen Søby Botheim', ep200506, 5, 0, 1, 1, 'Forward', 0, 1),
+    skater('Mika Risbakken', ep200506, 2, 0, 0, 0, 'Back', 0, 0),
+    goalie('Ruben Smith', ep200506, 4, 0.50, 0.973),
+    goalie('Jonas Norgren', ep200506, 37, 1.54, 0.934),
+    goalie('Geir Østberg', ep200506, 7, 2.39, 0.831),
   ],
 
   'season-2017-18': [
