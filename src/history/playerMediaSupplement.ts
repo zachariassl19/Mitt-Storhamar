@@ -624,6 +624,66 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
     alt: 'Linus Stensson i Storhamar-drakt',
   },
+  'Sindre Hallem': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/sindre_hallem.jpg?resize=160%2C229',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Sindre Hallem i Storhamar-drakt',
+  },
+  'André Manskov Hansen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/andre_m_hansen.jpg?resize=200%2C254',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'André Manskov Hansen i Storhamar-drakt',
+  },
+  'Isak Hansen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/isakh.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Isak Hansen i Storhamar-drakt',
+  },
+  'Jaakko Harikkala': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jharikkala.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Jaakko Harikkala i Storhamar-drakt',
+  },
+  'Magnus Eikrem Haugen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mehaugen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Magnus Eikrem Haugen i Storhamar-drakt',
+  },
+  'Anders Haugum': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/haugum-anders.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Anders Haugum i Storhamar-drakt',
+  },
+  'Alexander Hellnemo': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ahellnemo.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Alexander Hellnemo i Storhamar-drakt',
+  },
+  'Daniel Hermansson': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/dhermannson.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Daniel Hermansson i Storhamar-drakt',
+  },
+  'Christian Remo Nicolaisen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/crnicolaisen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
+    alt: 'Christian Remo Nicolaisen i Storhamar-drakt',
+  },
+  'Daniel Nielsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/dnielsen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
+    alt: 'Daniel Nielsen i Storhamar-drakt',
+  },
+  'Jakob Lundell Noer': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jlnoer.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
+    alt: 'Jakob Lundell Noer i Storhamar-drakt',
+  },
+  'Terje Nordlien': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/tnordlien.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
+    alt: 'Terje Nordlien i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
