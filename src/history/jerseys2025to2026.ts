@@ -21,6 +21,45 @@ function media(id: string, src: string, alt: string, sourceUrl: string, caption:
 
 export const jerseys2025To2026: ArchiveJersey[] = [
   {
+    id: 'jersey-2025-26-chl',
+    title: '2025/26 · CHL-drakt',
+    slug: '2025-26-chl-drakt',
+    summary: 'Egne Champions Hockey League-drakter for 2025/26: mørk gul/blå hjemmedrakt og hvit gul/blå bortedrakt.',
+    body: [
+      'Storhamar lanserte CHL-draktene 27. juli 2025, omtrent én måned før turneringsstart. Klubben opplyste at hjemmedrakten måtte være mørk etter CHL-reglene og valgte et rent gult og blått uttrykk.',
+      'Bortedrakten ble laget i hvitt med gule og blå detaljer. Martin Rønnild og Mathias Papuga stilte som modeller i den offisielle lanseringen.',
+      'Draktsettet ble brukt i CHL-sesongen der Storhamar tok tre seire i seriespillet og nådde åttedelsfinalen mot Lukko Rauma.',
+    ],
+    completeness: 'verified',
+    sources: ['storhamar-official', 'chl'],
+    media: [
+      media(
+        'media-jersey-2025-26-chl-home',
+        'https://www.sil.no/wp-content/uploads/2025/07/chldrakt25h1.jpg',
+        'Storhamars mørke hjemmedrakt i Champions Hockey League 2025/26',
+        'https://www.sil.no/chl-draktene-lansert/',
+        'Hjemmedrakten for Champions Hockey League 2025/26, presentert av Storhamar Hockey.',
+      ),
+      media(
+        'media-jersey-2025-26-chl-away',
+        'https://www.sil.no/wp-content/uploads/2025/07/chldrakt25b1.jpg',
+        'Storhamars hvite bortedrakt i Champions Hockey League 2025/26',
+        'https://www.sil.no/chl-draktene-lansert/',
+        'Bortedrakten for Champions Hockey League 2025/26, presentert av Storhamar Hockey.',
+      ),
+    ],
+    related: [{ kind: 'season', id: seasonId }, { kind: 'europe', id: 'europe-2025-26-chl' }],
+    fromSeasonId: seasonId,
+    toSeasonId: seasonId,
+    seasonIds: [seasonId],
+    usage: ['europe'],
+    colours: ['gul', 'blå', 'hvit'],
+    playerIds: [],
+    notableMomentIds: [],
+    tags: ['2025-26', 'CHL', 'Europa'],
+    lastVerifiedAt: verifiedAt,
+  },
+  {
     id: 'jersey-2025-26-series',
     title: '2025/26 · Seriedrakt',
     slug: '2025-26-seriedrakt',

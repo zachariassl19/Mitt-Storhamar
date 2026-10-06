@@ -1,6 +1,20 @@
-import type { ArchiveArena, ArchiveRecord, ArchiveTimelineEvent } from './types'
+import type { ArchiveArena, ArchiveMedia, ArchiveRecord, ArchiveTimelineEvent } from './types'
 
 const verifiedAt = '2026-09-28'
+
+const hockeyClassic2023Media = (id: string): ArchiveMedia => ({
+  id,
+  type: 'photo',
+  src: 'https://www.sil.no/wp-content/uploads/2023/11/fans-hockey-classic-scaled.jpg',
+  alt: 'Hockey Classic i Håkons Hall 28. oktober 2023',
+  caption: '10 348 tilskuere så Storhamar slå Lillehammer 4–2 i Hockey Classic 28. oktober 2023.',
+  credit: 'Storhamar Hockey',
+  sourceId: 'storhamar-official',
+  sourceUrl: 'https://www.sil.no/deilig-seier-foran-over-10-300/',
+  seasonIds: ['season-2023-24'],
+  tags: ['Hockey Classic', 'Håkons Hall', 'publikumsrekord'],
+  rightsNote: 'Offisielt klubbilde brukt som historisk referanse. Rettighetsstatus må følges opp før eventuell lokal kopiering eller videre distribusjon.',
+})
 
 export const additionalHistoricArenas: ArchiveArena[] = [
   {
@@ -34,7 +48,7 @@ export const additionalHistoricArenas: ArchiveArena[] = [
     ],
     completeness: 'verified',
     sources: ['storhamar-official'],
-    media: [],
+    media: [hockeyClassic2023Media('media-arena-hakons-hall-hockey-classic-2023')],
     related: [{ kind: 'season', id: 'season-2023-24' }, { kind: 'record', id: 'record-2023-hockey-classic-attendance' }],
     city: 'Lillehammer',
     notableMomentIds: ['timeline-2023-hockey-classic-record'],
@@ -51,7 +65,7 @@ export const modernHistoryRecords: ArchiveRecord[] = [
     summary: 'Hockey Classic mellom Lillehammer og Storhamar i Håkons Hall 28. oktober 2023 samlet 10 348 tilskuere.',
     completeness: 'verified',
     sources: ['storhamar-official'],
-    media: [],
+    media: [hockeyClassic2023Media('media-record-hockey-classic-attendance-2023')],
     related: [{ kind: 'arena', id: 'arena-hakons-hall' }, { kind: 'season', id: 'season-2023-24' }, { kind: 'timeline', id: 'timeline-2023-hockey-classic-record' }],
     recordType: 'attendance', value: 10348, unit: 'tilskuere', date: '2023-10-28', seasonId: 'season-2023-24', lastVerifiedAt: verifiedAt,
   },
@@ -107,7 +121,7 @@ export const additionalHistoricMoments: ArchiveTimelineEvent[] = [
     title: '10 348 ser Storhamar vinne Hockey Classic',
     slug: '2023-hockey-classic-publikumsrekord',
     summary: '28. oktober 2023 slo Storhamar Lillehammer 4–2 i Håkons Hall foran 10 348 tilskuere.',
-    completeness: 'verified', sources: ['storhamar-official'], media: [],
+    completeness: 'verified', sources: ['storhamar-official'], media: [hockeyClassic2023Media('media-timeline-hockey-classic-2023')],
     related: [{ kind: 'season', id: 'season-2023-24' }, { kind: 'arena', id: 'arena-hakons-hall' }, { kind: 'record', id: 'record-2023-hockey-classic-attendance' }],
     date: '2023-10-28', year: 2023, era: 'Veien mot gullrekka', importance: 'major', lastVerifiedAt: verifiedAt,
   },

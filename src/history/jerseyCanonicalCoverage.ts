@@ -68,6 +68,7 @@ export const canonicalJerseyCoverageLinks: CanonicalJerseyCoverageLink[] = [
 
 // Newer verified club variants that are not yet present in SIL-arkivets jersey index.
 export const officialJerseyCoverageLinks: CanonicalJerseyCoverageLink[] = [
+  { label: '2025/26 CHL', archiveIds: ['jersey-2025-26-chl'] },
   { label: '2025/26 serie', archiveIds: ['jersey-2025-26-series'] },
   { label: '2025 forsesong · Hyller Hamar', archiveIds: ['jersey-2025-preseason-hamar'] },
   { label: '2025 Rosa sløyfe', archiveIds: ['jersey-2025-pink-cancer'] },
