@@ -401,7 +401,7 @@ export function HistoryArchivePage() {
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
-            verified: verifiedCareer,
+            verified: item.completeness === 'verified',
             searchText: [item.fullName, item.summary, item.honouredNumber, item.roles?.join(' ')].filter(Boolean).join(' ').toLowerCase(),
           }
         })
@@ -544,7 +544,7 @@ export function HistoryArchivePage() {
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
-            verified: item.completeness === 'verified',
+            verified: verifiedCareer,
             searchText: [item.fullName, item.summary, item.position, item.shirtNumbers?.join(' '), item.seasonIds.join(' ')].filter(Boolean).join(' ').toLowerCase(),
             group,
           }
