@@ -684,6 +684,11 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
     alt: 'Terje Nordlien i Storhamar-drakt',
   },
+  "Zach O'Brien": {
+    src: 'https://www.sil.no/wp-content/uploads/elementor/thumbs/34-obrien-mini-25-26-rbz9smfdpbxy7cv9tfn0jkxcn60z4nd0jxftxas12s.png',
+    sourceUrl: 'https://www.sil.no/statpack-semifinale-3/',
+    alt: "Zach O'Brien i Storhamar-drakt 2025/26",
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
