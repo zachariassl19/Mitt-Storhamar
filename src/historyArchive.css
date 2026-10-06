@@ -642,3 +642,19 @@
   .gold-confetti i { animation: none !important; }
   .gold-confetti { display: none; }
 }
+
+
+.season-stats-pending {
+  margin: 14px 0 4px;
+  padding: 12px 13px;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 9px;
+  align-items: start;
+  border-radius: 13px;
+  border: 1px solid rgba(218,157,55,.22);
+  background: rgba(218,157,55,.075);
+}
+.season-stats-pending svg { color: #e5b85b; margin-top: 1px; }
+.season-stats-pending strong { display: block; color: #ead9b7; font-size: 10px; }
+.season-stats-pending span { display: block; margin-top: 3px; color: #a99b82; font-size: 8px; line-height: 1.45; }
