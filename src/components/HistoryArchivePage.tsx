@@ -133,6 +133,104 @@ function rosterGroups(names: string[]) {
   return grouped
 }
 
+function statPosition(stat: SeasonPlayerStat) {
+  const raw = stat.position ?? playerByName(stat.playerName)?.position ?? ''
+  const normalized = raw.toLowerCase()
+  if (stat.role === 'goalie' || normalized.includes('keeper')) return 'K'
+  if (normalized.includes('back')) return 'B'
+  if (normalized.includes('forward') || normalized.includes('løper')) return 'F'
+  return '—'
+}
+
+function SeasonStatsTable({
+  stats,
+  onPlayer,
+}: {
+  stats: SeasonPlayerStat[]
+  onPlayer: (name: string) => void
+}) {
+  const skaters = stats
+    .filter((entry) => entry.role === 'skater')
+    .sort((a, b) => (b.points ?? 0) - (a.points ?? 0) || (b.goals ?? 0) - (a.goals ?? 0))
+  const goalies = stats
+    .filter((entry) => entry.role === 'goalie')
+    .sort((a, b) => (b.gamesPlayed ?? 0) - (a.gamesPlayed ?? 0))
+  const sourceUrl = stats[0]?.sourceUrl
+
+  return (
+    <section className="season-stats-block">
+      <div className="season-stats-heading">
+        <div>
+          <span className="eyebrow">GRUNNSERIE · SPILLERSTATISTIKK</span>
+          <h3>{stats.length} spillere</h3>
+        </div>
+        <span className="season-stats-source">EP</span>
+      </div>
+
+      {skaters.length > 0 && (
+        <div className="season-stats-table-wrap">
+          <table className="season-stats-table">
+            <thead>
+              <tr><th>Spiller</th><th>P</th><th>GP</th><th>G</th><th>A</th><th>TP</th><th>+/-</th></tr>
+            </thead>
+            <tbody>
+              {skaters.map((stat) => (
+                <tr key={`${stat.playerName}-skater`}>
+                  <td>
+                    <button type="button" onClick={() => onPlayer(stat.playerName)}>
+                      <span className="stat-position">{statPosition(stat)}</span>{stat.playerName}
+                    </button>
+                  </td>
+                  <td>{statPosition(stat)}</td>
+                  <td>{stat.gamesPlayed ?? '—'}</td>
+                  <td>{stat.goals ?? '—'}</td>
+                  <td>{stat.assists ?? '—'}</td>
+                  <td><strong>{stat.points ?? '—'}</strong></td>
+                  <td>{stat.plusMinus === undefined ? '—' : stat.plusMinus > 0 ? `+${stat.plusMinus}` : stat.plusMinus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {goalies.length > 0 && (
+        <>
+          <span className="season-stats-subtitle">KEEPERE</span>
+          <div className="season-stats-table-wrap">
+            <table className="season-stats-table goalie-table">
+              <thead>
+                <tr><th>Keeper</th><th>GP</th><th>GAA</th><th>SV%</th><th>W-L</th><th>SO</th></tr>
+              </thead>
+              <tbody>
+                {goalies.map((stat) => {
+                  const played = (stat.gamesPlayed ?? 0) > 0
+                  return (
+                    <tr key={`${stat.playerName}-goalie`}>
+                      <td><button type="button" onClick={() => onPlayer(stat.playerName)}>{stat.playerName}</button></td>
+                      <td>{stat.gamesPlayed ?? '—'}</td>
+                      <td>{played && stat.goalsAgainstAverage !== undefined ? stat.goalsAgainstAverage.toFixed(2) : '—'}</td>
+                      <td>{played && stat.savePercentage !== undefined ? `${(stat.savePercentage * 100).toFixed(1)}%` : '—'}</td>
+                      <td>{played ? `${stat.wins ?? 0}-${stat.losses ?? 0}` : '—'}</td>
+                      <td>{played ? stat.shutouts ?? 0 : '—'}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {sourceUrl && (
+        <a className="season-stats-link" href={sourceUrl} target="_blank" rel="noreferrer">
+          Tallgrunnlag: Elite Prospects <ChevronRight size={14} />
+        </a>
+      )}
+    </section>
+  )
+}
+
 export function HistoryArchivePage() {
   const [section, setSection] = useState<ArchiveSection | null>(null)
   const [query, setQuery] = useState('')
