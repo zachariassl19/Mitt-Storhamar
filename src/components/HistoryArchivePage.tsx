@@ -26,6 +26,8 @@ import { historyResearchConflicts } from '../history/researchConflicts'
 type ArchiveSection = 'jerseys' | 'rafters' | 'honours' | 'europe' | 'people' | 'moments' | 'seasons'
 type PeopleView = 'rosters' | 'players'
 type MomentView = 'arenas' | 'records' | 'timeline'
+type PlayerPositionFilter = 'all' | 'keeper' | 'back' | 'forward' | 'unknown'
+type JerseyFilter = 'all' | 'yellow' | 'blue' | 'white' | 'series' | 'europe' | 'special' | 'testimonial' | 'preseason'
 
 interface ArchiveCardItem {
   id: string
@@ -41,6 +43,8 @@ interface ArchiveCardItem {
   sourceLabel?: string
   verified: boolean
   searchText: string
+  group?: PlayerPositionFilter
+  filterTags?: string[]
 }
 
 interface SectionDefinition {
@@ -81,6 +85,45 @@ function statusLabel(verified: boolean) {
   return verified ? 'Verifisert' : 'Under kildekontroll'
 }
 
+function playerPositionGroup(position?: string): PlayerPositionFilter {
+  const normalized = (position ?? '').toLowerCase()
+  if (normalized.includes('keeper') || normalized.includes('målvakt') || normalized.includes('goalie')) return 'keeper'
+  if (normalized.includes('back')) return 'back'
+  if (normalized.includes('løper') || normalized.includes('forward') || normalized.includes('center') || normalized.includes('ving')) return 'forward'
+  return 'unknown'
+}
+
+function positionLabel(group: PlayerPositionFilter) {
+  if (group === 'keeper') return 'Keepere'
+  if (group === 'back') return 'Backer'
+  if (group === 'forward') return 'Forwards'
+  if (group === 'unknown') return 'Ikke ferdig klassifisert'
+  return 'Alle'
+}
+
+function playerByName(name: string) {
+  return historyArchive.players.find((player) => player.fullName === name)
+}
+
+function mediaForPlayer(fullName: string, ownMedia?: { src: string; alt: string; sourceUrl?: string }[]) {
+  if (ownMedia?.[0]) return ownMedia[0]
+  return historyArchive.legends.find((legend) => legend.fullName === fullName)?.media[0]
+}
+
+function rosterGroups(names: string[]) {
+  const grouped: Record<'keeper' | 'back' | 'forward' | 'unknown', string[]> = {
+    keeper: [],
+    back: [],
+    forward: [],
+    unknown: [],
+  }
+  for (const name of names) {
+    const player = playerByName(name)
+    grouped[playerPositionGroup(player?.position) as keyof typeof grouped].push(name)
+  }
+  return grouped
+}
+
 export function HistoryArchivePage() {
   const [section, setSection] = useState<ArchiveSection | null>(null)
   const [query, setQuery] = useState('')
@@ -88,6 +131,8 @@ export function HistoryArchivePage() {
   const [peopleView, setPeopleView] = useState<PeopleView>('rosters')
   const [momentView, setMomentView] = useState<MomentView>('arenas')
   const [visibleCount, setVisibleCount] = useState(18)
+  const [playerPosition, setPlayerPosition] = useState<PlayerPositionFilter>('all')
+  const [jerseyFilter, setJerseyFilter] = useState<JerseyFilter>('all')
 
   const recentGold = historyArchive.honours.find((honour) => honour.id === 'honour-2026-nm')?.media[0]?.src
   const recentEurope = historyArchive.europe.find((campaign) => campaign.id === 'europe-2025-26-chl')?.media[0]?.src
@@ -170,6 +215,8 @@ export function HistoryArchivePage() {
     setQuery('')
     setSelectedId(null)
     setVisibleCount(18)
+    setPlayerPosition('all')
+    setJerseyFilter('all')
   }, [section, peopleView, momentView])
 
   const items = useMemo<ArchiveCardItem[]>(() => {
