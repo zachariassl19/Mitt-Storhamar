@@ -36,11 +36,23 @@ import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gam
 import { gameFeatureClassNames, gameFeatures, gameStatusClass } from './lib/gamePresentation'
 import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
-  classifyArenaProximity,
+  classifyArenaProximityWithAccuracy,
   distanceMeters,
   eventFromPosition,
+  isReliableArenaPosition,
   shouldSuggestAttendance,
 } from './lib/smartGameDay'
+import {
+  loadSmartLocationStatus,
+  publishSmartLocationStatus,
+  subscribeSmartLocationStatus,
+} from './lib/locationRuntime'
+import {
+  loadSmartGameDaySettings,
+  saveSmartGameDaySettings,
+  subscribeSmartGameDaySettings,
+  type SmartGameDaySettings,
+} from './lib/smartGameDaySettings'
 import {
   clearHubExport,
   loadAttendancePlans,
@@ -600,24 +612,26 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
   onEvent: (event: SmartGameDayEvent) => void
 }) {
   const arena = arenaForGame(game)
-  const [tracking, setTracking] = useState(false)
   const [checking, setChecking] = useState(false)
-  const [proximity, setProximity] = useState<ArenaProximity>('outside')
-  const [distance, setDistance] = useState<number | null>(null)
-  const [accuracy, setAccuracy] = useState<number | null>(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [permission, setPermission] = useState<LocationPermissionState>('checking')
-  const [lastCheckedAt, setLastCheckedAt] = useState<Date | null>(null)
-  const watchId = useRef<number | null>(null)
-  const proximityRef = useRef<ArenaProximity>('outside')
+  const [runtime, setRuntime] = useState(() => loadSmartLocationStatus(game.id))
+  const [smartSettings, setSmartSettings] = useState<SmartGameDaySettings>(() => loadSmartGameDaySettings())
   const matchday = isGameDay(game)
   const hasArenaPosition = Boolean(arena && arena.latitude != null && arena.longitude != null)
   const geolocationSupported = typeof navigator !== 'undefined' && 'geolocation' in navigator
   const secureContext = typeof window === 'undefined' || window.isSecureContext
   const canCheckPosition = hasArenaPosition && geolocationSupported && secureContext
-  const canTrack = matchday && canCheckPosition
+  const automaticTracking = matchday && smartSettings.enabled && smartSettings.autoStartOnGameDay
   const suggestAttendance = !record?.completed && shouldSuggestAttendance(game, events)
+
+  useEffect(() => {
+    setRuntime(loadSmartLocationStatus(game.id))
+    return subscribeSmartLocationStatus(game.id, setRuntime)
+  }, [game.id])
+
+  useEffect(() => subscribeSmartGameDaySettings(setSmartSettings), [])
 
   useEffect(() => {
     let active = true
@@ -634,11 +648,12 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
       }
       try {
         permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
-        if (!active) return
-        setPermission(permissionStatus.state)
-        permissionStatus.onchange = () => {
+        if (!active || !permissionStatus) return
+        const sync = () => {
           if (active && permissionStatus) setPermission(permissionStatus.state)
         }
+        sync()
+        permissionStatus.onchange = sync
       } catch {
         if (active) setPermission('prompt')
       }
@@ -648,68 +663,67 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
     return () => {
       active = false
       if (permissionStatus) permissionStatus.onchange = null
-      if (watchId.current != null && geolocationSupported) navigator.geolocation.clearWatch(watchId.current)
     }
   }, [geolocationSupported, secureContext])
 
-  function processPosition(position: GeolocationPosition) {
+  function processManualPosition(position: GeolocationPosition) {
     if (!arena || arena.latitude == null || arena.longitude == null) return
     const meters = distanceMeters(position.coords.latitude, position.coords.longitude, arena.latitude, arena.longitude)
-    const nextProximity = classifyArenaProximity(arena, meters)
-    const smartEvent = eventFromPosition(game, position, proximityRef.current)
-    proximityRef.current = nextProximity
-    setProximity(nextProximity)
-    setDistance(Math.round(meters))
-    setAccuracy(Math.round(position.coords.accuracy))
-    setLastCheckedAt(new Date(position.timestamp))
-    setError('')
-    setMessage(matchday ? 'Posisjon oppdatert.' : 'Posisjon fungerer. Dette er bare en test utenfor kampdag.')
-    setPermission('granted')
-    if (smartEvent && matchday) onEvent(smartEvent)
-  }
+    const previous = runtime?.proximity ?? 'outside'
+    const proximity = classifyArenaProximityWithAccuracy(arena, meters, position.coords.accuracy, previous)
+    const reliable = isReliableArenaPosition(arena, position)
+    const observedAt = new Date(position.timestamp).toISOString()
 
-  function onPositionError(geoError: GeolocationPositionError) {
-    setError(locationErrorMessage(geoError))
-    setMessage('')
-    setChecking(false)
-    setTracking(false)
-    if (geoError.code === geoError.PERMISSION_DENIED) setPermission('denied')
-  }
-
-  function startTracking() {
-    if (!canTrack) return
-    if (watchId.current != null) return
-    setError('')
-    setMessage('Henter posisjon…')
-    const id = navigator.geolocation.watchPosition(processPosition, onPositionError, {
-      enableHighAccuracy: true,
-      maximumAge: 10_000,
-      timeout: 25_000,
+    publishSmartLocationStatus({
+      gameId: game.id,
+      state: 'manual',
+      proximity,
+      distanceMeters: Math.round(meters),
+      accuracyMeters: Math.round(position.coords.accuracy),
+      observedAt,
+      reliable,
     })
-    watchId.current = id
-    setTracking(true)
-  }
 
-  function stopTracking() {
-    if (watchId.current != null && geolocationSupported) navigator.geolocation.clearWatch(watchId.current)
-    watchId.current = null
-    setTracking(false)
-    setMessage('Smart Kampdag GPS er stoppet.')
+    const smartEvent = reliable && matchday ? eventFromPosition(game, position, previous) : null
+    if (smartEvent) {
+      saveSmartGameDayEvent(smartEvent)
+      onEvent(smartEvent)
+    }
+
+    setPermission('granted')
+    setError('')
+    setMessage(
+      reliable
+        ? (matchday ? 'Fersk posisjon hentet.' : 'Posisjon fungerer. Dette er bare en test utenfor kampdag.')
+        : `Posisjon funnet, men nøyaktigheten er bare ca. ±${Math.round(position.coords.accuracy)} m. Ingen arena-hendelse registreres før GPS-en er bedre.`,
+    )
   }
 
   function checkOnce() {
     if (!canCheckPosition || checking) return
     setChecking(true)
     setError('')
-    setMessage('Henter posisjon…')
+    setMessage('Henter fersk posisjon…')
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        processPosition(position)
+        processManualPosition(position)
         setChecking(false)
       },
-      onPositionError,
+      (geoError) => {
+        setChecking(false)
+        setError(locationErrorMessage(geoError))
+        setMessage('')
+        if (geoError.code === geoError.PERMISSION_DENIED) setPermission('denied')
+      },
       { enableHighAccuracy: true, maximumAge: 0, timeout: 25_000 },
     )
+  }
+
+  function toggleAutomaticTracking() {
+    saveSmartGameDaySettings({
+      ...smartSettings,
+      enabled: !smartSettings.enabled,
+    })
   }
 
   const lastEvent = [...events].sort((a, b) => b.observedAt.localeCompare(a.observedAt))[0]
@@ -722,10 +736,17 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
         : permission === 'checking'
           ? 'SJEKKER…'
           : 'KLAR TIL Å SPØRRE'
+  const distance = runtime?.distanceMeters ?? null
+  const accuracy = runtime?.accuracyMeters ?? null
+  const proximity = runtime?.proximity ?? 'outside'
+  const lastCheckedAt = runtime?.observedAt ? new Date(runtime.observedAt) : null
 
   return (
     <article className="card detail-card smart-game-day-card">
-      <div className="card-heading"><div><span className="eyebrow">SMART KAMPDAG · GPS</span><h2>Posisjon ved arena</h2></div><span className={`gps-dot ${tracking ? 'live' : ''}`} /></div>
+      <div className="card-heading">
+        <div><span className="eyebrow">SMART KAMPDAG · GPS</span><h2>Posisjon ved arena</h2></div>
+        <span className={`gps-dot ${automaticTracking ? 'live' : ''}`} />
+      </div>
 
       {!hasArenaPosition ? (
         <p className="save-warning">Denne arenaen mangler GPS-punkt. Si ifra hvilken kamp det gjelder, så kan arenaen rettes.</p>
@@ -745,23 +766,38 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
             <strong className={permission === 'denied' ? 'blocked' : permission === 'granted' ? 'granted' : ''}>{permissionLabel}</strong>
           </div>
 
+          {matchday && (
+            <div className="gps-auto-row">
+              <div>
+                <strong>Automatisk Smart Kampdag</strong>
+                <span>{automaticTracking ? 'Én global GPS-watch er aktiv. Den beholdes når appen skjules så lenge nettleseren tillater det.' : 'Slå på for automatisk arenaoppdagelse på kampdag.'}</span>
+              </div>
+              <button type="button" className={smartSettings.enabled ? 'on' : ''} onClick={toggleAutomaticTracking}>
+                {smartSettings.enabled ? 'På' : 'Av'}
+              </button>
+            </div>
+          )}
+
           <div className="gps-actions">
-            {matchday && (tracking
-              ? <button className="danger-action" onClick={stopTracking}><Navigation size={16} /> Stopp GPS</button>
-              : <button className="primary-action" onClick={startTracking} disabled={!canTrack || permission === 'denied'}><Navigation size={16} /> Start Smart Kampdag</button>)}
-            <button className={matchday ? 'secondary-action' : 'primary-action'} onClick={checkOnce} disabled={!canCheckPosition || checking}>
-              <LocateFixed size={16} /> {checking ? 'Henter…' : matchday ? 'Sjekk nå' : 'Test posisjon'}
+            <button className="primary-action" onClick={checkOnce} disabled={!canCheckPosition || checking}>
+              <LocateFixed size={16} /> {checking ? 'Henter…' : 'Sjekk nå'}
             </button>
           </div>
 
           {!matchday && <p className="travel-footnote">Du kan teste GPS når som helst. Utenfor kampdag lagres ingen ankomst-/oppmøtehendelser.</p>}
-          {accuracy != null && <p className="travel-footnote">GPS-nøyaktighet ca. ±{accuracy} m.{lastCheckedAt ? ` Sist sjekket ${new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(lastCheckedAt)}.` : ''} Det lagres ikke noe kontinuerlig rått GPS-spor.</p>}
+          {accuracy != null && (
+            <p className={runtime?.reliable === false ? 'travel-footnote gps-weak-fix' : 'travel-footnote'}>
+              GPS-nøyaktighet ca. ±{accuracy} m.
+              {lastCheckedAt ? ` Sist sjekket ${new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(lastCheckedAt)}.` : ''}
+              {runtime?.reliable === false ? ' Denne målingen brukes ikke til ankomst/avreise.' : ''}
+            </p>
+          )}
         </>
       )}
 
       {lastEvent && <div className="gps-last-event"><CheckCircle2 size={15} /><span>Siste kampdagsignal: {lastEvent.type === 'arrived_at_arena' ? 'ankom arena' : lastEvent.type === 'near_arena' ? 'nær arena' : 'forlot arena'} · {new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit' }).format(new Date(lastEvent.observedAt))}</span></div>}
       {suggestAttendance && <div className="gps-suggestion"><strong>GPS tyder på at du var på kampen.</strong><span>Dette teller fortsatt ikke før du bekrefter under «Fullfør kampdagen».</span></div>}
-      {message && <p className="save-success">{message}</p>}
+      {message && <p className={runtime?.reliable === false ? 'save-warning' : 'save-success'}>{message}</p>}
       {error && <p className="save-warning">{error}</p>}
     </article>
   )
