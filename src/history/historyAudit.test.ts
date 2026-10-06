@@ -49,7 +49,7 @@ describe('full Storhamar history audit', () => {
     const coverage = historyAudit.sevenPointCoverage
 
     expect(coverage.jerseysAndRealImages.silEntriesMappedToArchive).toBe(coverage.jerseysAndRealImages.silIndexEntries)
-    expect(coverage.jerseysAndRealImages.newerOfficialVariantsTracked).toBe(4)
+    expect(coverage.jerseysAndRealImages.newerOfficialVariantsTracked).toBe(5)
     expect(coverage.rafters.legendsPresent).toBe(coverage.rafters.canonicalLegends)
     expect(coverage.rafters.legendsWithRealMedia).toBe(coverage.rafters.canonicalLegends)
     expect(coverage.honours.leagueChampionshipsPresent).toBe(coverage.honours.leagueChampionshipsExpected)
@@ -59,6 +59,8 @@ describe('full Storhamar history audit', () => {
     expect(coverage.playersAndRosters.championsRepresentedInArchive).toBe(129)
     expect(coverage.playersAndRosters.partialTitleRosters).toContain('season-2025-26')
     expect(coverage.seasonBySeasonControl.presentCompletedSeasons).toBe(69)
-    expect(coverage.seasonBySeasonControl.openConflictIds.length).toBeGreaterThan(0)
+    expect(coverage.seasonBySeasonControl.openConflictIds).toEqual(['conflict-1969-70-top-scorer-goals'])
+    expect(historyAudit.researchConflicts.resolved).toContain('conflict-1991-92-rune-gulliksen-points')
+    expect(historyAudit.researchConflicts.resolved).toContain('conflict-1996-97-dahlstrom-points')
   })
 })
