@@ -60,8 +60,52 @@ const seasonStatNames = new Set(
 const archivePlayerNames = new Set(historyArchive.players.map((player) => player.fullName))
 const unmatchedSeasonStatNames = [...seasonStatNames].filter((name) => !archivePlayerNames.has(name)).sort()
 
+const mediaCoverage = {
+  players: {
+    total: historyArchive.players.length,
+    withMedia: historyArchive.players.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.players.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  seasons: {
+    total: historyArchive.seasons.length,
+    withMedia: historyArchive.seasons.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.seasons.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  honours: {
+    total: historyArchive.honours.length,
+    withMedia: historyArchive.honours.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.honours.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  jerseys: {
+    total: historyArchive.jerseys.length,
+    withMedia: historyArchive.jerseys.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.jerseys.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  europe: {
+    total: historyArchive.europe.length,
+    withMedia: historyArchive.europe.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.europe.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  arenas: {
+    total: historyArchive.arenas.length,
+    withMedia: historyArchive.arenas.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.arenas.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  records: {
+    total: historyArchive.records.length,
+    withMedia: historyArchive.records.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.records.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+  timeline: {
+    total: historyArchive.timeline.length,
+    withMedia: historyArchive.timeline.filter((item) => item.media.length > 0).length,
+    missingIds: historyArchive.timeline.filter((item) => item.media.length === 0).map((item) => item.id),
+  },
+}
+
 export const historyAudit = {
   generatedAt: '2026-10-06',
+  mediaCoverage,
   seasonCoverage: {
     expectedCompletedSeasons: expectedCompletedSeasonIds.length,
     actualCompletedSeasons: historyArchive.seasons.length,
