@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import appPackage from '../package.json'
 import { GamePurchases } from './components/GamePurchases'
+import { HistoryArchivePage } from './components/HistoryArchivePage'
 import { MinStorhamarPage } from './components/MinStorhamarPage'
 import { TravelPlanner } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
@@ -841,8 +842,7 @@ function CareerPage({ hubData, trips, records, purchases }: { hubData: HubExport
 }
 
 function HistoryPage() {
-  const categories = [['Tidslinjen', 'Fra 1957 til i dag'], ['Meritter', 'NM-gull og seriegull'], ['Spillere', 'Profiler gjennom tidene'], ['Arenaer', 'Fra uteisen til CC Amfi'], ['Europa', 'CHL og europacup'], ['Rekorder', 'Klubbrekorder og milepæler']]
-  return <section className="page-section"><div className="page-heading"><span className="eyebrow">ARKIVET</span><h1>Historie</h1><p>Storhamars historie samlet i ett supporterarkiv.</p></div><div className="history-grid">{categories.map(([title, text]) => <button className="history-card" key={title}><div><strong>{title}</strong><span>{text}</span></div><ChevronRight /></button>)}</div></section>
+  return <HistoryArchivePage />
 }
 
 function MorePage({ hubData, importMessage, importHubFile, removeImport, version }: { hubData: HubExport | null; importMessage: string; importHubFile: (file: File | undefined) => void; removeImport: () => void; version: string }) {
