@@ -429,7 +429,9 @@ export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePers
         sourceId: photo.sourceId ?? 'silarkivet',
         sourceUrl: photo.sourceUrl,
         personIds: [player.id],
-        rightsNote: 'Historisk spillerbilde fra SIL-arkivet brukt i Mitt Storhamar som kildebasert arkivmedia.',
+        rightsNote: photo.sourceId === 'storhamar-official'
+          ? 'Offisielt spillerbilde fra Storhamar Hockey brukt som kildebasert arkivmedia.'
+          : 'Historisk spillerbilde fra SIL-arkivet brukt i Mitt Storhamar som kildebasert arkivmedia.',
       }],
     }
   })
