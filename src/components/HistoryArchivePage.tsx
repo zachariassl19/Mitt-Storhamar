@@ -342,6 +342,7 @@ export function HistoryArchivePage() {
   const [jerseySort, setJerseySort] = useState<'newest'|'oldest'>('newest')
   const [playerPosition, setPlayerPosition] = useState<PlayerPositionFilter>('all')
   const [jerseyFilter, setJerseyFilter] = useState<JerseyFilter>('all')
+  const [activeImage, setActiveImage] = useState<{ src: string; alt: string; caption?: string } | null>(null)
 
   const recentGold = historyArchive.honours.find((honour) => honour.id === 'honour-2026-nm')?.media[0]?.src
   const recentEurope = historyArchive.europe.find((campaign) => campaign.id === 'europe-2025-26-chl')?.media[0]?.src
