@@ -374,6 +374,41 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     credit: 'Storhamar Hockey',
     sourceId: 'storhamar-official',
   },
+  'Mats Bakke Olsen': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/67-olsen-25.26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/67-mats-bakke-olsen/',
+    alt: 'Mats Bakke Olsen i Storhamar-drakt 2025/26',
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+  },
+  'Colin Campbell': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/74-campbell-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/74-colin-campbell/',
+    alt: 'Colin Campbell i Storhamar-drakt 2025/26',
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+  },
+  'Marcus Bryhnisveen': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/91-bryhnisveen-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/91-marcus-bryhnisveen/',
+    alt: 'Marcus Bryhnisveen i Storhamar-drakt 2025/26',
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+  },
+  'Stefan Espeland': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/71-espeland-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/71-stefan-espeland/',
+    alt: 'Stefan Espeland i Storhamar-drakt 2025/26',
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+  },
+  'Andreas Dahl': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/09/66-dahl-25-26.jpg',
+    sourceUrl: 'https://www.sil.no/laget/66-andreas-dahl/',
+    alt: 'Andreas Dahl i Storhamar-drakt 2025/26',
+    credit: 'Storhamar Hockey',
+    sourceId: 'storhamar-official',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
