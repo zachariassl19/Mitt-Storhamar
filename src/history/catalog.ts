@@ -112,6 +112,7 @@ import { withLegendMedia } from './legendMedia'
 import { withHonourMedia } from './honourMedia'
 import { verifiedPlayers1997To2000 } from './players1997to2000'
 import { careerLeaderboardProfiles } from './playerCareerSupplement'
+import { applyVerifiedPlayerSupplements } from './playerVerifiedSupplement'
 import { buildChampionSupplementPlayers } from './championPlayers'
 import { applyVerifiedRosterResearch, buildRosterSupplementPlayers } from './rosterBridge'
 import { jerseys1960s } from './jerseys1960s'
@@ -219,7 +220,7 @@ const playersBeforeRosterBridge = [...corePlayers, ...careerPlayers]
 const rosterSupplementPlayers = buildRosterSupplementPlayers(playersBeforeRosterBridge)
 const playersBeforeChampionBridge = [...playersBeforeRosterBridge, ...rosterSupplementPlayers]
 const championSupplementPlayers = buildChampionSupplementPlayers(playersBeforeChampionBridge)
-const allPlayers = [...playersBeforeChampionBridge, ...championSupplementPlayers]
+const allPlayers = applyVerifiedPlayerSupplements([...playersBeforeChampionBridge, ...championSupplementPlayers])
 
 const baseEuropeCampaigns = [
   ...europe1994To1997,
