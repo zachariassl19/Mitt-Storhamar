@@ -110,6 +110,15 @@ function positionLabel(group: PlayerPositionFilter) {
   return 'Alle'
 }
 
+function researchFieldLabel(value: string) {
+  if (value === 'position') return 'posisjon'
+  if (value === 'season-links') return 'sesongkoblinger'
+  if (value === 'storhamar-periods') return 'Storhamar-perioder'
+  if (value === 'shirt-numbers') return 'draktnummer'
+  if (value === 'media') return 'bilde'
+  return value
+}
+
 function playerByName(name: string) {
   return historyArchive.players.find((player) => player.fullName === name)
 }
@@ -394,7 +403,7 @@ export function HistoryArchivePage() {
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
-            verified: item.completeness === 'verified',
+            verified: verifiedCareer,
             searchText: [item.fullName, item.summary, item.honouredNumber, item.roles?.join(' ')].filter(Boolean).join(' ').toLowerCase(),
           }
         })
@@ -512,7 +521,9 @@ export function HistoryArchivePage() {
           const source = sourceFor(item.sources, media?.sourceUrl)
           const group = playerPositionGroup(item.position)
           const seasons = item.seasonIds.length
-          const verifiedCareer = item.completeness === 'verified'
+          const review = historyAudit.sevenPointCoverage.playersAndRosters.playerResearchReview.find((entry) => entry.id === item.id)
+          const missingResearch = review?.missing ?? []
+          const verifiedCareer = item.completeness === 'verified' && missingResearch.length === 0
           return {
             id: item.id,
             title: item.fullName,
@@ -524,12 +535,14 @@ export function HistoryArchivePage() {
               item.shirtNumbers?.length ? `#${item.shirtNumbers.join(' / #')}` : '',
               seasons ? (verifiedCareer ? `${seasons} sesonger` : `${seasons} dokumenterte sesonger`) : 'Sesonger under research',
               item.honourIds.length ? `${item.honourIds.length} meritter` : '',
+              missingResearch.length ? `${missingResearch.length} researchfelt gjenstår` : 'Profil kontrollert',
             ].filter(Boolean),
             body: item.body ?? [],
             details: [
               ...(item.position ? [{ label: 'Posisjon', value: item.position }] : []),
               ...(item.storhamarPeriods?.length ? [{ label: 'Storhamar-perioder', value: item.storhamarPeriods.map((period) => [compactSeasonName(period.fromSeasonId), compactSeasonName(period.toSeasonId)].filter(Boolean).join('–') || period.note).filter(Boolean).join(', ') }] : []),
               ...(item.seasonIds.length ? [{ label: verifiedCareer ? 'Registrerte sesonger' : 'Dokumenterte sesonger så langt', value: item.seasonIds.map(compactSeasonName).join(', ') }] : []),
+              ...(missingResearch.length ? [{ label: 'Research gjenstår', value: missingResearch.map(researchFieldLabel).join(', ') }] : [{ label: 'Researchstatus', value: 'Profilens kjernefelt er kontrollert' }]),
             ],
             sourceUrl: source?.url,
             sourceLabel: source?.label,
