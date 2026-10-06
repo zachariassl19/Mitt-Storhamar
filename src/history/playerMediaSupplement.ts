@@ -87,6 +87,46 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-o/',
     alt: 'Lars Løkken Østli i Storhamar-drakt',
   },
+  'Mads Hansen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mhansen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Mads Hansen i Storhamar-drakt',
+  },
+  'Mattias Livf': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mlivf.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-l/',
+    alt: 'Mattias Livf i Storhamar-drakt',
+  },
+  'Alexander Smirnov': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/asmirnov.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
+    alt: 'Alexander Smirnov i Storhamar-drakt',
+  },
+  'Knut Henrik Spets': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/khspets.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
+    alt: 'Knut Henrik Spets i Storhamar-drakt',
+  },
+  'Geir Svendsberget': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/gsvendsberget.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-s/',
+    alt: 'Geir Svendsberget i Storhamar-drakt',
+  },
+  'Oskar Östlund': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/ooestlund.png?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-o/',
+    alt: 'Oskar Östlund i Storhamar-drakt',
+  },
+  'Kodie Curran': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/kcurran-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-c/',
+    alt: 'Kodie Curran i Storhamar-drakt',
+  },
+  'Antti Rahkonen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/arahkonen.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-r/',
+    alt: 'Antti Rahkonen i Storhamar-drakt',
+  },
   'Remo Martinsen': {
     src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/remo_martinsen.jpg?resize=200%2C254',
     sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
