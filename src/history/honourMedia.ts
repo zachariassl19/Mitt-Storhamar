@@ -1,15 +1,16 @@
 import type { ArchiveHonour, ArchiveMedia } from './types'
 
 const rightsNote = 'Offisielt klubbilde brukt som historisk referanse. Rettighetsstatus må følges opp før eventuell lokal kopiering eller videre distribusjon.'
-const sourceUrl = 'https://www.sil.no/historietirsdag-10-gull/'
+const defaultNmSourceUrl = 'https://www.sil.no/historietirsdag-10-gull/'
 
 interface HonourPhoto {
   src: string
   alt: string
   caption: string
+  sourceUrl?: string
 }
 
-const nmPhotos: Record<string, HonourPhoto> = {
+const honourPhotos: Record<string, HonourPhoto> = {
   'honour-1995-nm': {
     src: 'https://www.sil.no/wp-content/uploads/2025/03/mestern-gulljubel-1024x683.jpg',
     alt: 'Storhamars første NM-gull i 1995',
@@ -59,11 +60,35 @@ const nmPhotos: Record<string, HonourPhoto> = {
     src: 'https://www.sil.no/wp-content/uploads/2026/04/botte-champagne-finale-4-26-1024x683.jpg',
     alt: 'Storhamar feirer det tiende NM-gullet i 2026',
     caption: 'Champagnejubel etter det tredje strake og tiende NM-gullet i 2026.',
+  },,
+  'honour-2018-league': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/02/seriegull-1718-scaled.jpg',
+    alt: 'Storhamar feirer seriegullet i 2017/18',
+    caption: 'Seriegullet i 2017/18 ble starten på dobbelgullsesongen.',
+    sourceUrl: 'https://www.sil.no/historietirsdag-10-seriegull/',
   },
+  'honour-2024-league': {
+    src: 'https://www.sil.no/wp-content/uploads/2024/02/DSC8473.jpg',
+    alt: 'Storhamar i seriegullkampen mot Comet i 2024',
+    caption: 'Storhamar sikret klubbens niende seriemesterskap med 10–0 mot Comet 22. februar 2024.',
+    sourceUrl: 'https://www.sil.no/stort-a-vinne-med-barndomsklubben/',
+  },
+  'honour-2025-league': {
+    src: 'https://www.sil.no/wp-content/uploads/2025/02/seriegull25.png',
+    alt: 'Storhamar seriemester 2024/25',
+    caption: 'Storhamar ble seriemester for tiende gang i februar 2025.',
+    sourceUrl: 'https://www.sil.no/seriegull/',
+  },
+  'honour-2026-league': {
+    src: 'https://www.sil.no/wp-content/uploads/2026/02/roennild-smil-lorenskog-scaled.jpg',
+    alt: 'Martin Rønnild og Storhamar feirer seriegullet i 2025/26',
+    caption: 'Storhamar sikret sitt ellevte seriemesterskap med 5–0 borte mot Lørenskog 26. februar 2026.',
+    sourceUrl: 'https://www.sil.no/seriegull-2/',
+  }
 }
 
 export function withHonourMedia(honour: ArchiveHonour): ArchiveHonour {
-  const photo = nmPhotos[honour.id]
+  const photo = honourPhotos[honour.id]
   if (!photo) return honour
   if (honour.media.some((item) => item.src === photo.src)) return honour
 
@@ -75,7 +100,7 @@ export function withHonourMedia(honour: ArchiveHonour): ArchiveHonour {
     caption: photo.caption,
     credit: 'Storhamar Hockey',
     sourceId: 'storhamar-official',
-    sourceUrl,
+    sourceUrl: photo.sourceUrl ?? defaultNmSourceUrl,
     seasonIds: honour.seasonId ? [honour.seasonId] : undefined,
     rightsNote,
   }
