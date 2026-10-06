@@ -247,6 +247,31 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-z/',
     alt: 'Mikael Zettergren i Storhamar-drakt',
   },
+  'Robert Hestmann': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/rhestmann-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Robert Hestmann i Storhamar-drakt',
+  },
+  'Jonathan Hafsmoe': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jhafsmoe.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-h/',
+    alt: 'Jonathan Hafsmoe i Storhamar-drakt',
+  },
+  'Jørgen Langdalen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jlangdalen-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-l/',
+    alt: 'Jørgen Langdalen i Storhamar-drakt',
+  },
+  'Kenney Morrison': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/kmorrison-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-m/',
+    alt: 'Kenney Morrison i Storhamar-drakt',
+  },
+  'Emil Frøshaug': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/efroshaug-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
+    alt: 'Emil Frøshaug i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
