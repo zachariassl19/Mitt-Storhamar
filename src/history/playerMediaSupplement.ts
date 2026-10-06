@@ -217,6 +217,36 @@ const photos: Record<string, PlayerPhotoEvidence> = {
     sourceUrl: 'https://silarkivet.no/alumni/alumni-f/',
     alt: 'Kristian Forsberg i Storhamar-drakt',
   },
+  'Robin Dahlstrøm': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/rdahlstrom.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-d/',
+    alt: 'Robin Dahlstrøm i Storhamar-drakt',
+  },
+  'Mikael Dokken': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mdokken.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-d/',
+    alt: 'Mikael Dokken i Storhamar-drakt',
+  },
+  'Simen André Edvardsen': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/edvardsen-simen-a.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-e/',
+    alt: 'Simen André Edvardsen i Storhamar-drakt',
+  },
+  'Hampus Gustafsson': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/hgustafsson-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-g/',
+    alt: 'Hampus Gustafsson i Storhamar-drakt',
+  },
+  'Josh Nicholls': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/jnicholls-1.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-n/',
+    alt: 'Josh Nicholls i Storhamar-drakt',
+  },
+  'Mikael Zettergren': {
+    src: 'https://i0.wp.com/silarkivet.no/wp-content/uploads/mzett.jpg?resize=600%2C408',
+    sourceUrl: 'https://silarkivet.no/alumni/alumni-z/',
+    alt: 'Mikael Zettergren i Storhamar-drakt',
+  },
 }
 
 export function withPlayerMediaSupplement(players: ArchivePerson[]): ArchivePerson[] {
