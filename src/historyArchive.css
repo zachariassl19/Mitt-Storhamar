@@ -1105,3 +1105,26 @@
     text-overflow: ellipsis;
   }
 }
+
+
+.stat-player-button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  max-width: 190px;
+  min-height: 26px;
+}
+.stat-player-button > img {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.1);
+  background: #081e3e;
+}
+.stat-player-button > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
