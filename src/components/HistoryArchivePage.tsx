@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   BookOpen,
@@ -658,6 +658,58 @@ export function HistoryArchivePage() {
         </div>
       )}
 
+      {section === 'people' && peopleView === 'players' && (
+        <div className="archive-filter-block">
+          <span className="archive-filter-label">Posisjon</span>
+          <div className="archive-filter-scroll">
+            {([
+              ['all', 'Alle'],
+              ['keeper', 'Keepere'],
+              ['back', 'Backer'],
+              ['forward', 'Forwards'],
+              ['unknown', 'Mangler posisjon'],
+            ] as Array<[PlayerPositionFilter, string]>).map(([value, label]) => (
+              <button
+                type="button"
+                key={value}
+                className={playerPosition === value ? 'active' : ''}
+                onClick={() => setPlayerPosition(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {section === 'jerseys' && (
+        <div className="archive-filter-block">
+          <span className="archive-filter-label">Filtrer drakter</span>
+          <div className="archive-filter-scroll">
+            {([
+              ['all', 'Alle'],
+              ['yellow', 'Gule'],
+              ['blue', 'Blå'],
+              ['white', 'Hvite'],
+              ['series', 'Serie'],
+              ['europe', 'Europa / CHL'],
+              ['special', 'Spesial'],
+              ['testimonial', 'Testimonial'],
+              ['preseason', 'Forsesong'],
+            ] as Array<[JerseyFilter, string]>).map(([value, label]) => (
+              <button
+                type="button"
+                key={value}
+                className={jerseyFilter === value ? 'active' : ''}
+                onClick={() => setJerseyFilter(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <label className="archive-search">
         <Search size={17} />
         <input
@@ -676,10 +728,23 @@ export function HistoryArchivePage() {
       </div>
 
       <div className="archive-list">
-        {visibleItems.map((item) => {
+        {visibleItems.map((item, index) => {
           const expanded = selectedId === item.id
+          const showPositionHeading =
+            section === 'people' &&
+            peopleView === 'players' &&
+            item.group &&
+            item.group !== 'all' &&
+            (index === 0 || visibleItems[index - 1]?.group !== item.group)
           return (
-            <article className={`archive-item ${expanded ? 'expanded' : ''}`} key={item.id}>
+            <Fragment key={item.id}>
+              {showPositionHeading && (
+                <div className="archive-position-heading">
+                  <span>{positionLabel(item.group!)}</span>
+                  <small>{filteredItems.filter((candidate) => candidate.group === item.group).length}</small>
+                </div>
+              )}
+              <article className={`archive-item ${expanded ? 'expanded' : ''}`}>
               <button
                 type="button"
                 className="archive-item-main"
@@ -739,6 +804,7 @@ export function HistoryArchivePage() {
                 </div>
               )}
             </article>
+            </Fragment>
           )
         })}
       </div>
