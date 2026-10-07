@@ -1,4 +1,4 @@
-import type { Game, GameDayRecord, Trip } from '../types'
+import type { AttendancePlan, Game, GameDayRecord, Trip } from '../types'
 import type { NotificationSettings } from './notificationSettings'
 
 export interface AppNotificationCandidate {
@@ -71,6 +71,7 @@ export function notificationCandidates({
   games,
   trips,
   records,
+  plans = {},
   settings,
   smartGameDayEnabled,
 }: {
@@ -78,6 +79,7 @@ export function notificationCandidates({
   games: Game[]
   trips: Trip[]
   records: Record<string, GameDayRecord>
+  plans?: Record<string, AttendancePlan>
   settings: NotificationSettings
   smartGameDayEnabled: boolean
 }) {
@@ -146,7 +148,7 @@ export function notificationCandidates({
       }
     }
 
-    if (settings.finishGameDay && !records[game.id]?.completed) {
+    if (settings.finishGameDay && plans[game.id] !== 'no' && !records[game.id]?.completed) {
       const reminderAt = startsAt + 3.5 * 60 * 60 * 1000
       const expiresAt = startsAt + 14 * 60 * 60 * 1000
       if (nowMs >= reminderAt && nowMs <= expiresAt) {

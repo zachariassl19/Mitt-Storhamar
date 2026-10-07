@@ -8,7 +8,7 @@ import {
   subscribeSmartGameDaySettings,
   type SmartGameDaySettings,
 } from '../lib/smartGameDaySettings'
-import { loadGameDayRecords } from '../lib/storage'
+import { loadAttendancePlans, loadGameDayRecords, subscribeAttendancePlans } from '../lib/storage'
 import {
   createTripForGame,
   loadTrips,
@@ -104,10 +104,12 @@ export function DynamicMatchdayHome() {
   const target = useMatchdayPortalTarget()
   const [now, setNow] = useState(() => new Date())
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
+  const [plans, setPlans] = useState(() => loadAttendancePlans())
   const [smartSettings, setSmartSettings] = useState<SmartGameDaySettings>(() => loadSmartGameDaySettings())
   const [message, setMessage] = useState('')
 
   useEffect(() => subscribeTrips(setTrips), [])
+  useEffect(() => subscribeAttendancePlans(setPlans), [])
   useEffect(() => subscribeSmartGameDaySettings(setSmartSettings), [])
 
   useEffect(() => {
@@ -118,6 +120,7 @@ export function DynamicMatchdayHome() {
   const game = useMemo(() => games.find((candidate) => isGameDay(candidate, now)), [now])
   const trip = game ? tripForGame(trips, game.id) : undefined
   const record = game ? loadGameDayRecords()[game.id] : undefined
+  const plan = game ? plans[game.id] ?? 'unset' : 'unset'
   const phase = game ? phaseCopy(game, Boolean(record?.completed), now) : null
   const travelMinutes = outboundMinutes(trip)
   const desiredMinutesBefore = trip?.desiredArrivalMinutesBefore ?? 30
@@ -162,6 +165,12 @@ export function DynamicMatchdayHome() {
 
   const beforeStart = phase.state === 'GAME_DAY_BEFORE_START'
   const afterGame = phase.state === 'POST_GAME_PENDING' || phase.state === 'FINISHED'
+  const attendedDespitePlan = record?.attendanceActual === 'attended'
+
+  // A supporter who explicitly answered "Nei" should not be asked to
+  // complete a matchday afterwards. If actual attendance later says they
+  // were there, the completed/after-match flow is still available.
+  if (afterGame && plan === 'no' && !attendedDespitePlan) return null
 
   return createPortal(
     <section className={`dynamic-matchday-card ${phase.state.toLowerCase()}`}>

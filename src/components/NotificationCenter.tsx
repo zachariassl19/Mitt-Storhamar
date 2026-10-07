@@ -11,7 +11,7 @@ import {
   type NotificationSettings,
 } from '../lib/notificationSettings'
 import { loadSmartGameDaySettings } from '../lib/smartGameDaySettings'
-import { loadGameDayRecords } from '../lib/storage'
+import { loadAttendancePlans, loadGameDayRecords } from '../lib/storage'
 import { loadTrips } from '../lib/trips'
 
 const SENT_KEY = 'mitt-storhamar:notifications-sent:v1'
@@ -80,6 +80,7 @@ export function NotificationManager() {
         games,
         trips: loadTrips(),
         records: loadGameDayRecords(),
+        plans: loadAttendancePlans(),
         settings,
         smartGameDayEnabled: loadSmartGameDaySettings().enabled,
       })

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Cloud, CloudOff, LogIn, LogOut, RefreshCw, ShieldCheck, X } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
+import { mergeCloudStorage } from '../lib/cloudSyncMerge'
 import { supabase } from '../lib/supabase'
 
 const APP_STORAGE_PREFIX = 'mitt-storhamar:'
@@ -51,12 +52,6 @@ function replaceAppStorage(storage: Record<string, string>) {
   for (const [key, value] of Object.entries(storage)) {
     localStorage.setItem(key, value)
   }
-}
-
-function mergeFirstSync(remote: Record<string, string>, local: Record<string, string>) {
-  // Existing local data wins on the first login on a device so a first sync can
-  // never silently throw away a locally registered match, trip or import.
-  return { ...remote, ...local }
 }
 
 function snapshotFromLocal(): CloudSnapshot {
@@ -153,7 +148,7 @@ export function CloudSyncManager() {
 
       const merged = Object.keys(local).length === 0
         ? remoteStorage
-        : mergeFirstSync(remoteStorage, local)
+        : mergeCloudStorage(remoteStorage, local)
       const mergedFingerprint = storageFingerprint(merged)
 
       replaceAppStorage(merged)
@@ -184,16 +179,34 @@ export function CloudSyncManager() {
 
       const localStorageState = readAppStorage()
       const localFingerprint = storageFingerprint(localStorageState)
-      if (localFingerprint !== lastFingerprintRef.current) {
-        await pushCurrent(user)
+      const remoteStorage = remote.state.storage
+      const remoteFingerprint = storageFingerprint(remoteStorage)
+      const localChanged = localFingerprint !== lastFingerprintRef.current
+      lastRemoteUpdatedAtRef.current = remote.updated_at
+
+      if (remoteFingerprint === localFingerprint) {
+        lastFingerprintRef.current = localFingerprint
         return
       }
 
-      const remoteFingerprint = storageFingerprint(remote.state.storage)
-      lastRemoteUpdatedAtRef.current = remote.updated_at
-      if (remoteFingerprint === localFingerprint) return
+      if (localChanged) {
+        const merged = mergeCloudStorage(remoteStorage, localStorageState)
+        const mergedFingerprint = storageFingerprint(merged)
+        replaceAppStorage(merged)
+        const updatedAt = await writeRemoteState(user.id, {
+          schemaVersion: CLOUD_SCHEMA_VERSION,
+          savedAt: new Date().toISOString(),
+          storage: merged,
+        })
+        lastFingerprintRef.current = mergedFingerprint
+        lastRemoteUpdatedAtRef.current = updatedAt
+        setStatus('synced')
+        setMessage('Endringer fra app og nettside er slått sammen.')
+        if (mergedFingerprint !== localFingerprint) window.location.reload()
+        return
+      }
 
-      replaceAppStorage(remote.state.storage)
+      replaceAppStorage(remoteStorage)
       lastFingerprintRef.current = remoteFingerprint
       setStatus('synced')
       setMessage('Nyere data fra en annen enhet er hentet.')

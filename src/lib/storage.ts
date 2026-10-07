@@ -1,6 +1,7 @@
 import type { AttendancePlan, GameDayRecord, HubExport, SmartGameDayEvent } from '../types'
 
 const ATTENDANCE_KEY = 'mitt-storhamar:attendance-plan:v1'
+export const ATTENDANCE_CHANGED_EVENT = 'mitt-storhamar:attendance-plan-changed'
 const HUB_EXPORT_KEY = 'mitt-storhamar:hub-export:v1'
 const GAME_DAY_RECORDS_KEY = 'mitt-storhamar:game-day-records:v1'
 const SMART_GAME_DAY_EVENTS_KEY = 'mitt-storhamar:smart-game-day-events:v1'
@@ -17,6 +18,28 @@ export function saveAttendancePlan(gameId: string, plan: AttendancePlan) {
   const current = loadAttendancePlans()
   current[gameId] = plan
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(current))
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(ATTENDANCE_CHANGED_EVENT, { detail: current }))
+  }
+}
+
+export function subscribeAttendancePlans(listener: (plans: Record<string, AttendancePlan>) => void) {
+  if (typeof window === 'undefined') return () => undefined
+
+  const onCustom = (event: Event) => {
+    const custom = event as CustomEvent<Record<string, AttendancePlan>>
+    listener(custom.detail ?? loadAttendancePlans())
+  }
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === ATTENDANCE_KEY) listener(loadAttendancePlans())
+  }
+
+  window.addEventListener(ATTENDANCE_CHANGED_EVENT, onCustom)
+  window.addEventListener('storage', onStorage)
+  return () => {
+    window.removeEventListener(ATTENDANCE_CHANGED_EVENT, onCustom)
+    window.removeEventListener('storage', onStorage)
+  }
 }
 
 export function loadGameDayRecords(): Record<string, GameDayRecord> {
