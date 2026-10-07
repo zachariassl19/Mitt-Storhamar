@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Bell, BellRing, ChevronDown } from 'lucide-react'
+import { Bell, BellRing, ChevronDown, MapPin } from 'lucide-react'
+import { LocalNotifications } from '@capacitor/local-notifications'
 import { games } from '../data/games'
 import { notificationCandidates } from '../lib/notificationLogic'
 import {
@@ -13,10 +14,27 @@ import {
 import { loadSmartGameDaySettings } from '../lib/smartGameDaySettings'
 import { loadGameDayRecords } from '../lib/storage'
 import { loadTrips, TRIPS_CHANGED_EVENT } from '../lib/trips'
+import {
+  isNativeAndroid,
+  startPositionNotificationTest,
+  getPositionNotificationTestStatus,
+  type NativePositionTestStatus,
+} from '../lib/nativeSmartGameDay'
 
 const SENT_KEY = 'mitt-storhamar:notifications-sent:v1'
 
-type PermissionState = NotificationPermission | 'unsupported'
+type PermissionState = NotificationPermission | 'unsupported' | 'checking'
+
+async function systemNotificationPermission(request = false): Promise<PermissionState> {
+  if (isNativeAndroid()) {
+    let result = await LocalNotifications.checkPermissions()
+    if (request && result.display !== 'granted') result = await LocalNotifications.requestPermissions()
+    return result.display === 'granted' ? 'granted' : result.display === 'denied' ? 'denied' : 'default'
+  }
+  if (!('Notification' in window)) return 'unsupported'
+  if (request && Notification.permission === 'default') return Notification.requestPermission()
+  return Notification.permission
+}
 
 function readSent(): Record<string, number> {
   try {
@@ -35,6 +53,17 @@ function markSent(id: string) {
 }
 
 async function showSystemNotification(title: string, body: string, tag: string) {
+  if (isNativeAndroid()) {
+    try {
+      if (await systemNotificationPermission() !== 'granted') return false
+      let id = 17
+      for (const char of tag) id = (id * 31 + char.charCodeAt(0)) | 0
+      await LocalNotifications.schedule({ notifications: [{ id: (id & 0x3fffffff) + 10000, title, body, extra: { tag } }] })
+      return true
+    } catch {
+      return false
+    }
+  }
   if (!('Notification' in window) || Notification.permission !== 'granted') return false
   const icon = `${import.meta.env.BASE_URL}icon.svg`
 
@@ -72,7 +101,7 @@ export function NotificationManager() {
 
     async function check() {
       if (disposed || !settings.enabled) return
-      if (!('Notification' in window) || Notification.permission !== 'granted') return
+      if (await systemNotificationPermission() !== 'granted') return
 
       const sent = readSent()
       const due = notificationCandidates({
@@ -161,11 +190,13 @@ function useSettingsPortalTarget() {
 }
 
 function permissionState(): PermissionState {
+  if (isNativeAndroid()) return 'checking'
   if (!('Notification' in window)) return 'unsupported'
   return Notification.permission
 }
 
 function permissionLabel(permission: PermissionState) {
+  if (permission === 'checking') return 'Sjekker…'
   if (permission === 'granted') return 'Tillatt'
   if (permission === 'denied') return 'Blokkert'
   if (permission === 'unsupported') return 'Ikke tilgjengelig'
@@ -179,12 +210,47 @@ export function NotificationSettingsPortal() {
   const [permission, setPermission] = useState<PermissionState>(() => permissionState())
   const [message, setMessage] = useState('')
   const [serviceWorkerReady, setServiceWorkerReady] = useState(false)
+  const [positionTest, setPositionTest] = useState<NativePositionTestStatus | null>(null)
+  const [startingPositionTest, setStartingPositionTest] = useState(false)
+  const [secondsRemaining, setSecondsRemaining] = useState(0)
+  const native = isNativeAndroid()
+  const positionTestBusy = startingPositionTest || positionTest?.running === true
 
   useEffect(() => subscribeNotificationSettings(setSettings), [])
 
   useEffect(() => {
+    if (!native) return
     let mounted = true
-    if (!('serviceWorker' in navigator)) {
+    async function refresh() {
+      if (document.hidden) return
+      try {
+        const [nextPermission, status] = await Promise.all([
+          systemNotificationPermission(), getPositionNotificationTestStatus(),
+        ])
+        if (!mounted) return
+        setPermission(nextPermission)
+        setPositionTest(status)
+        setSecondsRemaining(status.running && status.dueAt ? Math.max(0, Math.ceil((status.dueAt - Date.now()) / 1000)) : 0)
+      } catch {
+        if (mounted) setMessage('Kunne ikke lese teststatus. Åpne appen og prøv igjen.')
+      }
+    }
+    const onVisible = () => { if (!document.hidden) void refresh() }
+    document.addEventListener('visibilitychange', onVisible)
+    window.addEventListener('focus', onVisible)
+    void refresh()
+    const timer = open && positionTestBusy ? window.setInterval(() => void refresh(), 1000) : undefined
+    return () => {
+      mounted = false
+      if (timer !== undefined) window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+      window.removeEventListener('focus', onVisible)
+    }
+  }, [native, open, positionTestBusy])
+
+  useEffect(() => {
+    let mounted = true
+    if (native || !('serviceWorker' in navigator)) {
       setServiceWorkerReady(false)
       return () => { mounted = false }
     }
@@ -194,7 +260,7 @@ export function NotificationSettingsPortal() {
       .catch(() => { if (mounted) setServiceWorkerReady(false) })
 
     return () => { mounted = false }
-  }, [])
+  }, [native])
 
   function persist(next: NotificationSettings) {
     setSettings(next)
@@ -207,19 +273,15 @@ export function NotificationSettingsPortal() {
       persist({ ...settings, enabled: false })
       return
     }
-    if (!('Notification' in window)) {
-      setPermission('unsupported')
-      setMessage('Denne nettleseren støtter ikke systemvarsler.')
-      return
-    }
-    let nextPermission = Notification.permission
-    if (nextPermission === 'default') nextPermission = await Notification.requestPermission()
+    const nextPermission = await systemNotificationPermission(true)
     setPermission(nextPermission)
     if (nextPermission === 'granted') {
       persist({ ...settings, enabled: true })
       setMessage('Varsler er aktivert.')
     } else if (nextPermission === 'denied') {
       setMessage('Varsler er blokkert. Tillat varsler for Mitt Storhamar i nettleser-/appinnstillingene.')
+    } else if (nextPermission === 'unsupported') {
+      setMessage('Denne nettleseren støtter ikke systemvarsler.')
     }
   }
 
@@ -229,13 +291,7 @@ export function NotificationSettingsPortal() {
 
   async function testNotification() {
     setMessage('')
-    if (!('Notification' in window)) {
-      setPermission('unsupported')
-      setMessage('Systemvarsler støttes ikke her.')
-      return
-    }
-    let nextPermission = Notification.permission
-    if (nextPermission === 'default') nextPermission = await Notification.requestPermission()
+    const nextPermission = await systemNotificationPermission(true)
     setPermission(nextPermission)
     if (nextPermission !== 'granted') {
       setMessage('Tillat varsler først.')
@@ -243,6 +299,22 @@ export function NotificationSettingsPortal() {
     }
     const shown = await showSystemNotification('Mitt Storhamar', 'Varsler fungerer 💛💙', `test:${Date.now()}`)
     setMessage(shown ? 'Testvarsel sendt.' : 'Kunne ikke vise testvarselet.')
+  }
+
+  async function testPositionAndNotification() {
+    if (positionTestBusy) return
+    setStartingPositionTest(true)
+    setMessage('')
+    try {
+      const status = await startPositionNotificationTest()
+      setPositionTest(status)
+      setSecondsRemaining(status.dueAt ? Math.max(0, Math.ceil((status.dueAt - Date.now()) / 1000)) : 5)
+      setPermission(await systemNotificationPermission())
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Kunne ikke starte testen. Kontroller tillatelsene og prøv igjen.')
+    } finally {
+      setStartingPositionTest(false)
+    }
   }
 
   if (!target) return null
@@ -290,7 +362,7 @@ export function NotificationSettingsPortal() {
             <div><span>SYSTEMTILLATELSE</span><strong className={permission === 'granted' ? 'good' : permission === 'denied' ? 'bad' : ''}>{permissionLabel(permission)}</strong></div>
           </div>
 
-          <div className="notification-runtime-grid">
+          {!native && <div className="notification-runtime-grid">
             <div>
               <span>SERVICE WORKER</span>
               <strong className={serviceWorkerReady ? 'good' : ''}>{serviceWorkerReady ? 'Klar' : 'Ikke klar'}</strong>
@@ -299,7 +371,7 @@ export function NotificationSettingsPortal() {
               <span>BAKGRUNNSMODUS</span>
               <strong>Lokal PWA</strong>
             </div>
-          </div>
+          </div>}
 
           <div className="notification-setting-list">
             {rows.map((row) => (
@@ -313,8 +385,22 @@ export function NotificationSettingsPortal() {
           <button type="button" className="secondary-action notification-test-button" onClick={() => void testNotification()}>
             <Bell size={16} /> Send testvarsel
           </button>
+          {native && (
+            <div className="position-notification-test">
+              <button type="button" className="secondary-action notification-test-button" disabled={positionTestBusy} onClick={() => void testPositionAndNotification()}>
+                <MapPin size={18} />
+                {startingPositionTest ? 'Starter testen…' : positionTestBusy ? secondsRemaining > 0 ? `Testen starter om ${secondsRemaining} sek` : 'Henter posisjon…' : 'Test posisjon og varsel · 5 sek'}
+              </button>
+              <p className="settings-panel-note">Lås skjermen etter start. Testvarselet vises etter 5 sekunder og oppdateres når telefonen finner en fersk posisjon. Testen virker også på dager uten kamp.</p>
+              <div role="status" aria-live="polite">
+                {positionTestBusy && <p className="save-success">Lås skjermen nå. Testen fortsetter på telefonen.</p>}
+                {!positionTestBusy && positionTest?.state === 'sent' && <p className="position-test-result save-success">{positionTest.body}</p>}
+                {!positionTestBusy && positionTest?.state === 'error' && <p className="save-warning">{positionTest.error}</p>}
+              </div>
+            </div>
+          )}
           {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
-          <p className="settings-panel-note">DRA krever lagret reisetid. Lokal varselsjekk fortsetter så lenge nettleseren lar PWA-prosessen kjøre. Hvis Android stopper appen helt, kreves ekte Web Push fra backend for garantert bakgrunnslevering.</p>
+          {!native && <p className="settings-panel-note">DRA krever lagret reisetid. Lokal varselsjekk fortsetter så lenge nettleseren lar PWA-prosessen kjøre. Hvis Android stopper appen helt, kreves ekte Web Push fra backend for garantert bakgrunnslevering.</p>}
         </div>
       )}
     </div>,
@@ -323,3 +409,4 @@ export function NotificationSettingsPortal() {
 }
 
 export { defaultNotificationSettings }
+

@@ -37,6 +37,9 @@ jobs:
       - name: Test web app
         run: npm test
 
+      - name: Typecheck web app
+        run: npx tsc -p tsconfig.app.json --noEmit
+
       - name: Build Android web bundle
         run: npm run build:android:web
         env:
@@ -47,15 +50,23 @@ jobs:
 
       - name: Apply private native Android code
         run: node scripts/apply-native-android.mjs
+        env:
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
 
       - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Preserve beta signing key for subsequent updates
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: mitt-storhamar-beta-debug-keystore-v1
 
       - name: Build debug APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew testDebugUnitTest assembleDebug
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
@@ -63,3 +74,4 @@ jobs:
           name: mitt-storhamar-beta-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
+

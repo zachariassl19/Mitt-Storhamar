@@ -13,6 +13,8 @@ interface NativeLocationStatus {
 }
 
 interface NativeSmartGameDayPlugin {
+  startPositionNotificationTest(): Promise<NativePositionTestStatus>
+  getPositionNotificationTestStatus(): Promise<NativePositionTestStatus>
   start(options: {
     gameId: string
     arenaId: string
@@ -25,6 +27,29 @@ interface NativeSmartGameDayPlugin {
   stop(): Promise<{ running: boolean }>
   getStatus(): Promise<NativeLocationStatus>
   drainEvents(): Promise<{ events: SmartGameDayEvent[] }>
+}
+
+export interface NativePositionTestStatus {
+  state: 'idle' | 'scheduled' | 'waiting' | 'sent' | 'error'
+  running: boolean
+  scheduledAt?: number
+  dueAt?: number
+  body?: string
+  measuredAt?: number
+  latitude?: number
+  longitude?: number
+  accuracyMeters?: number
+  measuredWithScreenLocked?: boolean
+  screenLockedAtNotification?: boolean
+  error?: string
+}
+
+export async function startPositionNotificationTest() {
+  return NativeSmartGameDay.startPositionNotificationTest()
+}
+
+export async function getPositionNotificationTestStatus() {
+  return NativeSmartGameDay.getPositionNotificationTestStatus()
 }
 
 const NativeSmartGameDay = registerPlugin<NativeSmartGameDayPlugin>('NativeSmartGameDay')
@@ -62,3 +87,4 @@ export async function drainNativeSmartGameDayEvents() {
   const result = await NativeSmartGameDay.drainEvents()
   return result.events ?? []
 }
+

@@ -119,8 +119,30 @@
 }
 .notification-runtime-grid strong.good { color: #8fe0b6; }
 
+.position-notification-test {
+  margin-top: 12px;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+.settings-list .position-notification-test .notification-test-button {
+  min-height: 44px;
+  line-height: 1.35;
+}
+
+.position-notification-test button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.position-test-result {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 370px) {
   .notification-runtime-grid {
     grid-template-columns: 1fr;
   }
 }
+
