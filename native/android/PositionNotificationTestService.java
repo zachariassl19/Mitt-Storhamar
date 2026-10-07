@@ -7,7 +7,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.location.Address;
@@ -54,7 +56,12 @@ public class PositionNotificationTestService extends Service implements Location
     private boolean completed;
     private boolean finished;
     private long startedElapsedNanos;
+    private long lockedSinceNanos = Long.MAX_VALUE;
+    private boolean screenReceiverRegistered;
     private String locationError;
+    private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) { screenLocked(); }
+    };
 
     @Override
     public void onCreate() {
@@ -63,6 +70,13 @@ public class PositionNotificationTestService extends Service implements Location
         locationManager = getSystemService(LocationManager.class);
         notificationManager = getSystemService(NotificationManager.class);
         createChannels(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(screenReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        else registerReceiver(screenReceiver, filter);
+        screenReceiverRegistered = true;
     }
 
     public static void createChannels(Context context) {
@@ -87,6 +101,7 @@ public class PositionNotificationTestService extends Service implements Location
         if (started) return START_NOT_STICKY;
         started = true;
         startedElapsedNanos = SystemClock.elapsedRealtimeNanos();
+        screenLocked();
         long scheduledAt = intent.getLongExtra("scheduledAt", System.currentTimeMillis());
         put("state", "scheduled");
         put("running", true);
@@ -131,7 +146,8 @@ public class PositionNotificationTestService extends Service implements Location
                 }
             }
         }
-        if (!requested && locationError == null) {
+        if (requested) locationError = null;
+        else if (locationError == null) {
             locationError = "Telefonens posisjon er slått av. Slå den på og prøv igjen.";
         }
     }
@@ -165,7 +181,7 @@ public class PositionNotificationTestService extends Service implements Location
             || Math.abs(location.getLatitude()) > 90 || Math.abs(location.getLongitude()) > 180) return;
         if (latest != null && location.getElapsedRealtimeNanos() < latest.getElapsedRealtimeNanos()) return;
         latest = new Location(location);
-        latestMeasuredWithScreenLocked = screenLocked();
+        latestMeasuredWithScreenLocked = screenLocked() && location.getElapsedRealtimeNanos() >= lockedSinceNanos;
         if (deadlineReached && hasUsableFix()) completeWithPosition();
     }
 
@@ -179,7 +195,10 @@ public class PositionNotificationTestService extends Service implements Location
     private boolean screenLocked() {
         PowerManager power = getSystemService(PowerManager.class);
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
-        return (power != null && !power.isInteractive()) || (keyguard != null && keyguard.isKeyguardLocked());
+        boolean locked = (power != null && !power.isInteractive()) || (keyguard != null && keyguard.isKeyguardLocked());
+        if (locked && lockedSinceNanos == Long.MAX_VALUE) lockedSinceNanos = SystemClock.elapsedRealtimeNanos();
+        if (!locked) lockedSinceNanos = Long.MAX_VALUE;
+        return locked;
     }
 
     private void completeWithPosition() {
@@ -303,6 +322,7 @@ public class PositionNotificationTestService extends Service implements Location
             put("error", "Posisjonstesten ble avbrutt. Åpne appen og prøv igjen.");
         }
         finish();
+        if (screenReceiverRegistered) unregisterReceiver(screenReceiver);
         super.onDestroy();
     }
 

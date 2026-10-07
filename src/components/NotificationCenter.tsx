@@ -222,7 +222,7 @@ export function NotificationSettingsPortal() {
     if (!native) return
     let mounted = true
     async function refresh() {
-      if (document.hidden) return
+      if (document.hidden || startingPositionTest) return
       try {
         const [nextPermission, status] = await Promise.all([
           systemNotificationPermission(), getPositionNotificationTestStatus(),
@@ -246,7 +246,7 @@ export function NotificationSettingsPortal() {
       document.removeEventListener('visibilitychange', onVisible)
       window.removeEventListener('focus', onVisible)
     }
-  }, [native, open, positionTestBusy])
+  }, [native, open, positionTestBusy, startingPositionTest])
 
   useEffect(() => {
     let mounted = true

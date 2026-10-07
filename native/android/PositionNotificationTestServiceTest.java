@@ -55,7 +55,7 @@ public class PositionNotificationTestServiceTest {
         Shadows.shadowOf(locationManager).setProviderEnabled(LocationManager.GPS_PROVIDER, true);
         Shadows.shadowOf(locationManager).setProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
         Shadows.shadowOf(app.getSystemService(PowerManager.class)).setIsInteractive(true);
-        Shadows.shadowOf(app.getSystemService(KeyguardManager.class)).setIsKeyguardLocked(false);
+        Shadows.shadowOf(app.getSystemService(KeyguardManager.class)).setKeyguardLocked(false);
         ShadowGeocoder.setIsPresent(false);
         // Give old and new measurements distinct monotonic timestamps.
         advance(1);
@@ -140,6 +140,25 @@ public class PositionNotificationTestServiceTest {
         advance(4);
         assertEquals("waiting", status().getString("state"));
         advance(1);
+        Shadows.shadowOf(locationManager).simulateLocation(fix(SystemClock.elapsedRealtimeNanos()));
+        Shadows.shadowOf(Looper.getMainLooper()).idle();
+        assertEquals("sent", status().getString("state"));
+        assertTrue(status().getBoolean("measuredWithScreenLocked"));
+    }
+
+    @Test
+    public void aFreshButBufferedPreLockPointIsNotReportedAsMeasuredWhileLocked() throws Exception {
+        start();
+        advance(1);
+        long beforeLock = SystemClock.elapsedRealtimeNanos();
+        advance(1);
+        Shadows.shadowOf(app.getSystemService(PowerManager.class)).setIsInteractive(false);
+        app.sendBroadcast(new Intent(Intent.ACTION_SCREEN_OFF));
+        Shadows.shadowOf(Looper.getMainLooper()).idle();
+        advance(3);
+        Shadows.shadowOf(locationManager).simulateLocation(fix(beforeLock));
+        Shadows.shadowOf(Looper.getMainLooper()).idle();
+        assertEquals("waiting", status().getString("state"));
         Shadows.shadowOf(locationManager).simulateLocation(fix(SystemClock.elapsedRealtimeNanos()));
         Shadows.shadowOf(Looper.getMainLooper()).idle();
         assertEquals("sent", status().getString("state"));
