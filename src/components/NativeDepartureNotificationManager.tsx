@@ -83,7 +83,6 @@ export function NativeDepartureNotificationManager() {
             body: `10 min til du bør dra til ${game.arena}. Åpne sjekklisten før avreise.`,
             schedule: { at: reminder, allowWhileIdle: true },
             extra: { gameId: game.id, focus: 'departure-checklist', kind: 'pre-departure' },
-            isExactNotification: true,
           })
         }
 
@@ -94,7 +93,6 @@ export function NativeDepartureNotificationManager() {
             body: `${game.homeTeam} – ${game.awayTeam} · ${game.arena}`,
             schedule: { at: departure, allowWhileIdle: true },
             extra: { gameId: game.id, focus: 'departure-checklist', kind: 'departure' },
-            isExactNotification: true,
           })
         }
       }
