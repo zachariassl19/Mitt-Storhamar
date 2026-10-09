@@ -12,7 +12,7 @@ import {
 } from '../lib/notificationSettings'
 import { loadSmartGameDaySettings } from '../lib/smartGameDaySettings'
 import { loadAttendancePlans, loadGameDayRecords } from '../lib/storage'
-import { loadTrips } from '../lib/trips'
+import { loadTrips, TRIPS_CHANGED_EVENT } from '../lib/trips'
 
 const SENT_KEY = 'mitt-storhamar:notifications-sent:v1'
 
@@ -34,9 +34,10 @@ function markSent(id: string) {
   localStorage.setItem(SENT_KEY, JSON.stringify(next))
 }
 
-async function showSystemNotification(title: string, body: string, tag: string) {
+async function showSystemNotification(title: string, body: string, tag: string, url?: string) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return false
   const icon = `${import.meta.env.BASE_URL}icon.svg`
+  const targetUrl = url ? `${import.meta.env.BASE_URL}${url}` : import.meta.env.BASE_URL
 
   if ('serviceWorker' in navigator) {
     try {
@@ -46,7 +47,7 @@ async function showSystemNotification(title: string, body: string, tag: string) 
         tag,
         icon,
         badge: icon,
-        data: { url: import.meta.env.BASE_URL },
+        data: { url: targetUrl },
       })
       return true
     } catch {
@@ -71,7 +72,7 @@ export function NotificationManager() {
     let disposed = false
 
     async function check() {
-      if (disposed || document.hidden || !settings.enabled) return
+      if (disposed || !settings.enabled) return
       if (!('Notification' in window) || Notification.permission !== 'granted') return
 
       const sent = readSent()
@@ -87,7 +88,7 @@ export function NotificationManager() {
 
       for (const notification of due) {
         if (disposed || sent[notification.id]) continue
-        const shown = await showSystemNotification(notification.title, notification.body, notification.id)
+        const shown = await showSystemNotification(notification.title, notification.body, notification.id, notification.url)
         if (shown) {
           markSent(notification.id)
           sent[notification.id] = Date.now()
@@ -97,9 +98,16 @@ export function NotificationManager() {
 
     const onVisible = () => { if (!document.hidden) void check() }
     const onFocus = () => void check()
+    const onPageShow = () => void check()
+    const onOnline = () => void check()
+    const onTripChanged = () => void check()
     const timer = window.setInterval(() => void check(), 30_000)
+
     document.addEventListener('visibilitychange', onVisible)
     window.addEventListener('focus', onFocus)
+    window.addEventListener('pageshow', onPageShow)
+    window.addEventListener('online', onOnline)
+    window.addEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     void check()
 
     return () => {
@@ -107,6 +115,9 @@ export function NotificationManager() {
       window.clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisible)
       window.removeEventListener('focus', onFocus)
+      window.removeEventListener('pageshow', onPageShow)
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener(TRIPS_CHANGED_EVENT, onTripChanged)
     }
   }, [settings])
 
@@ -226,7 +237,7 @@ export function NotificationSettingsPortal() {
   const rows: { key: keyof Omit<NotificationSettings, 'enabled'>; title: string; text: string }[] = [
     { key: 'gameTomorrow', title: 'Kamp i morgen', text: 'Kvelden før.' },
     { key: 'gameDay', title: 'Kampdag', text: 'På kampdagen.' },
-    { key: 'departure', title: 'DRA-varsel', text: 'Fra lagret reise.' },
+    { key: 'departure', title: 'DRA + huskeliste', text: 'Påminnelse 10 min før DRA og ved selve avreisen.' },
     { key: 'smartGameDay', title: 'Smart Kampdag', text: 'Når GPS-funksjonen er klar.' },
     { key: 'finishGameDay', title: 'Fullfør kampdagen', text: 'Etter kampen.' },
   ]
@@ -279,7 +290,7 @@ export function NotificationSettingsPortal() {
             <Bell size={16} /> Send testvarsel
           </button>
           {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
-          <p className="settings-panel-note">DRA krever lagret reisetid. PWA-varsler sjekkes når appen er aktiv eller åpnes.</p>
+          <p className="settings-panel-note">DRA krever lagret reisetid. 10 minutter før avreise får du «Har du husket alt?» med snarvei rett til sjekklisten.</p>
         </div>
       )}
     </div>,
