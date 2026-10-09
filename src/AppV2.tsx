@@ -24,6 +24,7 @@ import {
   X,
 } from 'lucide-react'
 import appPackage from '../package.json'
+import PreDepartureChecklist from './PreDepartureChecklist'
 import { GamePurchases } from './components/GamePurchases'
 import { MinStorhamarPage } from './components/MinStorhamarPage'
 import { TravelPlanner } from './components/TravelPlanner'
@@ -561,6 +562,8 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
       ) : temporalState === 'IN_PROGRESS' ? (
         <article className="notice-card detail-notice"><Clock3 size={20} /><div><strong>Kampen pågår</strong><p>Oppmøte kan først bekreftes etter kampen. GPS kan brukes som signal i mellomtiden.</p></div></article>
       ) : null}
+
+      <PreDepartureChecklist game={game} plan={plan} />
 
       <SmartGameDayPanel game={game} events={smartEvents} record={record} onEvent={onSmartEvent} />
 
