@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 import { games } from './data/games'
+import PreDepartureChecklist from './PreDepartureChecklist'
 import { clearHubExport, loadAttendancePlans, loadHubExport, saveAttendancePlan, saveHubExport } from './lib/storage'
 import type { AttendancePlan, Game, HubExport, NavKey } from './types'
 
@@ -256,6 +257,8 @@ function HomePage({
           <button><Clock3 size={18} /><span>DRA</span></button>
         </div>
       </section>
+
+      <PreDepartureChecklist game={nextGame} plan={plan} />
 
       <section className="section-block">
         <div className="section-title-row">
