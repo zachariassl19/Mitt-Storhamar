@@ -45,7 +45,7 @@ const rows: GameRow[] = [
   ['2026-09-26T16:00:00+02:00', 'EHL', 'Stavanger Oilers', 'Storhamar', 'DNB Arena', 'Stavanger'],
   ['2026-10-01T18:30:00+02:00', 'EHL', 'Nidaros', 'Storhamar', 'Leangen Arena', 'Trondheim'],
   ['2026-10-03T16:00:00+02:00', 'EHL', 'Storhamar', 'Vålerenga', 'CC Amfi', 'Hamar'],
-  ['2026-10-10T16:00:00+02:00', 'EHL', 'Storhamar', 'Stavanger Oilers', 'CC Amfi', 'Hamar'],
+  ['2026-10-10T18:30:00+02:00', 'EHL', 'Storhamar', 'Stavanger Oilers', 'CC Amfi', 'Hamar', undefined, undefined, undefined, 'Barnas dag'],
   ['2026-10-15T18:30:00+02:00', 'EHL', 'Narvik', 'Storhamar', 'Nordkraft Arena', 'Narvik'],
   ['2026-10-17T16:00:00+02:00', 'EHL', 'Storhamar', 'Stjernen', 'CC Amfi', 'Hamar'],
   ['2026-10-20T18:30:00+02:00', 'EHL', 'Ringerike', 'Storhamar', 'Schjongshallen', 'Hønefoss'],
