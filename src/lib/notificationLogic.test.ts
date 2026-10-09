@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Game, Trip } from '../types'
-import { departureTimeForTrip, notificationCandidates } from './notificationLogic'
+import { departureTimeForTrip, notificationCandidates, preDepartureReminderTime } from './notificationLogic'
 import { defaultNotificationSettings } from './notificationSettings'
 
 const game: Game = {
@@ -66,6 +66,41 @@ describe('notification timing', () => {
       smartGameDayEnabled: true,
     })
     expect(due.some((item) => item.id === `game-tomorrow:${game.id}`)).toBe(true)
+  })
+
+  it('calculates the checklist reminder ten minutes before DRA', () => {
+    const reminder = preDepartureReminderTime(game, trip)
+    expect(reminder?.toISOString()).toBe('2026-09-24T13:50:00.000Z')
+  })
+
+  it('offers the checklist reminder ten minutes before DRA', () => {
+    const settings = { ...defaultNotificationSettings, enabled: true }
+    const due = notificationCandidates({
+      now: new Date('2026-09-24T15:51:00+02:00'),
+      games: [game],
+      trips: [trip],
+      records: {},
+      plans: { [game.id]: 'yes' },
+      settings,
+      smartGameDayEnabled: false,
+    })
+    const reminder = due.find((item) => item.id === `pre-departure:${game.id}`)
+    expect(reminder?.title).toContain('Har du husket alt')
+    expect(reminder?.url).toContain('focus=departure-checklist')
+  })
+
+  it('does not offer the checklist reminder after answering no', () => {
+    const settings = { ...defaultNotificationSettings, enabled: true }
+    const due = notificationCandidates({
+      now: new Date('2026-09-24T15:51:00+02:00'),
+      games: [game],
+      trips: [trip],
+      records: {},
+      plans: { [game.id]: 'no' },
+      settings,
+      smartGameDayEnabled: false,
+    })
+    expect(due.some((item) => item.id === `pre-departure:${game.id}`)).toBe(false)
   })
 
   it('offers DRA at the calculated departure time', () => {
