@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { CheckCircle2, Clock3, MapPin, Navigation, Route } from 'lucide-react'
+import { CheckCircle2, Clock3, ListChecks, MapPin, Navigation, Route } from 'lucide-react'
 import { games } from '../data/games'
 import { getGameTemporalState, isGameDay } from '../lib/gameTime'
+import {
+  departureChecklistProgress,
+  loadDepartureChecklist,
+  subscribeDepartureChecklist,
+  type DepartureChecklistData,
+} from '../lib/departureChecklist'
+import { preDepartureReminderTime } from '../lib/notificationLogic'
 import {
   loadSmartGameDaySettings,
   subscribeSmartGameDaySettings,
@@ -100,12 +107,20 @@ function openCurrentGame() {
   document.querySelector<HTMLButtonElement>('.hero-card .open-game')?.click()
 }
 
+function openDepartureChecklist() {
+  openCurrentGame()
+  window.setTimeout(() => {
+    document.getElementById('pre-departure-checklist')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, 120)
+}
+
 export function DynamicMatchdayHome() {
   const target = useMatchdayPortalTarget()
   const [now, setNow] = useState(() => new Date())
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
   const [plans, setPlans] = useState(() => loadAttendancePlans())
   const [smartSettings, setSmartSettings] = useState<SmartGameDaySettings>(() => loadSmartGameDaySettings())
+  const [checklist, setChecklist] = useState<DepartureChecklistData>({ checked: {} })
   const [message, setMessage] = useState('')
 
   useEffect(() => subscribeTrips(setTrips), [])
@@ -130,6 +145,17 @@ export function DynamicMatchdayHome() {
     ? new Date(arrivalDate.getTime() - travelMinutes * 60_000)
     : null
   const arrivalValue = startDate ? clockValue(osloClockMinutes(startDate) - desiredMinutesBefore) : ''
+  const reminderDate = game ? preDepartureReminderTime(game, trip, 10) : null
+  const checklistProgress = departureChecklistProgress(checklist)
+
+  useEffect(() => {
+    if (!game) {
+      setChecklist({ checked: {} })
+      return
+    }
+    setChecklist(loadDepartureChecklist(game.id))
+    return subscribeDepartureChecklist(game.id, setChecklist)
+  }, [game?.id])
 
   useEffect(() => {
     if (target && game) document.documentElement.dataset.dynamicMatchday = 'true'
@@ -175,7 +201,10 @@ export function DynamicMatchdayHome() {
   return createPortal(
     <section className={`dynamic-matchday-card ${phase.state.toLowerCase()}`}>
       <div className="dynamic-matchday-topline">
-        <div><span>{phase.kicker}</span><strong>{phase.title}</strong></div>
+        <div>
+          <span>{phase.kicker}</span>
+          <strong>{beforeStart ? (checklistProgress.complete ? 'KLAR TIL Å DRA' : 'KAMPDAGEN ER KLAR') : phase.title}</strong>
+        </div>
         <span className="dynamic-matchday-competition">{game.competition}</span>
       </div>
 
@@ -192,7 +221,35 @@ export function DynamicMatchdayHome() {
               <span>JEG VIL VÆRE DER KL.</span>
               <input type="time" value={arrivalValue} onChange={(event) => setArrival(event.target.value)} />
             </label>
-            <div><span>DRA</span><strong>{departureDate ? formatClock(departureDate) : '—'}</strong><small>{departureDate ? 'fra lagret reise' : 'beregn reisetid først'}</small></div>
+            <div>
+              <span>DRA</span>
+              <strong>{departureDate ? formatClock(departureDate) : '—'}</strong>
+              <small>{departureDate ? 'fra lagret reise' : 'beregn reisetid først'}</small>
+            </div>
+          </div>
+
+          <div className="dynamic-readiness-card">
+            <div className="dynamic-readiness-top">
+              <div>
+                <span>FØR DU REISER</span>
+                <strong>{checklistProgress.checked}/{checklistProgress.total} husket</strong>
+                <small>
+                  {reminderDate && departureDate
+                    ? `Påminnelse ${formatClock(reminderDate)} · 10 min før DRA`
+                    : 'Lagre reisen for å få 10-minutters påminnelse'}
+                </small>
+              </div>
+              <div className={`dynamic-ready-score ${checklistProgress.complete ? 'complete' : ''}`}>
+                {checklistProgress.percent}%
+              </div>
+            </div>
+            <div className="progress-track dynamic-readiness-progress">
+              <div style={{ width: `${checklistProgress.percent}%` }} />
+            </div>
+            <button type="button" className="dynamic-checklist-action" onClick={openDepartureChecklist}>
+              <ListChecks size={17} />
+              {checklistProgress.complete ? 'Se sjekklisten' : 'Åpne og kryss av'}
+            </button>
           </div>
 
           <div className="dynamic-matchday-status">
