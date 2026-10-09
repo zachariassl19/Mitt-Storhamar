@@ -44,7 +44,7 @@ export function departureChecklistProgress(data: DepartureChecklistData) {
   return {
     checked,
     total,
-    percent: total === 0 ? 100 : Math.round((checked / total) * 100),
+    percent: Math.round((checked / total) * 100),
     complete: total > 0 && checked === total,
   }
 }
