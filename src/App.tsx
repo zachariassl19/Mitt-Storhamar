@@ -90,6 +90,7 @@ function planLabel(plan: AttendancePlan) {
 
 export default function App() {
   const [active, setActive] = useState<NavKey>('home')
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [plans, setPlans] = useState<Record<string, AttendancePlan>>(() => loadAttendancePlans())
   const [hubData, setHubData] = useState<HubExport | null>(() => loadHubExport())
   const [importMessage, setImportMessage] = useState('')
@@ -98,6 +99,7 @@ export default function App() {
   const today = osloDateKey(now)
   const nextGame = games.find((game) => new Date(game.startsAt).getTime() >= now.getTime()) ?? games[0]
   const matchday = gameDateKey(nextGame) === today
+  const selectedGame = games.find((game) => game.id === selectedGameId)
 
   const importedPlanMap = useMemo(() => {
     const result: Record<string, AttendancePlan> = {}
@@ -152,15 +154,17 @@ export default function App() {
         </header>
 
         <main className="content">
+          {selectedGame ? <section className="page-section"><button className="text-button" onClick={() => setSelectedGameId(null)}>← Tilbake</button><div className="page-heading"><span className="eyebrow">{selectedGame.competition} · {dateText(selectedGame)} · {timeText(selectedGame)}</span><h1>{selectedGame.homeTeam} – {selectedGame.awayTeam}</h1><p>{selectedGame.arena} · {selectedGame.city}</p></div><section className="card attendance-card"><h2>Skal du dit?</h2><AttendanceButtons value={currentPlan(selectedGame.id)} onChange={(value) => updatePlan(selectedGame.id, value)} /></section><PreDepartureChecklist key={selectedGame.id} game={selectedGame} plan={currentPlan(selectedGame.id)} /></section> : <>
           {active === 'home' && (
             <HomePage
               nextGame={nextGame}
               matchday={matchday}
               currentPlan={currentPlan}
               updatePlan={updatePlan}
+              openGame={setSelectedGameId}
             />
           )}
-          {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} />}
+          {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={setSelectedGameId} />}
           {active === 'career' && <CareerPage hubData={hubData} />}
           {active === 'history' && <HistoryPage />}
           {active === 'more' && (
@@ -171,11 +175,12 @@ export default function App() {
               removeImport={removeImport}
             />
           )}
+          </>}
         </main>
 
         <nav className="bottom-nav" aria-label="Hovedmeny">
           {navItems.map(({ key, label, icon: Icon }) => (
-            <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>
+            <button key={key} className={active === key ? 'active' : ''} onClick={() => { setSelectedGameId(null); setActive(key) }}>
               <Icon size={20} strokeWidth={active === key ? 2.5 : 2} />
               <span>{label}</span>
             </button>
@@ -191,11 +196,13 @@ function HomePage({
   matchday,
   currentPlan,
   updatePlan,
+  openGame,
 }: {
   nextGame: Game
   matchday: boolean
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
+  openGame: (id: string) => void
 }) {
   const plan = currentPlan(nextGame.id)
   const ready = plan === 'yes' ? 50 : plan === 'maybe' ? 25 : 0
@@ -227,7 +234,7 @@ function HomePage({
         </div>
 
         <div className="arena-line"><MapPin size={15} /> {nextGame.arena}</div>
-        <button className="open-game">Åpne kampen <ChevronRight size={18} /></button>
+        <button className="open-game" onClick={() => openGame(nextGame.id)}>Åpne kampen <ChevronRight size={18} /></button>
       </section>
 
       <section className="card attendance-card">
@@ -252,9 +259,9 @@ function HomePage({
         <div className="progress-track"><div style={{ width: `${ready}%` }} /></div>
         <p>{plan === 'yes' ? 'Neste steg: planlegg reisen til kampen.' : 'Svar først på om du skal dit.'}</p>
         <div className="quick-actions">
-          <button><Route size={18} /><span>Reise</span></button>
-          <button><WalletCards size={18} /><span>Utgifter</span></button>
-          <button><Clock3 size={18} /><span>DRA</span></button>
+          <button onClick={() => openGame(nextGame.id)}><Route size={18} /><span>Reise</span></button>
+          <button onClick={() => openGame(nextGame.id)}><WalletCards size={18} /><span>Utgifter</span></button>
+          <button onClick={() => openGame(nextGame.id)}><Clock3 size={18} /><span>DRA</span></button>
         </div>
       </section>
 
@@ -266,7 +273,7 @@ function HomePage({
             <span className="eyebrow">KALENDER</span>
             <h2>Kommende kamper</h2>
           </div>
-          <button className="text-button">Alle kamper</button>
+          <button className="text-button" onClick={() => openGame(nextGame.id)}>Åpne kampdetaljer</button>
         </div>
         <div className="game-list">
           {games.slice(1, 5).map((game) => <GameRow key={game.id} game={game} plan={currentPlan(game.id)} />)}
@@ -316,13 +323,14 @@ function AttendanceButtons({ value, onChange }: { value: AttendancePlan; onChang
   )
 }
 
-function GamesPage({ currentPlan, updatePlan }: { currentPlan: (id: string) => AttendancePlan; updatePlan: (id: string, plan: AttendancePlan) => void }) {
+function GamesPage({ currentPlan, updatePlan, openGame }: { currentPlan: (id: string) => AttendancePlan; updatePlan: (id: string, plan: AttendancePlan) => void; openGame: (id: string) => void }) {
   return (
     <section className="page-section">
       <div className="page-heading"><span className="eyebrow">2026/27</span><h1>Kamper</h1><p>Planlegg hvilke Storhamar-kamper du skal på.</p></div>
       <div className="game-card-list">
         {games.map((game) => (
           <article className={`card full-game-card ${game.competition === 'CHL' ? 'chl-border' : ''}`} key={game.id}>
+            <button className="text-button" onClick={() => openGame(game.id)}>Åpne kampdetaljer →</button>
             <GameRow game={game} plan={currentPlan(game.id)} />
             <AttendanceButtons value={currentPlan(game.id)} onChange={(value) => updatePlan(game.id, value)} />
           </article>
