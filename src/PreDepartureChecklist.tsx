@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Game, AttendancePlan } from './types'
 
-type ChecklistData = { checked: Record<string, boolean>; ticket: string; transport: string; parking: string; other: string }
+type ChecklistData = { checked: Record<string, boolean> }
 const items = [
   ['ticket', 'Billett eller adgang er i orden'],
   ['phone', 'Mobilen er ladet'],
@@ -12,19 +12,17 @@ const items = [
   ['wallet', 'Betalingskort og legitimasjon er med'],
   ['companions', 'Reisefølge er avklart'],
 ]
-const blank = (): ChecklistData => ({ checked: {}, ticket: '', transport: '', parking: '', other: '' })
+const blank = (): ChecklistData => ({ checked: {} })
 function read(id: string): ChecklistData {
   try {
     const saved = JSON.parse(localStorage.getItem('mitt-storhamar:departure:' + id) || '{}')
     return { ...blank(), ...saved, checked: saved.checked ?? {} }
   } catch { return blank() }
 }
-function number(value: string) { const n = Number(value.replace(',', '.')); return Number.isFinite(n) && n > 0 ? n : 0 }
 
 export default function PreDepartureChecklist({ game, plan }: { game: Game; plan: AttendancePlan }) {
   const [data, setData] = useState<ChecklistData>(() => read(game.id))
   const checkedCount = items.filter(([key]) => data.checked[key]).length
-  const total = number(data.ticket) + number(data.transport) + number(data.parking) + number(data.other)
   function save(next: ChecklistData) {
     setData(next)
     localStorage.setItem('mitt-storhamar:departure:' + game.id, JSON.stringify(next))
@@ -43,17 +41,6 @@ export default function PreDepartureChecklist({ game, plan }: { game: Game; plan
         <span style={{ textDecoration: data.checked[key] ? 'line-through' : 'none', opacity: data.checked[key] ? .6 : 1 }}>{label}</span>
       </label>)}
     </div>
-    <div>
-      <h3>Hva koster kampdagen?</h3>
-      <p>Registrer dine faktiske eller planlagte utgifter i kroner. Ikke legg inn antatte billettpriser.</p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 }}>
-        {([['ticket','Billett'],['transport','Transport'],['parking','Parkering'],['other','Annet']] as const).map(([key,label]) =>
-          <label key={key} style={{ display: 'grid', gap: 4, fontSize: 13 }}>{label} (kr)
-            <input style={{ width: '100%', minWidth: 0, padding: 10, borderRadius: 8, border: '1px solid #888', background: 'transparent', color: 'inherit' }} inputMode="decimal" type="text" placeholder="0" value={data[key]} onChange={e => save({ ...data, [key]: e.target.value })} />
-          </label>)}
-      </div>
-      <p><strong>Totalt registrert: {total.toLocaleString('nb-NO', { maximumFractionDigits: 2 })} kr</strong></p>
-    </div>
-    <small>Lagres foreløpig kun på denne enheten. Sky-synk og automatisk prissamkjøring er ikke aktivert.</small>
+    <small>Sjekklisten lagres på enheten og kan omfattes av appens skylagring ved aktiv synk. Utgifter registreres i den eksisterende økonomidelen.</small>
   </section>
 }
