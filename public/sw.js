@@ -33,7 +33,12 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
       const existing = clients.find((client) => client.url.includes(BASE));
-      if (existing) return existing.focus();
+      if (existing) {
+        if ('navigate' in existing) {
+          return existing.navigate(target).then((client) => client?.focus());
+        }
+        return existing.focus();
+      }
       return self.clients.openWindow(target);
     })
   );
