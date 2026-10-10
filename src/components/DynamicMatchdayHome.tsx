@@ -146,7 +146,7 @@ export function DynamicMatchdayHome() {
     : null
   const arrivalValue = startDate ? clockValue(osloClockMinutes(startDate) - desiredMinutesBefore) : ''
   const reminderDate = game ? preDepartureReminderTime(game, trip, 10) : null
-  const checklistProgress = departureChecklistProgress(checklist)
+  const checklistProgress = game ? departureChecklistProgress(checklist, game) : { checked: 0, total: 0, percent: 0, complete: false }
 
   useEffect(() => {
     if (!game) {
