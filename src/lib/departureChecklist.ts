@@ -1,21 +1,60 @@
+import { gameFeatures } from './gamePresentation'
+import type { Game } from '../types'
+
 export interface DepartureChecklistData {
   checked: Record<string, boolean>
   updatedAt?: string
 }
 
-export const DEPARTURE_CHECKLIST_ITEMS = [
-  { key: 'ticket', label: 'Billett eller adgang er i orden' },
-  { key: 'phone', label: 'Mobilen er ladet' },
-  { key: 'charger', label: 'Lader eller powerbank er pakket' },
-  { key: 'scarf', label: 'Storhamar-skjerf eller drakt er med' },
-  { key: 'route', label: 'Transport og rute er sjekket' },
-  { key: 'departure', label: 'Avreisetid og trafikk er kontrollert' },
-  { key: 'wallet', label: 'Betalingskort og legitimasjon er med' },
-  { key: 'companions', label: 'Reisefølge er avklart' },
-] as const
+export type DepartureChecklistKind = 'home' | 'away' | 'classic'
+
+export interface DepartureChecklistItem {
+  key: string
+  label: string
+}
+
+const HOME_ITEMS: DepartureChecklistItem[] = [
+  { key: 'accreditation', label: 'Akkreditering' },
+  { key: 'jersey', label: 'Drakt' },
+  { key: 'scarf', label: 'Skjerf' },
+  { key: 'charger', label: 'Lader' },
+  { key: 'drink', label: 'Drikke' },
+  { key: 'wallet', label: 'Lommebok' },
+]
+
+const AWAY_ITEMS: DepartureChecklistItem[] = [
+  { key: 'charger', label: 'Lader' },
+  { key: 'jersey', label: 'Drakt' },
+  { key: 'scarf', label: 'Skjerf' },
+  { key: 'wallet', label: 'Lommebok' },
+]
+
+const CLASSIC_ITEMS: DepartureChecklistItem[] = [
+  { key: 'accreditation', label: 'Akkreditering' },
+  ...AWAY_ITEMS,
+]
 
 const PREFIX = 'mitt-storhamar:departure:'
 export const DEPARTURE_CHECKLIST_EVENT = 'mitt-storhamar:departure-checklist-changed'
+
+export function departureChecklistKind(game: Game): DepartureChecklistKind {
+  if (gameFeatures(game).some((feature) => feature.key === 'classic')) return 'classic'
+  return game.homeTeam === 'Storhamar' ? 'home' : 'away'
+}
+
+export function departureChecklistKindLabel(game: Game) {
+  const kind = departureChecklistKind(game)
+  if (kind === 'classic') return 'HOCKEY CLASSIC'
+  if (kind === 'home') return 'HJEMMEKAMP'
+  return 'BORTEKAMP'
+}
+
+export function departureChecklistItems(game: Game): DepartureChecklistItem[] {
+  const kind = departureChecklistKind(game)
+  if (kind === 'classic') return CLASSIC_ITEMS
+  if (kind === 'home') return HOME_ITEMS
+  return AWAY_ITEMS
+}
 
 export function loadDepartureChecklist(gameId: string): DepartureChecklistData {
   try {
@@ -38,14 +77,15 @@ export function saveDepartureChecklist(gameId: string, data: DepartureChecklistD
   return next
 }
 
-export function departureChecklistProgress(data: DepartureChecklistData) {
-  const total = DEPARTURE_CHECKLIST_ITEMS.length
-  const checked = DEPARTURE_CHECKLIST_ITEMS.filter((item) => data.checked[item.key]).length
+export function departureChecklistProgress(data: DepartureChecklistData, game: Game) {
+  const items = departureChecklistItems(game)
+  const total = items.length
+  const checked = items.filter((item) => data.checked[item.key]).length
   return {
     checked,
     total,
     percent: Math.round((checked / total) * 100),
-    complete: total > 0 && checked === total,
+    complete: checked === total,
   }
 }
 
