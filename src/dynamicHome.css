@@ -191,3 +191,102 @@ html[data-dynamic-matchday='true'] .matchday-hub {
   .dynamic-matchday-times { grid-template-columns: 1fr; }
   .dynamic-matchday-topline > div > strong { font-size: 19px; }
 }
+
+
+.dynamic-readiness-card {
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 16px;
+  border: 1px solid rgba(242, 201, 76, .22);
+  background: linear-gradient(145deg, rgba(242,201,76,.07), rgba(255,255,255,.025));
+}
+
+.dynamic-readiness-top {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.dynamic-readiness-top > div:first-child > span {
+  display: block;
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .11em;
+}
+
+.dynamic-readiness-top > div:first-child > strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.dynamic-readiness-top > div:first-child > small {
+  display: block;
+  margin-top: 4px;
+  color: #aebfd6;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.dynamic-ready-score {
+  min-width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: var(--gold-soft);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.dynamic-ready-score.complete {
+  background: rgba(68,171,112,.14);
+  border-color: rgba(91,211,146,.32);
+  color: #9de0ba;
+}
+
+.dynamic-readiness-progress {
+  margin: 11px 0 10px;
+}
+
+.dynamic-checklist-action {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(242,201,76,.24);
+  border-radius: 12px;
+  background: rgba(242,201,76,.09);
+  color: #ffe596;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+
+.dynamic-departure-time {
+  position: relative;
+}
+
+.dynamic-departure-time input {
+  color: var(--gold-soft);
+}
+
+.dynamic-use-suggested {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #aebfd6;
+  font-size: 8px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}

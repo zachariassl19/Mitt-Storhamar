@@ -1,5 +1,8 @@
 import type { AttendancePlan, Game, GameDayRecord, Trip } from '../types'
 import type { NotificationSettings } from './notificationSettings'
+import { departureTimeForTrip } from './trips'
+
+export { departureTimeForTrip } from './trips'
 
 export interface AppNotificationCandidate {
   id: string
@@ -8,6 +11,7 @@ export interface AppNotificationCandidate {
   body: string
   availableFrom: number
   expiresAt: number
+  url?: string
 }
 
 function osloParts(date: Date) {
@@ -58,12 +62,10 @@ function clockTime(date: Date) {
   }).format(date)
 }
 
-export function departureTimeForTrip(game: Game, trip: Trip | undefined) {
-  if (!trip) return null
-  const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
-  if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
-  const travelMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  return new Date(new Date(game.startsAt).getTime() - (trip.desiredArrivalMinutesBefore + travelMinutes) * 60_000)
+export function preDepartureReminderTime(game: Game, trip: Trip | undefined, minutesBefore = 10) {
+  const departure = departureTimeForTrip(game, trip)
+  if (!departure) return null
+  return new Date(departure.getTime() - minutesBefore * 60_000)
 }
 
 export function notificationCandidates({
@@ -133,8 +135,24 @@ export function notificationCandidates({
     if (settings.departure) {
       const trip = trips.find((item) => item.gameId === game.id)
       const departure = departureTimeForTrip(game, trip)
-      if (departure) {
+      const reminder = preDepartureReminderTime(game, trip, 10)
+
+      if (departure && reminder && plans[game.id] !== 'no') {
         const departureMs = departure.getTime()
+        const reminderMs = reminder.getTime()
+
+        if (nowMs >= reminderMs && nowMs < departureMs) {
+          result.push({
+            id: `pre-departure:${game.id}`,
+            gameId: game.id,
+            title: 'Har du husket alt? 💛💙',
+            body: `10 min til DRA ${clockTime(departure)}. Åpne sjekklisten før du drar til ${game.arena}.`,
+            availableFrom: reminderMs,
+            expiresAt: departureMs,
+            url: `?game=${encodeURIComponent(game.id)}&focus=departure-checklist`,
+          })
+        }
+
         if (nowMs >= departureMs && nowMs < startsAt) {
           result.push({
             id: `departure:${game.id}`,
@@ -143,6 +161,7 @@ export function notificationCandidates({
             body: `DRA ${clockTime(departure)} · ${label} på ${game.arena}.`,
             availableFrom: departureMs,
             expiresAt: startsAt,
+            url: `?game=${encodeURIComponent(game.id)}&focus=departure-checklist`,
           })
         }
       }

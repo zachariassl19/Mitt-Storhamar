@@ -59,6 +59,36 @@ export function tripForGame(trips: Trip[], gameId: string) {
   return latest.find((trip) => trip.gameId === gameId) ?? trips.find((trip) => trip.gameId === gameId)
 }
 
+export function automaticDepartureTimeForTrip(game: Game, trip: Trip | undefined) {
+  if (!trip) return null
+  const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
+  if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
+  const travelMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
+  return new Date(new Date(game.startsAt).getTime() - (trip.desiredArrivalMinutesBefore + travelMinutes) * 60_000)
+}
+
+export function departureTimeForTrip(game: Game, trip: Trip | undefined) {
+  if (!trip) return null
+
+  if (trip.manualDepartureAt) {
+    const manual = new Date(trip.manualDepartureAt)
+    const gameStart = new Date(game.startsAt)
+    if (Number.isFinite(manual.getTime()) && manual.getTime() < gameStart.getTime()) return manual
+  }
+
+  return automaticDepartureTimeForTrip(game, trip)
+}
+
+export function manualDepartureAtForGameClock(game: Game, value: string) {
+  if (!/^\d{2}:\d{2}$/.test(value)) return null
+  const date = game.startsAt.slice(0, 10)
+  const offset = game.startsAt.match(/([+-]\d{2}:\d{2}|Z)$/)?.[1] ?? '+00:00'
+  const manual = new Date(`${date}T${value}:00${offset}`)
+  const gameStart = new Date(game.startsAt)
+  if (!Number.isFinite(manual.getTime()) || manual.getTime() >= gameStart.getTime()) return null
+  return manual.toISOString()
+}
+
 export function createTripForGame(game: Game): Trip {
   const now = new Date().toISOString()
   const defaultFrom = 'Hjem'

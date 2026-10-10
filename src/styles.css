@@ -171,3 +171,135 @@ h1, h2, h3, p { margin-top: 0; }
   .topbar { position: relative; }
   .bottom-nav { width: 638px; bottom: 22px; border-radius: 0 0 27px 27px; }
 }
+
+
+.pre-departure-checklist {
+  margin-top: 14px;
+  padding: 17px;
+  scroll-margin-top: 92px;
+}
+
+.pre-departure-checklist.complete {
+  border-color: rgba(91,211,146,.28);
+  background: linear-gradient(145deg, rgba(15,67,65,.95), rgba(8,38,55,.98));
+}
+
+.departure-checklist-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.departure-checklist-heading h2 {
+  margin: 4px 0 5px;
+  font-size: 20px;
+}
+
+.departure-checklist-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.departure-checklist-score {
+  min-width: 62px;
+  min-height: 62px;
+  padding: 8px;
+  border-radius: 17px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid rgba(242,201,76,.22);
+  background: rgba(242,201,76,.07);
+}
+
+.departure-checklist-score strong {
+  font-size: 16px;
+  color: var(--gold-soft);
+}
+
+.departure-checklist-score span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.departure-checklist-progress {
+  margin: 14px 0 12px;
+}
+
+.departure-checklist-items {
+  display: grid;
+  gap: 8px;
+}
+
+.departure-checklist-items label {
+  min-height: 46px;
+  padding: 10px 11px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 13px;
+  background: rgba(255,255,255,.025);
+  display: grid;
+  grid-template-columns: 22px minmax(0,1fr);
+  gap: 9px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.departure-checklist-items label.checked {
+  border-color: rgba(91,211,146,.18);
+  background: rgba(65,174,115,.06);
+}
+
+.departure-checklist-items input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.departure-check-icon {
+  display: grid;
+  place-items: center;
+  color: #7f94b1;
+}
+
+.departure-checklist-items label.checked .departure-check-icon {
+  color: #7fe0ae;
+}
+
+.departure-checklist-items label > span:last-child {
+  font-size: 10px;
+  line-height: 1.35;
+  color: #e8f0fb;
+}
+
+.departure-checklist-items label.checked > span:last-child {
+  color: #91a7c3;
+  text-decoration: line-through;
+}
+
+.departure-checklist-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+@media (max-width: 380px) {
+  .departure-checklist-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .departure-checklist-score {
+    min-width: 0;
+    min-height: 48px;
+    grid-template-columns: auto auto;
+    gap: 5px;
+    justify-content: start;
+    place-items: center start;
+  }
+}

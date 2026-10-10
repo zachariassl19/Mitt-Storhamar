@@ -212,6 +212,7 @@ export default function AppV2() {
   const [smartEvents, setSmartEvents] = useState<SmartGameDayEvent[]>(() => loadSmartGameDayEvents())
   const [importMessage, setImportMessage] = useState('')
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
+  const [pendingFocus, setPendingFocus] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
   const [purchases, setPurchases] = useState<GamePurchase[]>(() => loadPurchases())
 
@@ -222,6 +223,34 @@ export default function AppV2() {
   const nextGame = todayGame ?? nextFutureGame ?? games[games.length - 1]
   const matchday = Boolean(todayGame)
   const selectedGame = selectedGameId ? games.find((game) => game.id === selectedGameId) ?? null : null
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const gameId = params.get('game')
+    const focus = params.get('focus')
+    if (!gameId || !games.some((game) => game.id === gameId)) return
+
+    setSelectedGameId(gameId)
+    setActive('games')
+    if (focus) setPendingFocus(focus)
+  }, [])
+
+  useEffect(() => {
+    if (!selectedGameId || !pendingFocus) return
+
+    const elementId = pendingFocus === 'departure-checklist'
+      ? 'pre-departure-checklist'
+      : pendingFocus
+
+    const timer = window.setTimeout(() => {
+      document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      setPendingFocus(null)
+      const cleanUrl = `${window.location.pathname}${window.location.hash}`
+      window.history.replaceState({}, '', cleanUrl)
+    }, 180)
+
+    return () => window.clearTimeout(timer)
+  }, [selectedGameId, pendingFocus])
 
   const importedPlanMap = useMemo(() => {
     const result: Record<string, AttendancePlan> = {}
