@@ -11,6 +11,12 @@ import {
   type SmartGameDaySettings,
 } from '../lib/smartGameDaySettings'
 import { classifyArenaProximity, distanceMeters, eventFromPosition } from '../lib/smartGameDay'
+import {
+  drainNativeSmartGameDayEvents,
+  isNativeAndroid,
+  startNativeSmartGameDay,
+  stopNativeSmartGameDay,
+} from '../lib/nativeSmartGameDay'
 import { saveSmartGameDayEvent } from '../lib/storage'
 import type { ArenaProximity } from '../types'
 
@@ -45,6 +51,53 @@ export function SmartGameDayManager() {
   useEffect(() => {
     let disposed = false
     let activeGameId: string | null = null
+
+    if (isNativeAndroid()) {
+      async function syncNativeSmartGameDay() {
+        const game = games.find((candidate) => isGameDay(candidate))
+
+        if (!settings.enabled || !settings.autoStartOnGameDay || !game) {
+          try {
+            await stopNativeSmartGameDay()
+          } catch {
+            // Tjenesten er allerede stoppet eller ikke klar ennå.
+          }
+          return
+        }
+
+        try {
+          await startNativeSmartGameDay(game)
+          const events = await drainNativeSmartGameDayEvents()
+          for (const event of events) {
+            saveSmartGameDayEvent(event)
+            window.dispatchEvent(new CustomEvent('mitt-storhamar:smart-gameday-event', { detail: event }))
+          }
+        } catch {
+          // UI-et er identisk med web. Native-feil håndteres av Android-tjenesten.
+        }
+      }
+
+      const onVisible = () => {
+        if (!document.hidden) void syncNativeSmartGameDay()
+      }
+      const onPageShow = () => void syncNativeSmartGameDay()
+
+      void syncNativeSmartGameDay()
+      document.addEventListener('visibilitychange', onVisible)
+      window.addEventListener('pageshow', onPageShow)
+
+      const timer = window.setInterval(() => {
+        if (!document.hidden) void syncNativeSmartGameDay()
+      }, 15_000)
+
+      return () => {
+        disposed = true
+        window.clearInterval(timer)
+        document.removeEventListener('visibilitychange', onVisible)
+        window.removeEventListener('pageshow', onPageShow)
+        // Ikke stopp foreground service når WebView går i bakgrunnen.
+      }
+    }
 
     function stopWatch() {
       if (watchId.current != null && 'geolocation' in navigator) {
