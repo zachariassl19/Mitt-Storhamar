@@ -5,6 +5,7 @@ import { CalendarSettingsPortal } from './components/CalendarSettings'
 import { CloudSyncManager } from './components/CloudSyncManager'
 import { DynamicMatchdayHome } from './components/DynamicMatchdayHome'
 import { NotificationManager, NotificationSettingsPortal } from './components/NotificationCenter'
+import { NativeDepartureNotificationManager } from './components/NativeDepartureNotificationManager'
 import { SmartGameDayManager, SmartGameDaySettingsPortal } from './components/SmartGameDayGlobal'
 import './styles.css'
 import './logoStyles.css'
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <SmartGameDayManager />
     <SmartGameDaySettingsPortal />
     <NotificationManager />
+    <NativeDepartureNotificationManager />
     <NotificationSettingsPortal />
     <CalendarSettingsPortal />
     <CloudSyncManager />
