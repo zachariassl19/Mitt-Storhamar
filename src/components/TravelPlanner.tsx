@@ -16,7 +16,13 @@ import {
   type CarEnergy,
   type CarSettings,
 } from '../lib/travelSettings'
-import { createLeg, createTripForGame } from '../lib/trips'
+import {
+  automaticDepartureTimeForTrip,
+  createLeg,
+  createTripForGame,
+  departureTimeForTrip,
+  manualDepartureAtForGameClock,
+} from '../lib/trips'
 import type { Game, TransportMode, Trip, TripLeg } from '../types'
 
 const transportOptions: { value: TransportMode; label: string }[] = [
@@ -51,6 +57,18 @@ function numberOrNull(value: string) {
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 }).format(value) + ' kr'
+}
+
+function clockValue(date: Date | null) {
+  if (!date) return ''
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Oslo',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date)
+  const map = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return `${map.hour}:${map.minute}`
 }
 
 function formatUnitPrice(value: number) {
@@ -146,16 +164,34 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
   const totalMinutes = legs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
   const totalCost = legs.reduce((sum, leg) => sum + (legCost(leg, carSettings) ?? 0), 0)
 
-  const outbound = legs.filter((leg) => leg.direction === 'outbound')
-  const outboundReady = outbound.length > 0 && outbound.every((leg) => leg.durationMinutes != null)
-  const outboundMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  const draDate = outboundReady
-    ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000)
-    : null
+  const automaticDraDate = automaticDepartureTimeForTrip(game, draft)
+  const draDate = departureTimeForTrip(game, draft)
+  const departureValue = clockValue(draDate)
 
   function resetRoutingState() {
     setRoutingState('idle')
     setRoutingMessage('')
+  }
+
+  function setDeparture(value: string) {
+    setMessage('')
+    if (!value) {
+      setDraft((current) => ({ ...current, manualDepartureAt: null }))
+      return
+    }
+
+    const manualDepartureAt = manualDepartureAtForGameClock(game, value)
+    if (!manualDepartureAt) {
+      setMessage('Velg en DRA-tid før kampstart.')
+      return
+    }
+
+    setDraft((current) => ({ ...current, manualDepartureAt }))
+  }
+
+  function useAutomaticDeparture() {
+    setMessage('')
+    setDraft((current) => ({ ...current, manualDepartureAt: null }))
   }
 
   function setCar(next: CarSettings) {
@@ -398,6 +434,31 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
         </select>
       </label>
 
+      <div className="manual-departure-setting">
+        <label>
+          <span>Jeg ønsker å dra kl.</span>
+          <input
+            type="time"
+            value={departureValue}
+            onChange={(event) => setDeparture(event.target.value)}
+          />
+        </label>
+        <div>
+          <small>
+            {draft.manualDepartureAt
+              ? 'Denne tiden overstyrer appens forslag.'
+              : automaticDraDate
+                ? `Forslag fra reisetiden: ${clockValue(automaticDraDate)}`
+                : 'Velg selv nå eller beregn reisetiden først.'}
+          </small>
+          {draft.manualDepartureAt && automaticDraDate && (
+            <button type="button" onClick={useAutomaticDeparture}>
+              Bruk forslag {clockValue(automaticDraDate)}
+            </button>
+          )}
+        </div>
+      </div>
+
       {usesHome && (
         <div className="home-location-card">
           <div>
@@ -490,7 +551,7 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
       )}
 
       {invalidRoute && <p className="save-warning">Et tomt eller ugyldig stopp må rettes før reisen kan lagres. Andre ubesvarte felt er helt greit.</p>}
-      {!outboundReady && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid.</p>}
+      {!draDate && <p className="travel-footnote">Velg DRA selv eller legg inn reisetid så appen kan foreslå en tid.</p>}
       {trip?.status !== 'completed' && !confirmedAttendance && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
 
       {trip && <button className="travel-delete-route" onClick={removeSavedTrip}><Trash2 size={15} /> Slett lagret reiserute</button>}
