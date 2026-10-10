@@ -37,3 +37,62 @@
   opacity: .45;
   box-shadow: none;
 }
+
+
+.manual-departure-setting {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.035);
+}
+
+.manual-departure-setting > label {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.manual-departure-setting > label > span {
+  color: #d9e6f7;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.manual-departure-setting input[type="time"] {
+  min-width: 104px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0,0,0,.16);
+  color: var(--gold-soft);
+  padding: 8px 10px;
+  font-weight: 900;
+  color-scheme: dark;
+}
+
+.manual-departure-setting > div {
+  margin-top: 7px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manual-departure-setting small {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.manual-departure-setting button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: #b8cbe3;
+  font-size: 8px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
