@@ -17,8 +17,11 @@ import {
 } from '../lib/smartGameDaySettings'
 import { loadAttendancePlans, loadGameDayRecords, subscribeAttendancePlans } from '../lib/storage'
 import {
+  automaticDepartureTimeForTrip,
   createTripForGame,
+  departureTimeForTrip,
   loadTrips,
+  manualDepartureAtForGameClock,
   saveTrip,
   subscribeTrips,
   tripForGame,
@@ -88,13 +91,6 @@ function formatClock(date: Date) {
   }).format(date)
 }
 
-function outboundMinutes(trip?: Trip) {
-  if (!trip) return null
-  const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
-  if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
-  return outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-}
-
 function phaseCopy(game: Game, recordCompleted: boolean, now: Date) {
   const state = getGameTemporalState(game, now)
   if (state === 'GAME_DAY_BEFORE_START') return { kicker: 'KAMPDAG', title: 'I DAG GJELDER DET', state }
@@ -137,14 +133,13 @@ export function DynamicMatchdayHome() {
   const record = game ? loadGameDayRecords()[game.id] : undefined
   const plan = game ? plans[game.id] ?? 'unset' : 'unset'
   const phase = game ? phaseCopy(game, Boolean(record?.completed), now) : null
-  const travelMinutes = outboundMinutes(trip)
   const desiredMinutesBefore = trip?.desiredArrivalMinutesBefore ?? 30
   const startDate = game ? new Date(game.startsAt) : null
-  const arrivalDate = startDate ? new Date(startDate.getTime() - desiredMinutesBefore * 60_000) : null
-  const departureDate = arrivalDate != null && travelMinutes != null
-    ? new Date(arrivalDate.getTime() - travelMinutes * 60_000)
-    : null
+  const automaticDepartureDate = game ? automaticDepartureTimeForTrip(game, trip) : null
+  const departureDate = game ? departureTimeForTrip(game, trip) : null
+  const departureIsManual = Boolean(trip?.manualDepartureAt)
   const arrivalValue = startDate ? clockValue(osloClockMinutes(startDate) - desiredMinutesBefore) : ''
+  const departureValue = departureDate ? clockValue(osloClockMinutes(departureDate)) : ''
   const reminderDate = game ? preDepartureReminderTime(game, trip, 10) : null
   const checklistProgress = game ? departureChecklistProgress(checklist, game) : { checked: 0, total: 0, percent: 0, complete: false }
 
@@ -187,6 +182,38 @@ export function DynamicMatchdayHome() {
     setMessage(`Ønsket ankomst lagret: kl. ${value}.`)
   }
 
+  function setDeparture(value: string) {
+    setMessage('')
+    if (!game || !value) return
+
+    const manualDepartureAt = manualDepartureAtForGameClock(game, value)
+    if (!manualDepartureAt) {
+      setMessage('Velg en DRA-tid før kampstart.')
+      return
+    }
+
+    const current = tripForGame(loadTrips(), game.id) ?? createTripForGame(game)
+    saveTrip({
+      ...current,
+      manualDepartureAt,
+      updatedAt: new Date().toISOString(),
+    })
+    setMessage(`DRA lagret: kl. ${value}. Påminnelsen kommer 10 min før.`)
+  }
+
+  function useAutomaticDeparture() {
+    if (!game) return
+    const current = tripForGame(loadTrips(), game.id) ?? createTripForGame(game)
+    saveTrip({
+      ...current,
+      manualDepartureAt: null,
+      updatedAt: new Date().toISOString(),
+    })
+    setMessage(automaticDepartureDate
+      ? `DRA bruker forslag fra reisen: kl. ${formatClock(automaticDepartureDate)}.`
+      : 'Manuell DRA er fjernet. Beregn reisetid for å få et nytt forslag.')
+  }
+
   if (!target || !game || !phase) return null
 
   const beforeStart = phase.state === 'GAME_DAY_BEFORE_START'
@@ -221,10 +248,26 @@ export function DynamicMatchdayHome() {
               <span>JEG VIL VÆRE DER KL.</span>
               <input type="time" value={arrivalValue} onChange={(event) => setArrival(event.target.value)} />
             </label>
-            <div>
-              <span>DRA</span>
-              <strong>{departureDate ? formatClock(departureDate) : '—'}</strong>
-              <small>{departureDate ? 'fra lagret reise' : 'beregn reisetid først'}</small>
+            <div className="dynamic-departure-time">
+              <span>DRA · DU VELGER</span>
+              <input
+                type="time"
+                aria-label="Velg når du ønsker å dra"
+                value={departureValue}
+                onChange={(event) => setDeparture(event.target.value)}
+              />
+              <small>
+                {departureIsManual
+                  ? 'Valgt av deg'
+                  : automaticDepartureDate
+                    ? 'Forslag fra reisetiden'
+                    : 'Velg selv eller beregn reisetid'}
+              </small>
+              {departureIsManual && automaticDepartureDate && (
+                <button type="button" className="dynamic-use-suggested" onClick={useAutomaticDeparture}>
+                  Bruk forslag {formatClock(automaticDepartureDate)}
+                </button>
+              )}
             </div>
           </div>
 
