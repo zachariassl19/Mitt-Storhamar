@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle2, Circle } from 'lucide-react'
 import {
-  DEPARTURE_CHECKLIST_ITEMS,
+  departureChecklistItems,
+  departureChecklistKindLabel,
   departureChecklistProgress,
   loadDepartureChecklist,
   saveDepartureChecklist,
@@ -20,7 +21,9 @@ export default function PreDepartureChecklist({ game, plan }: { game: Game; plan
 
   if (plan !== 'yes' && plan !== 'maybe') return null
 
-  const progress = departureChecklistProgress(data)
+  const items = departureChecklistItems(game)
+  const progress = departureChecklistProgress(data, game)
+  const kindLabel = departureChecklistKindLabel(game)
 
   function toggle(key: string, checked: boolean) {
     const next = saveDepartureChecklist(game.id, {
@@ -34,7 +37,7 @@ export default function PreDepartureChecklist({ game, plan }: { game: Game; plan
     <section id="pre-departure-checklist" className={`card pre-departure-checklist ${progress.complete ? 'complete' : ''}`}>
       <div className="departure-checklist-heading">
         <div>
-          <span className="eyebrow">FØR DU REISER</span>
+          <span className="eyebrow">FØR DU REISER · {kindLabel}</span>
           <h2>{progress.complete ? 'Alt er klart 💛💙' : 'Har du husket alt?'}</h2>
           <p>{progress.checked} av {progress.total} klart · kryss av før du drar til {game.arena}.</p>
         </div>
@@ -49,7 +52,7 @@ export default function PreDepartureChecklist({ game, plan }: { game: Game; plan
       </div>
 
       <div className="departure-checklist-items">
-        {DEPARTURE_CHECKLIST_ITEMS.map((item) => {
+        {items.map((item) => {
           const checked = Boolean(data.checked[item.key])
           return (
             <label key={item.key} className={checked ? 'checked' : ''}>
