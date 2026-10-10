@@ -268,3 +268,25 @@ html[data-dynamic-matchday='true'] .matchday-hub {
   font-weight: 900;
   cursor: pointer;
 }
+
+
+.dynamic-departure-time {
+  position: relative;
+}
+
+.dynamic-departure-time input {
+  color: var(--gold-soft);
+}
+
+.dynamic-use-suggested {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #aebfd6;
+  font-size: 8px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
