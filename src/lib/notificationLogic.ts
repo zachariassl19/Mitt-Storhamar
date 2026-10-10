@@ -1,5 +1,8 @@
 import type { AttendancePlan, Game, GameDayRecord, Trip } from '../types'
 import type { NotificationSettings } from './notificationSettings'
+import { departureTimeForTrip } from './trips'
+
+export { departureTimeForTrip } from './trips'
 
 export interface AppNotificationCandidate {
   id: string
@@ -57,14 +60,6 @@ function clockTime(date: Date) {
     hour: '2-digit',
     minute: '2-digit',
   }).format(date)
-}
-
-export function departureTimeForTrip(game: Game, trip: Trip | undefined) {
-  if (!trip) return null
-  const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
-  if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
-  const travelMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  return new Date(new Date(game.startsAt).getTime() - (trip.desiredArrivalMinutesBefore + travelMinutes) * 60_000)
 }
 
 export function preDepartureReminderTime(game: Game, trip: Trip | undefined, minutesBefore = 10) {
