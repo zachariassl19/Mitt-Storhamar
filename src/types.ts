@@ -62,6 +62,7 @@ export interface Trip {
   gameId: string
   status: 'planned' | 'completed'
   desiredArrivalMinutesBefore: number
+  manualDepartureAt?: string | null
   legs: TripLeg[]
   createdAt: string
   updatedAt: string
