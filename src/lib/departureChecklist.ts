@@ -19,6 +19,8 @@ const HOME_ITEMS: DepartureChecklistItem[] = [
   { key: 'scarf', label: 'Skjerf' },
   { key: 'charger', label: 'Lader' },
   { key: 'drink', label: 'Drikke' },
+  { key: 'ssu_sweater', label: 'SSU-genser' },
+  { key: 'earplugs', label: 'Ørepropper' },
   { key: 'wallet', label: 'Lommebok' },
 ]
 
@@ -26,6 +28,8 @@ const AWAY_ITEMS: DepartureChecklistItem[] = [
   { key: 'charger', label: 'Lader' },
   { key: 'jersey', label: 'Drakt' },
   { key: 'scarf', label: 'Skjerf' },
+  { key: 'ssu_sweater', label: 'SSU-genser' },
+  { key: 'earplugs', label: 'Ørepropper' },
   { key: 'wallet', label: 'Lommebok' },
 ]
 
