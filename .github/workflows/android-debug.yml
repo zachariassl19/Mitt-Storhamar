@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - android/private-app-bootstrap
       - android/**
   pull_request:
     branches:
@@ -12,7 +11,7 @@ on:
       - main
 
 concurrency:
-  group: android-beta-${{ github.ref }}
+  group: android-mirror-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,63 +33,7 @@ jobs:
             exit 1
           fi
 
-          ALLOWED='^(\.github/workflows/android-debug\.yml|\.gitignore|capacitor\.config\.ts|package\.json|vite\.config\.ts|scripts/apply-native-android\.mjs|native/android/.*|src/main\.tsx|src/components/NativeDepartureNotificationManager\.tsx|src/components/SmartGameDayGlobal\.tsx|src/lib/nativeSmartGameDay\.ts)
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Install web dependencies
-        run: npm install
-
-      - name: Test web app
-        run: npm test
-
-      - name: Typecheck web app
-        run: npx tsc -p tsconfig.app.json --noEmit
-
-      - name: Build Android web bundle
-        run: npm run build:android:web
-        env:
-          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
-
-      - name: Create Android project
-        run: npx cap add android
-
-      - name: Apply private native Android code
-        run: node scripts/apply-native-android.mjs
-        env:
-          ANDROID_VERSION_CODE: ${{ github.run_number }}
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Preserve beta signing key for subsequent updates
-        uses: actions/cache@v4
-        with:
-          path: ~/.android/debug.keystore
-          key: mitt-storhamar-beta-debug-keystore-v1
-
-      - name: Build debug APK
-        working-directory: android
-        run: |
-          chmod +x gradlew
-          ./gradlew testDebugUnitTest assembleDebug
-
-      - name: Upload debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: mitt-storhamar-mirror-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 14
-
-
+          ALLOWED='^(\.github/workflows/android-debug\.yml|\.gitignore|capacitor\.config\.ts|package\.json|vite\.config\.ts|scripts/apply-native-android\.mjs|native/android/.*|src/main\.tsx|src/components/NativeDepartureNotificationManager\.tsx|src/components/SmartGameDayGlobal\.tsx|src/lib/nativeSmartGameDay\.ts)$'
           UNEXPECTED="$(git diff --name-only origin/feature/matchday-home-predeparture HEAD | grep -Ev "$ALLOWED" || true)"
 
           if [ -n "$UNEXPECTED" ]; then
@@ -152,7 +95,6 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: mitt-storhamar-beta-debug-apk
+          name: mitt-storhamar-mirror-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
-
