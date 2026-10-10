@@ -26,6 +26,8 @@ describe('departure checklist types', () => {
       'Skjerf',
       'Lader',
       'Drikke',
+      'SSU-genser',
+      'Ørepropper',
       'Lommebok',
     ])
   })
@@ -45,6 +47,8 @@ describe('departure checklist types', () => {
       'Lader',
       'Drakt',
       'Skjerf',
+      'SSU-genser',
+      'Ørepropper',
       'Lommebok',
     ])
   })
@@ -66,6 +70,8 @@ describe('departure checklist types', () => {
       'Lader',
       'Drakt',
       'Skjerf',
+      'SSU-genser',
+      'Ørepropper',
       'Lommebok',
     ])
   })
@@ -89,8 +95,8 @@ describe('departure checklist types', () => {
 
     expect(progress).toEqual({
       checked: 2,
-      total: 4,
-      percent: 50,
+      total: 6,
+      percent: 33,
       complete: false,
     })
   })
