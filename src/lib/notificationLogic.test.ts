@@ -55,6 +55,34 @@ describe('notification timing', () => {
     expect(departure?.toISOString()).toBe('2026-09-24T14:00:00.000Z')
   })
 
+  it('uses a manually selected DRA instead of the calculated suggestion', () => {
+    const manualTrip: Trip = {
+      ...trip,
+      manualDepartureAt: '2026-09-24T13:20:00.000Z',
+    }
+    expect(departureTimeForTrip(game, manualTrip)?.toISOString()).toBe('2026-09-24T13:20:00.000Z')
+    expect(preDepartureReminderTime(game, manualTrip)?.toISOString()).toBe('2026-09-24T13:10:00.000Z')
+  })
+
+  it('offers the checklist reminder ten minutes before a manual DRA', () => {
+    const manualTrip: Trip = {
+      ...trip,
+      manualDepartureAt: '2026-09-24T13:20:00.000Z',
+    }
+    const settings = { ...defaultNotificationSettings, enabled: true }
+    const due = notificationCandidates({
+      now: new Date('2026-09-24T15:11:00+02:00'),
+      games: [game],
+      trips: [manualTrip],
+      records: {},
+      plans: { [game.id]: 'yes' },
+      settings,
+      smartGameDayEnabled: false,
+    })
+    const reminder = due.find((item) => item.id === `pre-departure:${game.id}`)
+    expect(reminder?.body).toContain('DRA 15:20')
+  })
+
   it('offers a tomorrow reminder after 18:00 the evening before', () => {
     const settings = { ...defaultNotificationSettings, enabled: true }
     const due = notificationCandidates({
