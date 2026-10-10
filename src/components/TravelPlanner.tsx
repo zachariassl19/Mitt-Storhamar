@@ -164,8 +164,6 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
   const totalMinutes = legs.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
   const totalCost = legs.reduce((sum, leg) => sum + (legCost(leg, carSettings) ?? 0), 0)
 
-  const outbound = legs.filter((leg) => leg.direction === 'outbound')
-  const outboundReady = outbound.length > 0 && outbound.every((leg) => leg.durationMinutes != null)
   const automaticDraDate = automaticDepartureTimeForTrip(game, draft)
   const draDate = departureTimeForTrip(game, draft)
   const departureValue = clockValue(draDate)
