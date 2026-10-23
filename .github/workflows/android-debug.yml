@@ -1,0 +1,81 @@
+name: Android debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - android/private-app-bootstrap
+      - android/**
+  pull_request:
+    branches:
+      - fix/notifications-location-2026-10-06
+      - research/seven-point-depth-2026-10-06
+      - main
+
+concurrency:
+  group: android-beta-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install web dependencies
+        run: npm install
+
+      - name: Test web app
+        run: npm test
+
+      - name: Typecheck web app
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+      - name: Build Android web bundle
+        run: npm run build:android:web
+        env:
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Apply private native Android code
+        run: node scripts/apply-native-android.mjs
+        env:
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Preserve beta signing key for subsequent updates
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: mitt-storhamar-beta-debug-keystore-v1
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mitt-storhamar-beta-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+

@@ -30,3 +30,57 @@
 @media (max-width: 370px) {
   .gps-permission-row { align-items: flex-start; flex-direction: column; gap: 4px; }
 }
+
+
+.gps-auto-row {
+  margin-top: 9px;
+  padding: 10px 11px;
+  border-radius: 11px;
+  border: 1px solid rgba(126,169,231,.14);
+  background: rgba(126,169,231,.045);
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+.gps-auto-row > div { min-width: 0; }
+.gps-auto-row strong {
+  display: block;
+  color: #dbe8f9;
+  font-size: 10px;
+}
+.gps-auto-row span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
+.gps-auto-row button {
+  min-width: 54px;
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.055);
+  color: #aebed4;
+  font-size: 9px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.gps-auto-row button.on {
+  border-color: rgba(93,212,154,.32);
+  background: rgba(65,174,115,.13);
+  color: #9ae4ba;
+}
+.gps-weak-fix {
+  color: #e2bd72 !important;
+}
+
+@media (max-width: 390px) {
+  .gps-auto-row {
+    grid-template-columns: 1fr;
+  }
+  .gps-auto-row button {
+    width: 100%;
+  }
+}

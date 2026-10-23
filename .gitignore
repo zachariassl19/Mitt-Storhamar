@@ -31,3 +31,6 @@ Thumbs.db
 # local caches
 .cache/
 coverage/
+
+# generated Capacitor Android project (CI bootstrap)
+android/

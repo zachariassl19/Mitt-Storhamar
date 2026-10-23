@@ -34,6 +34,34 @@ export function classifyArenaProximity(arena: Arena, distance: number): ArenaPro
   return 'outside'
 }
 
+export function classifyArenaProximityWithAccuracy(
+  arena: Arena,
+  distance: number,
+  accuracy: number,
+  previous: ArenaProximity = 'outside',
+): ArenaProximity {
+  const arrivalRadius = arena.arrivalRadiusMeters ?? 250
+  const nearRadius = arena.nearRadiusMeters ?? 1000
+  const uncertainty = Number.isFinite(accuracy) ? Math.max(0, accuracy) : nearRadius
+
+  // Krev at hele GPS-usikkerhetssirkelen er innenfor grensen før vi
+  // beveger oss "innover". Det hindrer falske ankomstsignaler på svak GPS.
+  if (distance + uncertainty <= arrivalRadius) return 'arrived'
+  if (distance + uncertainty <= nearRadius) return 'near'
+
+  // Tilsvarende må hele usikkerhetssirkelen være utenfor nærsonen før
+  // vi markerer at brukeren har forlatt arenaområdet.
+  if (distance - uncertainty > nearRadius) return 'outside'
+
+  // Uklart punkt: behold forrige tilstand i stedet for å hoppe frem og tilbake.
+  return previous
+}
+
+export function isReliableArenaPosition(arena: Arena, position: GeolocationPosition) {
+  const nearRadius = arena.nearRadiusMeters ?? 1000
+  return Number.isFinite(position.coords.accuracy) && position.coords.accuracy <= Math.min(300, nearRadius / 2)
+}
+
 export function isSameOsloDate(a: Date, b: Date) {
   const formatter = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Europe/Oslo',
@@ -58,7 +86,12 @@ export function eventFromPosition(
     arena.latitude,
     arena.longitude,
   )
-  const proximity = classifyArenaProximity(arena, distance)
+  const proximity = classifyArenaProximityWithAccuracy(
+    arena,
+    distance,
+    position.coords.accuracy,
+    previousProximity,
+  )
 
   let type: SmartGameDayEvent['type'] | null = null
   if (proximity === 'arrived' && previousProximity !== 'arrived') type = 'arrived_at_arena'
