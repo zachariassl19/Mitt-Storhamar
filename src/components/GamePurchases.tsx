@@ -3,7 +3,6 @@ import { Check, Pencil, Plus, ShoppingBasket, Trash2, X } from 'lucide-react'
 import { kioskCatalog, purchaseKindLabels, simplePurchaseItems } from '../data/purchaseCatalog'
 import { unitPrice } from '../lib/purchases'
 import type { Game, GamePurchase, PurchaseKind } from '../types'
-import { GameCompanions } from './GameCompanions'
 
 const kindOrder: PurchaseKind[] = ['kiosk', 'lottery', 'supporter', 'parking', 'accommodation', 'other']
 
@@ -131,7 +130,6 @@ export function GamePurchases({ game, purchases, onSave, onDelete }: {
 
   return (
     <>
-      <GameCompanions game={game} />
       <article className="card detail-card purchases-card">
         <div className="card-heading">
           <div><span className="eyebrow">ETTER KAMPEN · ØKONOMI</span><h2>Kjøp og kostnader</h2></div>
