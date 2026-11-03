@@ -7,6 +7,7 @@ export interface CanonicalJerseyCoverageLink {
 // A period can intentionally map to multiple season-level objects. Keeping this explicit makes
 // missing CHL/playoff/preseason/testimonial variants visible instead of relying on fuzzy dates.
 export const canonicalJerseyCoverageLinks: CanonicalJerseyCoverageLink[] = [
+  { label: '2025/26 CHL', archiveIds: ['jersey-2025-26-chl-home', 'jersey-2025-26-chl-away'] },
   { label: '2024/25 serie', archiveIds: ['jersey-season-2024-25'] },
   { label: '2024/25 CHL', archiveIds: ['jersey-2024-25-chl'] },
   { label: '2024 Pride', archiveIds: ['jersey-2024-pride'] },

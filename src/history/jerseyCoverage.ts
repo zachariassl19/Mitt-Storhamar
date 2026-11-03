@@ -10,6 +10,7 @@ export interface JerseyCoverageEntry {
 // This file is intentionally independent from the archive entities so the full-control pass
 // can detect variants that are easy to miss (CHL, preseason, playoff, Pride, testimonial etc.).
 export const silJerseyCoverage: JerseyCoverageEntry[] = [
+  { label: '2025/26 CHL', category: 'europe', sourceUrl: 'https://silarkivet.no/drakter/' },
   { label: '2024/25 serie', category: 'main', sourceUrl: 'https://silarkivet.no/drakter/2024-25-serie/' },
   { label: '2024/25 CHL', category: 'europe', sourceUrl: 'https://silarkivet.no/drakter/2024-25-chl/' },
   { label: '2024 Pride', category: 'special', sourceUrl: 'https://silarkivet.no/drakter/2024-treningskamp/' },
