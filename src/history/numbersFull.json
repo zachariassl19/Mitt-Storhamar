@@ -1,0 +1,2447 @@
+{
+  "source": "https://silarkivet.no/tidslinje/nummerhistorikk/",
+  "asOf": "2026-11-03",
+  "entries": [
+    {
+      "name": "Bjørn Stenberg",
+      "number": "01",
+      "period": "1972-82"
+    },
+    {
+      "name": "Daniel Jørgensen",
+      "number": "01",
+      "period": "2014-15"
+    },
+    {
+      "name": "Evan Buitenhuis",
+      "number": "01",
+      "period": "2022"
+    },
+    {
+      "name": "Jonas Strand",
+      "number": "01",
+      "period": "2018-21"
+    },
+    {
+      "name": "Lars Midtlien",
+      "number": "01",
+      "period": "1982-84"
+    },
+    {
+      "name": "Remo Martinsen",
+      "number": "01",
+      "period": "1985-92"
+    },
+    {
+      "name": "Bryan Schmidt",
+      "number": "02",
+      "period": "2013-14"
+    },
+    {
+      "name": "Gunnar Bingen",
+      "number": "02",
+      "period": "1974-80"
+    },
+    {
+      "name": "Morten Andersen",
+      "number": "02",
+      "period": "1981-87"
+    },
+    {
+      "name": "Petter Salsten",
+      "number": "02",
+      "period": "1993-00"
+    },
+    {
+      "name": "Ronny Martinsen",
+      "number": "02",
+      "period": "1980-81"
+    },
+    {
+      "name": "Teddy Midttun",
+      "number": "02",
+      "period": "2003-05/08-10"
+    },
+    {
+      "name": "Tobias Degvold",
+      "number": "02",
+      "period": "2019-20"
+    },
+    {
+      "name": "Daniel Østbye",
+      "number": "03",
+      "period": "1993-94/96-97"
+    },
+    {
+      "name": "Geir Svendsberget",
+      "number": "03",
+      "period": "1997-07"
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "number": "03",
+      "period": "1989-90"
+    },
+    {
+      "name": "Noah Bjerke-Narud",
+      "number": "03",
+      "period": "2024-25"
+    },
+    {
+      "name": "Per Arne Kristiansen",
+      "number": "03",
+      "period": "1975-89"
+    },
+    {
+      "name": "Snorre Hallem",
+      "number": "03",
+      "period": "1995-96"
+    },
+    {
+      "name": "Blake Cosgrove",
+      "number": "04",
+      "period": "2010-11"
+    },
+    {
+      "name": "Christian Øygarden",
+      "number": "04",
+      "period": "2022"
+    },
+    {
+      "name": "Eskild Bakke Olsen",
+      "number": "04",
+      "period": "2019-20"
+    },
+    {
+      "name": "Jakub Kindl",
+      "number": "04",
+      "period": "2022-24"
+    },
+    {
+      "name": "Jan Tore Rønningen",
+      "number": "04",
+      "period": "1988-93/94-95"
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "number": "04",
+      "period": "1985-87"
+    },
+    {
+      "name": "Kodie Curran",
+      "number": "04",
+      "period": "2017-18"
+    },
+    {
+      "name": "Lorentz Holtet",
+      "number": "04",
+      "period": "1974-82"
+    },
+    {
+      "name": "Mathias Kolstad Strand",
+      "number": "04",
+      "period": "2025-"
+    },
+    {
+      "name": "Nathan Martz",
+      "number": "04",
+      "period": "2007-08/11-14"
+    },
+    {
+      "name": "Sondre Berg",
+      "number": "04",
+      "period": "2024-25"
+    },
+    {
+      "name": "Stein Yttereng",
+      "number": "04",
+      "period": "1982-85"
+    },
+    {
+      "name": "Emil Lyngstad Sæteraas",
+      "number": "05",
+      "period": "2016-17"
+    },
+    {
+      "name": "Jake Newton",
+      "number": "05",
+      "period": "2019-20"
+    },
+    {
+      "name": "Joachim Barmoen",
+      "number": "05",
+      "period": "2022-23"
+    },
+    {
+      "name": "Joe Gatenby",
+      "number": "05",
+      "period": "2024-"
+    },
+    {
+      "name": "Lars Bergseng",
+      "number": "05",
+      "period": "1981-82"
+    },
+    {
+      "name": "Lars Erik Larsson",
+      "number": "05",
+      "period": "1980-81"
+    },
+    {
+      "name": "Mattias Livf",
+      "number": "05",
+      "period": "2001-10"
+    },
+    {
+      "name": "Nikolai Davydkin",
+      "number": "05",
+      "period": "1992-94"
+    },
+    {
+      "name": "Ronny Tajet",
+      "number": "05",
+      "period": "1996-97"
+    },
+    {
+      "name": "Scott Hotham",
+      "number": "05",
+      "period": "2015-16"
+    },
+    {
+      "name": "Steinar Kristiansen",
+      "number": "05",
+      "period": "1973-78"
+    },
+    {
+      "name": "Svein Roar Hansen",
+      "number": "05",
+      "period": "1988-89"
+    },
+    {
+      "name": "Øystein Tronrud",
+      "number": "05",
+      "period": "1982-89"
+    },
+    {
+      "name": "Edvard Karlsen",
+      "number": "06",
+      "period": "2019-20"
+    },
+    {
+      "name": "Emil Frøshaug",
+      "number": "06",
+      "period": "2017-18"
+    },
+    {
+      "name": "Jens Ulrich Bacher",
+      "number": "06",
+      "period": "2013"
+    },
+    {
+      "name": "Jon-Hroar Nordstrøm",
+      "number": "06",
+      "period": "1984-88/89-99"
+    },
+    {
+      "name": "Kjell Åge Furuholt",
+      "number": "06",
+      "period": "1980-81"
+    },
+    {
+      "name": "Sander Vedul-Kjelsås",
+      "number": "06",
+      "period": "2019-20"
+    },
+    {
+      "name": "Eerikki Koivu",
+      "number": "07",
+      "period": "2009-10"
+    },
+    {
+      "name": "Jan Karlsson",
+      "number": "07",
+      "period": "1994-95"
+    },
+    {
+      "name": "Jan Lundström",
+      "number": "07",
+      "period": "1985-86"
+    },
+    {
+      "name": "Jaakko Harikkala",
+      "number": "07",
+      "period": "2005-06"
+    },
+    {
+      "name": "Kåre Nordnes",
+      "number": "07",
+      "period": "1986-87"
+    },
+    {
+      "name": "Linus Stensson",
+      "number": "07",
+      "period": "2006-08"
+    },
+    {
+      "name": "Luke Moffatt",
+      "number": "07",
+      "period": "2014-15"
+    },
+    {
+      "name": "Mathias Lierhagen",
+      "number": "07",
+      "period": "2025"
+    },
+    {
+      "name": "Matt Prapavessis",
+      "number": "07",
+      "period": "2019-20"
+    },
+    {
+      "name": "Michael Ståhl",
+      "number": "07",
+      "period": "1982-83"
+    },
+    {
+      "name": "Morten Rakstad-Larsen",
+      "number": "07",
+      "period": "1977-81"
+    },
+    {
+      "name": "Ole Fredrik Kirkebye",
+      "number": "07",
+      "period": "1997-03"
+    },
+    {
+      "name": "Sander V. Engebråten",
+      "number": "07",
+      "period": "2020-23"
+    },
+    {
+      "name": "Sjur Rakstad-Larsen",
+      "number": "07",
+      "period": "1987-89/91-93"
+    },
+    {
+      "name": "Victor Svensson",
+      "number": "07",
+      "period": "2024-25"
+    },
+    {
+      "name": "Vladislav Vlcek",
+      "number": "07",
+      "period": "1990-91"
+    },
+    {
+      "name": "Øyvind Løsåmoen",
+      "number": "07",
+      "period": "1983-85"
+    },
+    {
+      "name": "Björn Eide",
+      "number": "08",
+      "period": "1990-91"
+    },
+    {
+      "name": "Eirik Skadsdammen",
+      "number": "08",
+      "period": "1999-18"
+    },
+    {
+      "name": "Jan Tore Rønningen",
+      "number": "08",
+      "period": "1987-88"
+    },
+    {
+      "name": "Jonas Göthberg",
+      "number": "08",
+      "period": "1997-99"
+    },
+    {
+      "name": "Ole-Roberth Holmen",
+      "number": "08",
+      "period": "1974-79, 81-86"
+    },
+    {
+      "name": "Ronny Tajet",
+      "number": "08",
+      "period": "1995-96"
+    },
+    {
+      "name": "Terje Kojedal",
+      "number": "08",
+      "period": "1979-80"
+    },
+    {
+      "name": "Erik Svendby",
+      "number": "09",
+      "period": "1972-85"
+    },
+    {
+      "name": "Karl Even Schøyen",
+      "number": "09",
+      "period": "1985-87"
+    },
+    {
+      "name": "Tom Erik Olsen",
+      "number": "09",
+      "period": "1990-06"
+    },
+    {
+      "name": "Are Lundefaret",
+      "number": "10",
+      "period": "1983-84"
+    },
+    {
+      "name": "Erik Bekkelund",
+      "number": "10",
+      "period": "1980-82"
+    },
+    {
+      "name": "Finn Paulsen",
+      "number": "10",
+      "period": "1979-80"
+    },
+    {
+      "name": "Ole Birger Mæhlum",
+      "number": "10",
+      "period": "1986-88"
+    },
+    {
+      "name": "Ole Eskild Dahlstrøm",
+      "number": "10",
+      "period": "1992-97/98-05"
+    },
+    {
+      "name": "Roar Skaug",
+      "number": "10",
+      "period": "1984-86"
+    },
+    {
+      "name": "Sindre Hallem",
+      "number": "10",
+      "period": "1989-92"
+    },
+    {
+      "name": "Terje Kojedal",
+      "number": "10",
+      "period": "1974-79"
+    },
+    {
+      "name": "Tom Rune Edvardsen",
+      "number": "10",
+      "period": "1988-89"
+    },
+    {
+      "name": "Espen Kristiansen",
+      "number": "11",
+      "period": "2001-02"
+    },
+    {
+      "name": "Fredrik Möller",
+      "number": "11",
+      "period": "1999-00"
+    },
+    {
+      "name": "Greg Barber",
+      "number": "11",
+      "period": "2006-07"
+    },
+    {
+      "name": "Joey Tenute",
+      "number": "11",
+      "period": "2016-17"
+    },
+    {
+      "name": "Johan Ramstedt",
+      "number": "11",
+      "period": "2009-11"
+    },
+    {
+      "name": "Johan Älgekrans",
+      "number": "11",
+      "period": "2007-08"
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "number": "11",
+      "period": "1994-95"
+    },
+    {
+      "name": "Ketil Kristiansen",
+      "number": "11",
+      "period": "1984-92"
+    },
+    {
+      "name": "Steinar Johansen",
+      "number": "11",
+      "period": "1973-83"
+    },
+    {
+      "name": "Stian Hoelseth",
+      "number": "11",
+      "period": "2000-01"
+    },
+    {
+      "name": "Torkil Brustad",
+      "number": "11",
+      "period": "1995-97"
+    },
+    {
+      "name": "Finn Paulsen",
+      "number": "12",
+      "period": "1972-79"
+    },
+    {
+      "name": "Jacob Berglund",
+      "number": "12",
+      "period": "2014-16/18/22-"
+    },
+    {
+      "name": "Ketil Kristiansen",
+      "number": "12",
+      "period": "1983-84"
+    },
+    {
+      "name": "Lenny Eriksson",
+      "number": "12",
+      "period": "1984-89"
+    },
+    {
+      "name": "Martin Polivka",
+      "number": "12",
+      "period": "2006-07"
+    },
+    {
+      "name": "Mats Larsen Mostue",
+      "number": "12",
+      "period": "2006-12/19-22"
+    },
+    {
+      "name": "Snorre Hallem",
+      "number": "12",
+      "period": "1996-04"
+    },
+    {
+      "name": "Svein Solvik",
+      "number": "12",
+      "period": "1980-81"
+    },
+    {
+      "name": "Andreas Paulsen Aas",
+      "number": "13",
+      "period": "2011-13"
+    },
+    {
+      "name": "Geir Velta",
+      "number": "13",
+      "period": "1980-83"
+    },
+    {
+      "name": "Knut Sandvold",
+      "number": "13",
+      "period": "1979-80"
+    },
+    {
+      "name": "Sondre Bjerke",
+      "number": "13",
+      "period": "2020-23"
+    },
+    {
+      "name": "Teemu Kohvakka",
+      "number": "13",
+      "period": "2006-08"
+    },
+    {
+      "name": "Ville Immonen",
+      "number": "13",
+      "period": "2004"
+    },
+    {
+      "name": "André Paulsen",
+      "number": "14",
+      "period": "2002-03"
+    },
+    {
+      "name": "Chris Clark",
+      "number": "14",
+      "period": "2004-05"
+    },
+    {
+      "name": "Espen Ottersen",
+      "number": "14",
+      "period": "1998-99"
+    },
+    {
+      "name": "Henrik Pettersson",
+      "number": "14",
+      "period": "2000-02"
+    },
+    {
+      "name": "Jarkko Väänänen",
+      "number": "14",
+      "period": "2003-04"
+    },
+    {
+      "name": "Joakim Persson",
+      "number": "14",
+      "period": "1997-98"
+    },
+    {
+      "name": "Jørgen Langdalen",
+      "number": "14",
+      "period": "2015-18"
+    },
+    {
+      "name": "Lane Scheidl",
+      "number": "14",
+      "period": "2022"
+    },
+    {
+      "name": "Mika Risbakken",
+      "number": "14",
+      "period": "2005-07"
+    },
+    {
+      "name": "Ole Arne Langdalen",
+      "number": "14",
+      "period": "1973-86"
+    },
+    {
+      "name": "Peter Madach",
+      "number": "14",
+      "period": "1986-93, 94-96"
+    },
+    {
+      "name": "Erik Bekkelund",
+      "number": "15",
+      "period": "1984-85"
+    },
+    {
+      "name": "Jonas Norgren",
+      "number": "15",
+      "period": "1997-07"
+    },
+    {
+      "name": "Morten Lillehagen",
+      "number": "15",
+      "period": "1974-84"
+    },
+    {
+      "name": "Rune Bratteland",
+      "number": "15",
+      "period": "1987-88"
+    },
+    {
+      "name": "Rune Gulliksen",
+      "number": "15",
+      "period": "1991-97"
+    },
+    {
+      "name": "Sjur Rakstad-Larsen",
+      "number": "15",
+      "period": "1985-87"
+    },
+    {
+      "name": "Carl O. B. Andersen",
+      "number": "16",
+      "period": "1990-95, 96-97, 99-02"
+    },
+    {
+      "name": "Chris Marinucci",
+      "number": "16",
+      "period": "2003-04"
+    },
+    {
+      "name": "Espen Larsen",
+      "number": "16",
+      "period": "1987-88"
+    },
+    {
+      "name": "Joakim Andersson",
+      "number": "16",
+      "period": "1998-99"
+    },
+    {
+      "name": "Kenney Morrison",
+      "number": "16",
+      "period": "2018"
+    },
+    {
+      "name": "Lars Erik Hesbråten",
+      "number": "16",
+      "period": "2006-11"
+    },
+    {
+      "name": "Magnus Eikrem Haugen",
+      "number": "16",
+      "period": "2013-17"
+    },
+    {
+      "name": "Mike Wilson",
+      "number": "16",
+      "period": "2004-05"
+    },
+    {
+      "name": "Olav Slåtlandet",
+      "number": "16",
+      "period": "1973-86"
+    },
+    {
+      "name": "Patrick Elvsveen",
+      "number": "16",
+      "period": "2020-23"
+    },
+    {
+      "name": "Petter Torp",
+      "number": "16",
+      "period": "1986-87"
+    },
+    {
+      "name": "Tom Ivar Hesbråten",
+      "number": "16",
+      "period": "2011-12"
+    },
+    {
+      "name": "Troy Josephs",
+      "number": "16",
+      "period": "2019"
+    },
+    {
+      "name": "Aaron Gavey",
+      "number": "16",
+      "period": "2004"
+    },
+    {
+      "name": "Claes Westberg",
+      "number": "17",
+      "period": "1982-83"
+    },
+    {
+      "name": "Douglas Osness",
+      "number": "17",
+      "period": "1979-80"
+    },
+    {
+      "name": "Eirik Salsten",
+      "number": "17",
+      "period": "2011-13/18-24"
+    },
+    {
+      "name": "Klas Forfang",
+      "number": "17",
+      "period": "1985-96"
+    },
+    {
+      "name": "Morten Rakstad-Larsen",
+      "number": "17",
+      "period": "1981-82/83-84"
+    },
+    {
+      "name": "Per Kristian Jonassen",
+      "number": "17",
+      "period": "2000-02"
+    },
+    {
+      "name": "Pål Johnsen",
+      "number": "17",
+      "period": "v Lørenskog 14"
+    },
+    {
+      "name": "Simen Saxrud",
+      "number": "17",
+      "period": "2002-07"
+    },
+    {
+      "name": "Snorre Hallem",
+      "number": "17",
+      "period": "1996-97"
+    },
+    {
+      "name": "Stein André Hagen",
+      "number": "17",
+      "period": "2014-16"
+    },
+    {
+      "name": "Øyvind Ryberg",
+      "number": "17",
+      "period": "1977-79"
+    },
+    {
+      "name": "Bert Lindberg",
+      "number": "18",
+      "period": "1979-80"
+    },
+    {
+      "name": "Jan Roger Kristiansen",
+      "number": "18",
+      "period": "1978-79"
+    },
+    {
+      "name": "Jørgen Salsten",
+      "number": "18",
+      "period": "1983-84"
+    },
+    {
+      "name": "Pål Johnsen",
+      "number": "18",
+      "period": "1992-00, 02-15"
+    },
+    {
+      "name": "Rune Botner",
+      "number": "18",
+      "period": "1984-87"
+    },
+    {
+      "name": "Svein Roar Hansen",
+      "number": "18",
+      "period": "1991-92"
+    },
+    {
+      "name": "Tom Rune Edvardsen",
+      "number": "18",
+      "period": "1989-91"
+    },
+    {
+      "name": "Øyvind Ryberg",
+      "number": "18",
+      "period": "1982-83"
+    },
+    {
+      "name": "Amil Krupic",
+      "number": "19",
+      "period": "2025-"
+    },
+    {
+      "name": "Anders Kolbuholen",
+      "number": "19",
+      "period": "1998-01"
+    },
+    {
+      "name": "Andreas Øksnes",
+      "number": "19",
+      "period": "2010-16"
+    },
+    {
+      "name": "Børre Østvang",
+      "number": "19",
+      "period": "1981-94"
+    },
+    {
+      "name": "Håvard Salsten",
+      "number": "19",
+      "period": "2024-25"
+    },
+    {
+      "name": "Jan Roger Kristiansen",
+      "number": "19",
+      "period": "1979-80"
+    },
+    {
+      "name": "Maxim Trépanier",
+      "number": "19",
+      "period": "2023-24"
+    },
+    {
+      "name": "Patrick Yetman",
+      "number": "19",
+      "period": "2005-06, 07, 08"
+    },
+    {
+      "name": "Rune Frankmoen",
+      "number": "19",
+      "period": "1980-81"
+    },
+    {
+      "name": "Simen André Edvardsen",
+      "number": "19",
+      "period": "2016-23"
+    },
+    {
+      "name": "Stig «Myggen» Johansen",
+      "number": "19",
+      "period": "1997-98"
+    },
+    {
+      "name": "Erik Kristiansen",
+      "number": "20",
+      "period": "1977-87, 88-98"
+    },
+    {
+      "name": "Hans Persson",
+      "number": "20",
+      "period": "1987-88"
+    },
+    {
+      "name": "Anders Hage",
+      "number": "21",
+      "period": "2002-03"
+    },
+    {
+      "name": "Finn Paulsen",
+      "number": "21",
+      "period": "1982-83"
+    },
+    {
+      "name": "Glenn Ryberg",
+      "number": "21",
+      "period": "1984-86"
+    },
+    {
+      "name": "Joakim Jensen",
+      "number": "21",
+      "period": "2007-19"
+    },
+    {
+      "name": "Juha Jokiharju",
+      "number": "21",
+      "period": "2001-02"
+    },
+    {
+      "name": "Lars Erik Hesbråten",
+      "number": "21",
+      "period": "2003-04"
+    },
+    {
+      "name": "Lennart Gunnarsson",
+      "number": "21",
+      "period": "1980-81"
+    },
+    {
+      "name": "Ola Sætrang",
+      "number": "21",
+      "period": "2000-01"
+    },
+    {
+      "name": "Steffen Thoresen",
+      "number": "21",
+      "period": "2004-07"
+    },
+    {
+      "name": "Stig Frydenlund",
+      "number": "21",
+      "period": "1983-84"
+    },
+    {
+      "name": "Svein Solvik",
+      "number": "21",
+      "period": "1979-80"
+    },
+    {
+      "name": "Tommy Larsen",
+      "number": "21",
+      "period": "1987-98"
+    },
+    {
+      "name": "Andreas Hjelm",
+      "number": "22",
+      "period": "2008-11"
+    },
+    {
+      "name": "Ari Turpeinen",
+      "number": "22",
+      "period": "1997-98"
+    },
+    {
+      "name": "Brent Gauvreau",
+      "number": "22",
+      "period": "2004-05"
+    },
+    {
+      "name": "Christer Stramrud",
+      "number": "22",
+      "period": "1998-99"
+    },
+    {
+      "name": "Espen Botheim",
+      "number": "22",
+      "period": "2005-06"
+    },
+    {
+      "name": "Hans Persson",
+      "number": "22",
+      "period": "1988-92"
+    },
+    {
+      "name": "Harald Amble",
+      "number": "22",
+      "period": "1978-79"
+    },
+    {
+      "name": "Harald Bastiansen",
+      "number": "22",
+      "period": "1986-88"
+    },
+    {
+      "name": "Jan Erik Amundsen",
+      "number": "22",
+      "period": "1984-86"
+    },
+    {
+      "name": "Magnus Østeraas",
+      "number": "22",
+      "period": "2008"
+    },
+    {
+      "name": "Martin Rønnild",
+      "number": "22",
+      "period": "2015-"
+    },
+    {
+      "name": "Martin Åhlberg",
+      "number": "22",
+      "period": "1992-97"
+    },
+    {
+      "name": "Michael Smithurst",
+      "number": "22",
+      "period": "1999-04"
+    },
+    {
+      "name": "Roar Skaug",
+      "number": "22",
+      "period": "1981-83"
+    },
+    {
+      "name": "Ronny Martinsen",
+      "number": "22",
+      "period": "1979-80"
+    },
+    {
+      "name": "Christian Larrivée",
+      "number": "23",
+      "period": "2006-07, 10-21"
+    },
+    {
+      "name": "Magnus Østeraas",
+      "number": "23",
+      "period": "1995-2004"
+    },
+    {
+      "name": "Per Henrik Nygård",
+      "number": "23",
+      "period": "1978-79"
+    },
+    {
+      "name": "Rune Frankmoen",
+      "number": "23",
+      "period": "1979-80"
+    },
+    {
+      "name": "Åge Ellingsen",
+      "number": "23",
+      "period": "1983-87, 88-90, 91-94"
+    },
+    {
+      "name": "Bjørn Lien",
+      "number": "24",
+      "period": "1979-80"
+    },
+    {
+      "name": "Chris Leinweber",
+      "number": "24",
+      "period": "2007-08"
+    },
+    {
+      "name": "Christian Saxrud",
+      "number": "24",
+      "period": "2002-05"
+    },
+    {
+      "name": "Cole Schneider",
+      "number": "24",
+      "period": "2024-25"
+    },
+    {
+      "name": "Glenn Ryberg",
+      "number": "24",
+      "period": "1982-84"
+    },
+    {
+      "name": "Joachim Barmoen",
+      "number": "24",
+      "period": "",
+      "sourceWarning": "Kilden oppgir ikke årstall i denne tabellraden."
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "number": "24",
+      "period": "1992-93"
+    },
+    {
+      "name": "Lars Bergseng",
+      "number": "24",
+      "period": "1984-86, 87-89"
+    },
+    {
+      "name": "Linus Morken",
+      "number": "24",
+      "period": "2024"
+    },
+    {
+      "name": "Mads Hansen",
+      "number": "24",
+      "period": "2013-15"
+    },
+    {
+      "name": "Magne Nordnes",
+      "number": "24",
+      "period": "1984-87"
+    },
+    {
+      "name": "Pavel Setikovsky",
+      "number": "24",
+      "period": "1991-92"
+    },
+    {
+      "name": "Perry Johnson",
+      "number": "24",
+      "period": "2006-07"
+    },
+    {
+      "name": "Stig Johansen",
+      "number": "24",
+      "period": "1989-91"
+    },
+    {
+      "name": "Tomas Berg",
+      "number": "24",
+      "period": "1997-99"
+    },
+    {
+      "name": "Urban Omark",
+      "number": "24",
+      "period": "2005-06"
+    },
+    {
+      "name": "Aaron Irving",
+      "number": "24",
+      "period": "2018-19"
+    },
+    {
+      "name": "Aleksander Muri Kristiansen",
+      "number": "25",
+      "period": "2007-08"
+    },
+    {
+      "name": "Arne Bergseng",
+      "number": "25",
+      "period": "1984-89"
+    },
+    {
+      "name": "Derek Eastman",
+      "number": "25",
+      "period": "2006-07"
+    },
+    {
+      "name": "Even Langdalen",
+      "number": "25",
+      "period": "2016-17"
+    },
+    {
+      "name": "Fredrik Fleischer",
+      "number": "25",
+      "period": "2007-08"
+    },
+    {
+      "name": "Geir Falck",
+      "number": "25",
+      "period": "1980-81"
+    },
+    {
+      "name": "Henrik Fayen-Vestavik",
+      "number": "25",
+      "period": "2024-"
+    },
+    {
+      "name": "Hermann Aarflot",
+      "number": "25",
+      "period": "2007-08"
+    },
+    {
+      "name": "Jan Erik Amundsen",
+      "number": "25",
+      "period": "1983-84"
+    },
+    {
+      "name": "Joakim Persson",
+      "number": "25",
+      "period": "1998-99"
+    },
+    {
+      "name": "Lubos Sikela",
+      "number": "25",
+      "period": "1995-97"
+    },
+    {
+      "name": "Mads Hansen",
+      "number": "25",
+      "period": "99-02, 05-06"
+    },
+    {
+      "name": "Mikael Dokken",
+      "number": "25",
+      "period": "2017-19"
+    },
+    {
+      "name": "Robin Haglund",
+      "number": "25",
+      "period": "2021-23"
+    },
+    {
+      "name": "Vetle Lindstad",
+      "number": "25",
+      "period": "mars 2015-16"
+    },
+    {
+      "name": "André Manskov Hansen",
+      "number": "26",
+      "period": "1996-97"
+    },
+    {
+      "name": "Erik Andersen",
+      "number": "26",
+      "period": "1997-00"
+    },
+    {
+      "name": "Håkon Engh",
+      "number": "26",
+      "period": "2017-18"
+    },
+    {
+      "name": "Jacob Berglund",
+      "number": "26",
+      "period": "2018"
+    },
+    {
+      "name": "Jens Jakobs",
+      "number": "26",
+      "period": "2018"
+    },
+    {
+      "name": "Kristian Forsberg",
+      "number": "26",
+      "period": "2005-09"
+    },
+    {
+      "name": "Mathias Papuga",
+      "number": "26",
+      "period": "2023-"
+    },
+    {
+      "name": "Rudi A. Syversen",
+      "number": "26",
+      "period": "1988-90"
+    },
+    {
+      "name": "Vidar Nerem",
+      "number": "26",
+      "period": "1983-85"
+    },
+    {
+      "name": "Øystein Bertheussen",
+      "number": "26",
+      "period": "1985-86"
+    },
+    {
+      "name": "Adrian Saxrud Danielsen",
+      "number": "27",
+      "period": "2010-15"
+    },
+    {
+      "name": "Amund Bergsodden",
+      "number": "27",
+      "period": "1993-94"
+    },
+    {
+      "name": "Anders Myrvold",
+      "number": "27",
+      "period": "1994"
+    },
+    {
+      "name": "Andreas Martinsen",
+      "number": "27",
+      "period": "2023-"
+    },
+    {
+      "name": "Espen Kristiansen",
+      "number": "27",
+      "period": "2003, 07"
+    },
+    {
+      "name": "Igor Alexandrov",
+      "number": "27",
+      "period": "2003-04"
+    },
+    {
+      "name": "Isak Hansen",
+      "number": "27",
+      "period": "2020-22"
+    },
+    {
+      "name": "Karl Even Schøyen",
+      "number": "27",
+      "period": "1984-85"
+    },
+    {
+      "name": "Kurt Sandnes",
+      "number": "27",
+      "period": "1988-89"
+    },
+    {
+      "name": "Lars Løkken Østli",
+      "number": "27",
+      "period": "2004-05"
+    },
+    {
+      "name": "Steffen Thoresen",
+      "number": "27",
+      "period": "2017-20"
+    },
+    {
+      "name": "Cato Ørbæk",
+      "number": "28",
+      "period": "2000-05"
+    },
+    {
+      "name": "Christian Bull",
+      "number": "28",
+      "period": "2015-16, 17-20, 24-"
+    },
+    {
+      "name": "Marcus L. Hoen",
+      "number": "28",
+      "period": "2020-21"
+    },
+    {
+      "name": "Morten Andersen",
+      "number": "28",
+      "period": "1987-88"
+    },
+    {
+      "name": "Ole Petter Øvergaard",
+      "number": "28",
+      "period": "2012-15"
+    },
+    {
+      "name": "Patrick Eide",
+      "number": "28",
+      "period": "1989-96"
+    },
+    {
+      "name": "Samuel Solem",
+      "number": "28",
+      "period": "2022-25"
+    },
+    {
+      "name": "André Paulsen",
+      "number": "29",
+      "period": "1999-00"
+    },
+    {
+      "name": "David Aas-Larsen",
+      "number": "29",
+      "period": "2024-"
+    },
+    {
+      "name": "Even H. Christiansen",
+      "number": "29",
+      "period": "2023-24"
+    },
+    {
+      "name": "Henning Paulsen",
+      "number": "29",
+      "period": "1997-99/00-02"
+    },
+    {
+      "name": "Jorma Virtanen",
+      "number": "29",
+      "period": "1984-87"
+    },
+    {
+      "name": "Krister Sætre",
+      "number": "29",
+      "period": "1993-95"
+    },
+    {
+      "name": "Kåre Å. Olsen",
+      "number": "29",
+      "period": "1989-90"
+    },
+    {
+      "name": "Martin Gran",
+      "number": "29",
+      "period": "2013-17"
+    },
+    {
+      "name": "Pål Johnsen",
+      "number": "29",
+      "period": "1995-96"
+    },
+    {
+      "name": "Robin Dahlstrøm",
+      "number": "29",
+      "period": "2017-21"
+    },
+    {
+      "name": "Stian Høygård",
+      "number": "29",
+      "period": "2007"
+    },
+    {
+      "name": "Svein Roar Hansen",
+      "number": "29",
+      "period": "1990-91"
+    },
+    {
+      "name": "Tom Johansen",
+      "number": "29",
+      "period": "1988-89"
+    },
+    {
+      "name": "Jim Marthinsen",
+      "number": "30",
+      "period": "1994-97"
+    },
+    {
+      "name": "Lars Erik Kjær",
+      "number": "30",
+      "period": "1986"
+    },
+    {
+      "name": "Mathias S. Arnkværn",
+      "number": "30",
+      "period": "2020-21"
+    },
+    {
+      "name": "Ole M. Johansen",
+      "number": "30",
+      "period": "2023-24"
+    },
+    {
+      "name": "Robert Hestmann",
+      "number": "30",
+      "period": "2016-18"
+    },
+    {
+      "name": "Ruben Smith",
+      "number": "30",
+      "period": "2006-10"
+    },
+    {
+      "name": "Alex D’Orio",
+      "number": "31",
+      "period": "2023-24"
+    },
+    {
+      "name": "Daniel Wälitalo",
+      "number": "31",
+      "period": "2009-10"
+    },
+    {
+      "name": "Martin Lundberg",
+      "number": "31",
+      "period": "2022-23"
+    },
+    {
+      "name": "Mika Rautio",
+      "number": "31",
+      "period": "1997-98"
+    },
+    {
+      "name": "Svein Harald Arnesen",
+      "number": "31",
+      "period": "1987-97"
+    },
+    {
+      "name": "Jon Taarud Rømoen",
+      "number": "32",
+      "period": "2007-08"
+    },
+    {
+      "name": "Lars Petter Hansen",
+      "number": "32",
+      "period": "1995-96"
+    },
+    {
+      "name": "Mathias S. Arnkværn",
+      "number": "32",
+      "period": "2021-22"
+    },
+    {
+      "name": "Remo Martinsen",
+      "number": "32",
+      "period": "1994"
+    },
+    {
+      "name": "Anders Soløst",
+      "number": "33",
+      "period": "1993-94"
+    },
+    {
+      "name": "Anders T. Braavold",
+      "number": "33",
+      "period": "2012-14"
+    },
+    {
+      "name": "Luka Gracnar",
+      "number": "33",
+      "period": "2019-20"
+    },
+    {
+      "name": "Marius Mathisrud",
+      "number": "33",
+      "period": "2009-10"
+    },
+    {
+      "name": "Mikael Tjälldén",
+      "number": "33",
+      "period": "2002-05"
+    },
+    {
+      "name": "Morten Odden",
+      "number": "33",
+      "period": "1990-91"
+    },
+    {
+      "name": "Petteri Nummelin",
+      "number": "33",
+      "period": "2016-17"
+    },
+    {
+      "name": "Ronny Tajet",
+      "number": "33",
+      "period": "1997-98"
+    },
+    {
+      "name": "Tommy Marthinsen",
+      "number": "33",
+      "period": "1995-96"
+    },
+    {
+      "name": "Troy Josephs",
+      "number": "33",
+      "period": "2019"
+    },
+    {
+      "name": "Robert Hestmann",
+      "number": "34",
+      "period": "2010-13, 15-16"
+    },
+    {
+      "name": "Zach O’Brien",
+      "number": "34",
+      "period": "2025-"
+    },
+    {
+      "name": "Anders Gulliksen",
+      "number": "35",
+      "period": "2014-16"
+    },
+    {
+      "name": "Geir Østberg",
+      "number": "35",
+      "period": "2000-06"
+    },
+    {
+      "name": "Joonas Rönnberg",
+      "number": "35",
+      "period": "2016-17"
+    },
+    {
+      "name": "Markus Stensrud",
+      "number": "35",
+      "period": "2021-"
+    },
+    {
+      "name": "Robert Borgquist",
+      "number": "35",
+      "period": "1998-99"
+    },
+    {
+      "name": "Trevor Koenig",
+      "number": "35",
+      "period": "2010-11"
+    },
+    {
+      "name": "Elias Antonsen",
+      "number": "36",
+      "period": "2020-21"
+    },
+    {
+      "name": "Linus Morken",
+      "number": "36",
+      "period": "2024-25"
+    },
+    {
+      "name": "Martin Blakseth Huse",
+      "number": "36",
+      "period": "2006-14, 15-17"
+    },
+    {
+      "name": "Martin Johnsen",
+      "number": "36",
+      "period": "2023-24"
+    },
+    {
+      "name": "Niklas Fogström",
+      "number": "36",
+      "period": "2018-19"
+    },
+    {
+      "name": "Chris Zanutto",
+      "number": "37",
+      "period": "2001-02"
+    },
+    {
+      "name": "Lars Løkken Østli",
+      "number": "37",
+      "period": "2005-19"
+    },
+    {
+      "name": "Anders Haugum",
+      "number": "38",
+      "period": "2023 PO"
+    },
+    {
+      "name": "Antti Hildén",
+      "number": "38",
+      "period": "2008-09"
+    },
+    {
+      "name": "Antti Rahkonen",
+      "number": "38",
+      "period": "2002-07"
+    },
+    {
+      "name": "Petter Thoresen",
+      "number": "38",
+      "period": "1991-95"
+    },
+    {
+      "name": "Trym Gran",
+      "number": "39",
+      "period": "2022-25"
+    },
+    {
+      "name": "Victor Svensson",
+      "number": "39",
+      "period": "2017-19"
+    },
+    {
+      "name": "Ørjan Pettersson",
+      "number": "39",
+      "period": "2005-06"
+    },
+    {
+      "name": "Fredrik Lystad Jacobsen",
+      "number": "40",
+      "period": "2010-14"
+    },
+    {
+      "name": "Isak Skedung",
+      "number": "40",
+      "period": "2025-"
+    },
+    {
+      "name": "Joel Johansson",
+      "number": "40",
+      "period": "2018-19"
+    },
+    {
+      "name": "Linus Johansson",
+      "number": "40",
+      "period": "2014-15"
+    },
+    {
+      "name": "Rasmus Ahlholm",
+      "number": "40",
+      "period": "2019-21"
+    },
+    {
+      "name": "Tom Cato Myhre",
+      "number": "40",
+      "period": "1996-97"
+    },
+    {
+      "name": "Patrick Thoresen",
+      "number": "41",
+      "period": "2001-02, 17-24"
+    },
+    {
+      "name": "Anders Haugum",
+      "number": "42",
+      "period": "2023"
+    },
+    {
+      "name": "Andreas Røykås Marthinsen",
+      "number": "42",
+      "period": "2016"
+    },
+    {
+      "name": "Karl M. Sælid",
+      "number": "42",
+      "period": "2023-24"
+    },
+    {
+      "name": "Morten Fjeld",
+      "number": "42",
+      "period": "1995-00"
+    },
+    {
+      "name": "Ole M. Johansen",
+      "number": "42",
+      "period": "2023"
+    },
+    {
+      "name": "Vetle Lindstad",
+      "number": "42",
+      "period": "2014-15"
+    },
+    {
+      "name": "Viktor Kokman",
+      "number": "42",
+      "period": "2020-23"
+    },
+    {
+      "name": "Marko Toivonen",
+      "number": "43",
+      "period": "2002-03"
+    },
+    {
+      "name": "Martin Brandsnes",
+      "number": "43",
+      "period": "2007-08"
+    },
+    {
+      "name": "Mikael Bohman",
+      "number": "43",
+      "period": "1999-00"
+    },
+    {
+      "name": "Villiam Strøm",
+      "number": "43",
+      "period": "2023-24"
+    },
+    {
+      "name": "André Evensen",
+      "number": "44",
+      "period": "2006-07"
+    },
+    {
+      "name": "Joakim Persson",
+      "number": "44",
+      "period": "2000-04"
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "number": "44",
+      "period": "1987-89"
+    },
+    {
+      "name": "Kurt Davis",
+      "number": "44",
+      "period": "2018-20"
+    },
+    {
+      "name": "Lars Lundin",
+      "number": "44",
+      "period": "2012-13"
+    },
+    {
+      "name": "Magnus Mjørud",
+      "number": "44",
+      "period": "2023-24"
+    },
+    {
+      "name": "Olle Liss",
+      "number": "44",
+      "period": "2025-"
+    },
+    {
+      "name": "Pål Martinsen",
+      "number": "44",
+      "period": "1991-97"
+    },
+    {
+      "name": "Simen H. Johannessen",
+      "number": "44",
+      "period": "2007-10"
+    },
+    {
+      "name": "Axel Sandnes",
+      "number": "45",
+      "period": "2023-"
+    },
+    {
+      "name": "Mike Zanutto",
+      "number": "45",
+      "period": "2001-02"
+    },
+    {
+      "name": "Anders Jonassen",
+      "number": "46",
+      "period": "2019-20"
+    },
+    {
+      "name": "Daniel Despotovic",
+      "number": "46",
+      "period": "2014"
+    },
+    {
+      "name": "David Booth",
+      "number": "46",
+      "period": "2022-23"
+    },
+    {
+      "name": "Simen Løvhaug Hansen",
+      "number": "46",
+      "period": "2014-20"
+    },
+    {
+      "name": "Ørjan Mikkelsen",
+      "number": "46",
+      "period": "2011-14"
+    },
+    {
+      "name": "Adrian Saxrud Danielsen",
+      "number": "47",
+      "period": "2022-25"
+    },
+    {
+      "name": "Hans G. Stubrud",
+      "number": "47",
+      "period": "2003-06"
+    },
+    {
+      "name": "Johan Åström",
+      "number": "48",
+      "period": "2002-03, 04-05"
+    },
+    {
+      "name": "Markus Aas-Eng Mikkelsen",
+      "number": "48",
+      "period": "2016-22"
+    },
+    {
+      "name": "Håvard Salsten",
+      "number": "49",
+      "period": "2018-19"
+    },
+    {
+      "name": "Manuel Ågren",
+      "number": "49",
+      "period": "2018"
+    },
+    {
+      "name": "Mathias Fahle-Karlsen",
+      "number": "49",
+      "period": "2024-25"
+    },
+    {
+      "name": "Sander V. Engebråten",
+      "number": "49",
+      "period": "2018-19"
+    },
+    {
+      "name": "Simen Sveen",
+      "number": "49",
+      "period": "april 2015"
+    },
+    {
+      "name": "Christian B. Melaas",
+      "number": "50",
+      "period": "2019-20"
+    },
+    {
+      "name": "Pål Johnsen",
+      "number": "50",
+      "period": "jan.-apr. 2007"
+    },
+    {
+      "name": "Sebastian H. Nilsen",
+      "number": "50",
+      "period": "2019-20"
+    },
+    {
+      "name": "André Paulsen",
+      "number": "51",
+      "period": "2009-10"
+    },
+    {
+      "name": "Dima Smirnov",
+      "number": "51",
+      "period": "2008-09"
+    },
+    {
+      "name": "Jesper Engelin",
+      "number": "51",
+      "period": "2013-14"
+    },
+    {
+      "name": "Miles Gendron",
+      "number": "51",
+      "period": "2022-23"
+    },
+    {
+      "name": "Eirik Dagfinrud",
+      "number": "52",
+      "period": "2011-14"
+    },
+    {
+      "name": "Erik de la Rose",
+      "number": "52",
+      "period": "2014-17, 20-22"
+    },
+    {
+      "name": "Ørjan Mikkelsen",
+      "number": "52",
+      "period": "2008-10"
+    },
+    {
+      "name": "Adrian Saxrud Danielsen",
+      "number": "53",
+      "period": "2008-11"
+    },
+    {
+      "name": "Alexander Muri Kristiansen",
+      "number": "53",
+      "period": "2008-09"
+    },
+    {
+      "name": "Andreas Paulsen Aas",
+      "number": "53",
+      "period": "2009-11"
+    },
+    {
+      "name": "Daniel Nielsen",
+      "number": "53",
+      "period": "2008"
+    },
+    {
+      "name": "Herman Aarflot",
+      "number": "53",
+      "period": "2008-09"
+    },
+    {
+      "name": "Tommy Johansen",
+      "number": "53",
+      "period": "2013-14"
+    },
+    {
+      "name": "Mikkel Stensrud",
+      "number": "54",
+      "period": "2008-09"
+    },
+    {
+      "name": "Ole Petter Øvergaard",
+      "number": "54",
+      "period": "2011-12"
+    },
+    {
+      "name": "Sander Hurrød",
+      "number": "54",
+      "period": "2023-"
+    },
+    {
+      "name": "Tony Cameranesi",
+      "number": "54",
+      "period": "2019-20"
+    },
+    {
+      "name": "Anders Kolbuholen",
+      "number": "55",
+      "period": "1997"
+    },
+    {
+      "name": "Anders T. Braavold",
+      "number": "55",
+      "period": "2011-12"
+    },
+    {
+      "name": "Christian A. Olasveengen",
+      "number": "55",
+      "period": "2000-01"
+    },
+    {
+      "name": "Christian Remo Nicolaisen",
+      "number": "55",
+      "period": "2009-11"
+    },
+    {
+      "name": "Eirik Skadsdammen",
+      "number": "55",
+      "period": "1999-00"
+    },
+    {
+      "name": "Fredrik Fleischer",
+      "number": "55",
+      "period": "2008-09"
+    },
+    {
+      "name": "Martin Thelander",
+      "number": "55",
+      "period": "2007-08"
+    },
+    {
+      "name": "Oskar Östlund",
+      "number": "55",
+      "period": "2015-19"
+    },
+    {
+      "name": "Petter Birkheim Andersen",
+      "number": "55",
+      "period": "2022-23"
+    },
+    {
+      "name": "Tony Bråtebæk",
+      "number": "55",
+      "period": "1998-99"
+    },
+    {
+      "name": "Øyvind Eriksen",
+      "number": "55",
+      "period": "1998-99"
+    },
+    {
+      "name": "Eerikki Koivu",
+      "number": "56",
+      "period": "2007-08"
+    },
+    {
+      "name": "Espen Kristiansen",
+      "number": "56",
+      "period": "2008-09"
+    },
+    {
+      "name": "Eirik Børresen",
+      "number": "57",
+      "period": "2008-09"
+    },
+    {
+      "name": "Hans G. Stubrud",
+      "number": "58",
+      "period": "2008"
+    },
+    {
+      "name": "Magnus Eikrem Haugen",
+      "number": "58",
+      "period": "2011-13"
+    },
+    {
+      "name": "Sander V. Engebråten",
+      "number": "58",
+      "period": "2018-20"
+    },
+    {
+      "name": "Anders Vold",
+      "number": "59",
+      "period": "2008-09"
+    },
+    {
+      "name": "Fredrik Arnesen",
+      "number": "59",
+      "period": "2008-10"
+    },
+    {
+      "name": "Martin Brandsnes",
+      "number": "59",
+      "period": "2008-09"
+    },
+    {
+      "name": "Magnus Lindahl",
+      "number": "60",
+      "period": "2015-16"
+    },
+    {
+      "name": "Mathias Papuga",
+      "number": "60",
+      "period": "2022-23"
+    },
+    {
+      "name": "Alexander Reichenberg",
+      "number": "61",
+      "period": "2015-17"
+    },
+    {
+      "name": "Christian A. Olasveengen",
+      "number": "61",
+      "period": "2000-06"
+    },
+    {
+      "name": "Fredrik Börjesson",
+      "number": "61",
+      "period": "2012-13"
+    },
+    {
+      "name": "Jonathan Hafsmoe",
+      "number": "61",
+      "period": "2017-18"
+    },
+    {
+      "name": "Trygve Hillestad",
+      "number": "62",
+      "period": "2006-14"
+    },
+    {
+      "name": "Mikkel Søgaard",
+      "number": "63",
+      "period": "2016-18"
+    },
+    {
+      "name": "Anders Gulliksen",
+      "number": "64",
+      "period": "2016-17"
+    },
+    {
+      "name": "Kjetil Martinsen",
+      "number": "64",
+      "period": "2017-19"
+    },
+    {
+      "name": "Joel Johansson",
+      "number": "65",
+      "period": "2018"
+    },
+    {
+      "name": "Ole Indergaard",
+      "number": "65",
+      "period": "2023-24"
+    },
+    {
+      "name": "Andreas Dahl",
+      "number": "66",
+      "period": "2023-"
+    },
+    {
+      "name": "Jouri Leonov",
+      "number": "66",
+      "period": "1996-97/99-01"
+    },
+    {
+      "name": "Sergei Pushkov",
+      "number": "66",
+      "period": "1998-99"
+    },
+    {
+      "name": "Henric Höglund",
+      "number": "67",
+      "period": "2007-08"
+    },
+    {
+      "name": "Mats Bakke Olsen",
+      "number": "67",
+      "period": "2023-"
+    },
+    {
+      "name": "Ole Einar Andersen",
+      "number": "67",
+      "period": "2020-21"
+    },
+    {
+      "name": "Patrick Elvsveen",
+      "number": "67",
+      "period": "2019-20"
+    },
+    {
+      "name": "Anders Jonassen",
+      "number": "68",
+      "period": "2020-21"
+    },
+    {
+      "name": "Sander Rønning",
+      "number": "68",
+      "period": "2024-25"
+    },
+    {
+      "name": "Sander Vedul-Kjelsås",
+      "number": "68",
+      "period": "2020-22"
+    },
+    {
+      "name": "Sondre Berg",
+      "number": "68",
+      "period": "2025"
+    },
+    {
+      "name": "Jimmy Andersson",
+      "number": "69",
+      "period": "2010-16, 17-22"
+    },
+    {
+      "name": "Noah Bjerke-Narud",
+      "number": "69",
+      "period": "2025"
+    },
+    {
+      "name": "Christian Olsvik",
+      "number": "71",
+      "period": "1990-91"
+    },
+    {
+      "name": "Eskild Bakke Olsen",
+      "number": "71",
+      "period": "2020-23"
+    },
+    {
+      "name": "Josh Nicholls",
+      "number": "71",
+      "period": "2017-18"
+    },
+    {
+      "name": "Stefan Espeland",
+      "number": "71",
+      "period": "2023-"
+    },
+    {
+      "name": "Andrew Engelage",
+      "number": "72",
+      "period": "2014-15"
+    },
+    {
+      "name": "Jonas Norgren",
+      "number": "72",
+      "period": "2007-09"
+    },
+    {
+      "name": "Colin Campbell",
+      "number": "74",
+      "period": "2025-"
+    },
+    {
+      "name": "Daniel Hermansson",
+      "number": "74",
+      "period": "2016-17"
+    },
+    {
+      "name": "Even Langdalen",
+      "number": "74",
+      "period": "2016-17"
+    },
+    {
+      "name": "Dima Lavrentiev",
+      "number": "75",
+      "period": "2000-01"
+    },
+    {
+      "name": "Karl Even Schøyen",
+      "number": "76",
+      "period": "1987-88"
+    },
+    {
+      "name": "Marcus Rønning",
+      "number": "76",
+      "period": "2023"
+    },
+    {
+      "name": "Alexander Smirnov",
+      "number": "77",
+      "period": "1995-01, 03-06"
+    },
+    {
+      "name": "Sverre Rønningen",
+      "number": "77",
+      "period": "2023-25, 26-"
+    },
+    {
+      "name": "Johnny Bruun",
+      "number": "78",
+      "period": "1999-03"
+    },
+    {
+      "name": "Andreas Øksnes",
+      "number": "79",
+      "period": "2018-23"
+    },
+    {
+      "name": "André B. Paulsen",
+      "number": "80",
+      "period": "2010-13"
+    },
+    {
+      "name": "Ola H. Johannessen",
+      "number": "81",
+      "period": "2003-06"
+    },
+    {
+      "name": "Phil Marinaccio",
+      "number": "81",
+      "period": "2017-18/19-20"
+    },
+    {
+      "name": "Christian Remo Nicolaisen",
+      "number": "82",
+      "period": "2012-13"
+    },
+    {
+      "name": "Josh Nicholls",
+      "number": "82",
+      "period": "2017-18"
+    },
+    {
+      "name": "Knut Henrik Spets",
+      "number": "82",
+      "period": "2002-06"
+    },
+    {
+      "name": "Konsta Mäkinen",
+      "number": "82",
+      "period": "2021-22"
+    },
+    {
+      "name": "Niklas Fogström",
+      "number": "82",
+      "period": "2018"
+    },
+    {
+      "name": "Cato Ørbæk",
+      "number": "83",
+      "period": "2007-12"
+    },
+    {
+      "name": "Kenneth Pappalardo",
+      "number": "83",
+      "period": "2023-"
+    },
+    {
+      "name": "Lars Erik Hesbråten",
+      "number": "85",
+      "period": "2013-19"
+    },
+    {
+      "name": "Austin Cangelosi",
+      "number": "86",
+      "period": "2023-"
+    },
+    {
+      "name": "Jonathan Hafsmoe",
+      "number": "86",
+      "period": "2018-21"
+    },
+    {
+      "name": "Tommy Johansen",
+      "number": "87",
+      "period": "2011-13"
+    },
+    {
+      "name": "André Paulsen",
+      "number": "88",
+      "period": "2001-02"
+    },
+    {
+      "name": "Andreas Hjelm",
+      "number": "88",
+      "period": "2022-"
+    },
+    {
+      "name": "Christian A. Olasveengen",
+      "number": "88",
+      "period": "2000-01"
+    },
+    {
+      "name": "Patrick Thoresen",
+      "number": "88",
+      "period": "1999-00"
+    },
+    {
+      "name": "Ján Brejčák",
+      "number": "89",
+      "period": "2021-22"
+    },
+    {
+      "name": "Peter Quenneville",
+      "number": "89",
+      "period": "2022-24"
+    },
+    {
+      "name": "Hampus Gustafsson",
+      "number": "90",
+      "period": "2015-18"
+    },
+    {
+      "name": "Jonas Djupvik Løvlie",
+      "number": "90",
+      "period": "2019-23"
+    },
+    {
+      "name": "Eirik Børresen",
+      "number": "91",
+      "period": "2009-14"
+    },
+    {
+      "name": "Joakim Andersson",
+      "number": "91",
+      "period": "1999-00"
+    },
+    {
+      "name": "Marcus Bryhnisveen",
+      "number": "91",
+      "period": "2023-"
+    },
+    {
+      "name": "Mikael Zettergren",
+      "number": "91",
+      "period": "2015-22"
+    },
+    {
+      "name": "Josh Nicholls",
+      "number": "92",
+      "period": "2022"
+    },
+    {
+      "name": "Ola Hurthi",
+      "number": "92",
+      "period": "2021"
+    },
+    {
+      "name": "Oliver Nilsgård",
+      "number": "92",
+      "period": "2025-"
+    },
+    {
+      "name": "Patrik Bäärnhielm",
+      "number": "92",
+      "period": "2014-17"
+    },
+    {
+      "name": "Chris Crane",
+      "number": "93",
+      "period": "2020"
+    },
+    {
+      "name": "Sverre Rønningen",
+      "number": "94",
+      "period": "jan. 26",
+      "sourceWarning": "SIL-arkivets HTML for denne raden er brutt; oppføringen er lest fra synlig tekst."
+    },
+    {
+      "name": "Anton Karlsson",
+      "number": "96",
+      "period": "2022-23"
+    },
+    {
+      "name": "Andreas Dahl",
+      "number": "97",
+      "period": "2021-23"
+    },
+    {
+      "name": "Håkan Åhlund",
+      "number": "97",
+      "period": "2002-04"
+    },
+    {
+      "name": "Jacob Lundell Noer",
+      "number": "98",
+      "period": "2020-24"
+    },
+    {
+      "name": "Mathias Holst Jenssen",
+      "number": "98",
+      "period": "2016"
+    }
+  ],
+  "sourceIssues": [
+    "Joachim Barmoen, nummer 24: periode mangler i SIL-arkivets tabell.",
+    "Sverre Rønningen, nummer 94: SIL-arkivets HTML er brutt og oppføringen er håndkontrollert mot den synlige teksten."
+  ]
+}
