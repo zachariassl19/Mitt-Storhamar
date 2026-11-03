@@ -19,3 +19,26 @@
 }
 .train-station-fields .segment-help { grid-column: 1 / -1; margin: 2px 0 5px; }
 @media (max-width: 420px) { .train-station-fields { grid-template-columns: 1fr; } }
+
+.train-station-fields .rail-distance-button {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 9px 12px;
+  border: 1px solid rgba(242,201,76,.5);
+  border-radius: 11px;
+  background: rgba(242,201,76,.13);
+  color: #ffe28a;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.train-station-fields .rail-distance-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.train-station-fields .rail-distance-success { color: #9fe7bc; }
+.train-station-fields .rail-distance-error { color: #ffbbc3; }
