@@ -165,3 +165,18 @@
   .game-feature-tag { font-size: 6.5px !important; }
   .game-filter-bar button { font-size: 10px; }
 }
+
+/* Keep attendance confirmation prominent, including special-event cards. */
+.full-game-card.status-attended.event-chl,
+.full-game-card.status-attended.event-classic,
+.full-game-card.status-attended.event-rivalry {
+  border-color: #46bf88;
+  box-shadow: inset 4px 0 0 #35b979, 0 14px 35px rgba(0,0,0,.18);
+}
+
+.past-attendance-buttons button.selected.yes {
+  background: #167b51;
+  border-color: #6adca2;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(106,220,162,.28);
+}
