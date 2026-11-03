@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { historyArchive } from './catalog'
-import { careerTotalForName, careerTotals } from './careerTotals'
+import { careerTotalForName, careerTotals, careerStatDiscrepancies, careerNamesRepeated } from './careerTotals'
 import { historyAuditSummary, linkedSeasonJerseys, seasonAudit, seasonHistoryCoverage } from './coverageAudit'
 import { coachTerms, captainTerms, leadersForSeason } from './leadershipChronology'
 import { numberIndex } from './numberIndex'
@@ -49,13 +49,15 @@ describe('Storhamar historical source control', () => {
     }
   })
 
-  it('keeps the 30 documented career tables as historical snapshots, not live statistics', () => {
-    expect(careerTotals).toHaveLength(30)
+  it('keeps the full 455-row SIL archive table as historical snapshots, not live statistics', () => {
+    expect(careerTotals).toHaveLength(455)
     const pal = careerTotalForName('Pål Johnsen')
     expect(pal).toMatchObject({games:963,goals:286,assists:585,points:871})
     expect(careerTotalForName('Erik Kristiansen')?.points).toBe(915)
     expect(careerTotalForName('Eirik Skadsdammen')?.games).toBe(907)
-    expect(careerTotals.every((entry)=>entry.goals+entry.assists===entry.points)).toBe(true)
+    expect(careerStatDiscrepancies).toHaveLength(5)
+    expect(careerNamesRepeated).toContain('Bjørn Stenberg')
+    expect(careerTotalForName('Bjørn Stenberg')).toBeUndefined()
   })
 
   it('makes all historic jersey numbers searchable without claiming the imported player list is complete', () => {
