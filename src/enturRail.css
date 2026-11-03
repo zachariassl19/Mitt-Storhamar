@@ -1,0 +1,21 @@
+
+.train-station-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-column: 1 / -1;
+  gap: 9px;
+  margin-bottom: 4px;
+}
+.train-station-fields > label > span { display: block; margin-bottom: 5px; }
+.train-station-fields input {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 9px;
+  background: #071b38;
+  border: 1px solid rgba(255,255,255,.13);
+  color: #eff5ff;
+  border-radius: 10px;
+}
+.train-station-fields .segment-help { grid-column: 1 / -1; margin: 2px 0 5px; }
+@media (max-width: 420px) { .train-station-fields { grid-template-columns: 1fr; } }
