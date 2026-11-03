@@ -36,6 +36,7 @@ export function HistoryAuditPage({ back, openSeason }: { back: () => void; openS
       <div><strong>{historyAuditSummary.seasonsWithFullLeagueTotals}</strong><span>Med fulle tabelltall</span></div>
       <div><strong>{historyAuditSummary.seasonsWithImageSources}</strong><span>Med bildekilder</span></div>
       <div><strong>{historyAuditSummary.archiveEntriesPartial}</strong><span>Arkivoppføringer delvis dokumentert</span></div>
+      <div><strong>{historyAuditSummary.careerStatisticRows}</strong><span>Historiske karriererader</span></div>
     </div>
     <p className="ha-topic-note">Det finnes {historyAuditSummary.archiveEntries} historiske oppføringer i appen. {historyAuditSummary.archiveEntriesWithImages} har én eller flere bildekilder. Tallene betyr registrert innhold, ikke at eksterne bilde-URL-er er kontrollert eller at alle sesongens kamper er importert.</p>
     <h2>Sesong for sesong</h2>
