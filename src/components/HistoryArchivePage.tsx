@@ -401,7 +401,7 @@ export function HistoryArchivePage() {
       </div>
       <div className="ha-stats">
         <div><strong>1957</strong><span>Storhamarbana</span></div>
-        <div><strong>69</strong><span>Ferdigspilte sesonger</span></div>
+        <div><strong>69</strong><span>Historiske sesonger</span></div>
         <div><strong>10</strong><span>NM-gull</span></div>
         <div><strong>11</strong><span>Seriemesterskap</span></div>
       </div>
