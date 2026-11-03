@@ -2,6 +2,7 @@ import { historyArchive } from './catalog'
 import { leadersForSeason } from './leadershipChronology'
 import { careerTotals, careerStatDiscrepancies, careerNamesRepeated } from './careerTotals'
 import { documentedNumberRows, officialNumberSourceIssues } from './numberIndex'
+import { seasonIndexEntries } from './seasonSourceIndex'
 import type { ArchiveBase, ArchiveSeason } from './types'
 
 /**
@@ -73,6 +74,7 @@ const entities: ArchiveBase[] = [
 
 export const historyAuditSummary = {
   totalSeasons: seasonAudit.length,
+  seasonIndexSourceRows: seasonIndexEntries.length,
   seasonsWithRosters: seasonAudit.filter((season)=>season.documentedRoster>0).length,
   seasonsWithFullLeagueTotals: seasonAudit.filter((season)=>season.hasFullLeagueTotals).length,
   seasonsWithJerseys: seasonAudit.filter((season)=>season.jerseyCount>0).length,
