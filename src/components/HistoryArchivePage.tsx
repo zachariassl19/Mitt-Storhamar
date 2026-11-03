@@ -326,9 +326,9 @@ export function HistoryArchivePage() {
   const [visibleCount, setVisibleCount] = useState(24)
 
   const sectionInfo = historyCategories.find((category) => category.id === section)
-  const allItems = useMemo(() => isBrowsableKind(section) ? archiveItems(section) : [], [section])
+  const allItems = useMemo(() => section !== 'overview' && isBrowsableKind(section) ? archiveItems(section) : [], [section])
   const matches = useMemo(() => {
-    if (!isBrowsableKind(section)) return []
+    if (section === 'overview' || !isBrowsableKind(section)) return []
     const kind = section
     const filtered = allItems.filter((item) => {
       if (!matchesArchiveSearch(item, query)) return false
