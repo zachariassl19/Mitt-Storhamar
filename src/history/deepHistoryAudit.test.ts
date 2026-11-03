@@ -3,7 +3,7 @@ import { historyArchive } from './catalog'
 import { careerTotalForName, careerTotals, careerStatDiscrepancies, careerNamesRepeated } from './careerTotals'
 import { historyAuditSummary, linkedSeasonJerseys, seasonAudit, seasonHistoryCoverage } from './coverageAudit'
 import { coachTerms, captainTerms, leadersForSeason } from './leadershipChronology'
-import { numberIndex } from './numberIndex'
+import { numberIndex, documentedNumberRows, officialNumberSourceIssues } from './numberIndex'
 import { archiveRelationships } from './archiveExplorer'
 
 describe('Storhamar historical source control', () => {
@@ -60,10 +60,13 @@ describe('Storhamar historical source control', () => {
     expect(careerTotalForName('Bjørn Stenberg')).toBeUndefined()
   })
 
-  it('makes all historic jersey numbers searchable without claiming the imported player list is complete', () => {
+  it('imports all 487 documented number usages and keeps both source anomalies', () => {
     expect(numberIndex).toHaveLength(98)
+    expect(documentedNumberRows).toHaveLength(487)
+    expect(officialNumberSourceIssues).toHaveLength(2)
     expect(numberIndex[0].number).toBe('01')
     expect(numberIndex.at(-1)?.number).toBe('98')
     expect(numberIndex.find((row)=>row.number==='08')?.holders.some((person)=>person.name==='Eirik Skadsdammen')).toBe(true)
+    expect(numberIndex.find((row)=>row.number==='94')?.holders.some((person)=>person.name==='Sverre Rønningen')).toBe(true)
   })
 })
