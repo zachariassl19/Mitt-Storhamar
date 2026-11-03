@@ -555,10 +555,36 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
   onUpdate: (patch: Partial<TripLeg>) => void
 }) {
   const [open, setOpen] = useState(false)
+  const [trainCalculating, setTrainCalculating] = useState(false)
+  const [trainMessage, setTrainMessage] = useState('')
+  const [trainError, setTrainError] = useState('')
   const cost = legCost(leg, carSettings)
   const manualCost = leg.transport !== 'car' && leg.transport !== 'walk' && leg.transport !== 'bike'
   const automatic = canAutoRoute(leg.transport) || leg.transport === 'train'
   const train = leg.transport === 'train'
+  const fromStation = leg.trainFromStation ?? (isNamedTrainStation(leg.fromName) ? leg.fromName : '')
+  const toStation = leg.trainToStation ?? (isNamedTrainStation(leg.toName) ? leg.toName : '')
+
+  async function calculateTrainOnly() {
+    if (!train || trainCalculating) return
+    setTrainError('')
+    setTrainMessage('')
+    if (!fromStation.trim() || !toStation.trim()) {
+      setTrainError('Fyll inn både «Fra togstasjon» og «Til togstasjon» først.')
+      return
+    }
+
+    setTrainCalculating(true)
+    try {
+      const result = await calculateTrainRailDistance(fromStation, toStation)
+      onUpdate({ km: result.km })
+      setTrainMessage(`${result.km} km hentet fra Entur. Husk å lagre hele kampdagen nederst.`)
+    } catch (error) {
+      setTrainError(error instanceof Error ? error.message : 'Kunne ikke hente togkilometer.')
+    } finally {
+      setTrainCalculating(false)
+    }
+  }
 
   return (
     <div className="route-segment">
@@ -584,14 +610,24 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
               <label><span>Fra togstasjon</span><input
                 value={leg.trainFromStation ?? (isNamedTrainStation(leg.fromName) ? leg.fromName : '')}
                 placeholder="f.eks. Stange stasjon"
-                onChange={(event) => onUpdate({ trainFromStation: event.target.value, km: null })}
+                onChange={(event) => { setTrainMessage(''); setTrainError(''); onUpdate({ trainFromStation: event.target.value, km: null }) }}
               /></label>
               <label><span>Til togstasjon</span><input
                 value={leg.trainToStation ?? (isNamedTrainStation(leg.toName) ? leg.toName : '')}
                 placeholder="f.eks. Halden stasjon"
-                onChange={(event) => onUpdate({ trainToStation: event.target.value, km: null })}
+                onChange={(event) => { setTrainMessage(''); setTrainError(''); onUpdate({ trainToStation: event.target.value, km: null }) }}
               /></label>
-              <p className="segment-help">Skriv stasjonsnavn, ikke «Hjem». Trykk «Beregn ruten» for togkilometer fra Entur. Togtid kan fylles inn manuelt. Stasjonsnavnene lagres med reisen.</p>
+              <button
+                type="button"
+                className="rail-distance-button"
+                onClick={() => void calculateTrainOnly()}
+                disabled={trainCalculating || !fromStation.trim() || !toStation.trim()}
+              >
+                <Navigation size={15} /> {trainCalculating ? 'Henter togkilometer…' : 'Hent tog-km fra Entur'}
+              </button>
+              {trainMessage && <p className="segment-help rail-distance-success" role="status">{trainMessage}</p>}
+              {trainError && <p className="segment-help rail-distance-error" role="alert">{trainError}</p>}
+              <p className="segment-help">Togstrekningen må gå mellom to stasjoner, ikke til «Hjem». Togtid kan fylles inn manuelt. Stasjonsnavnene lagres med reisen.</p>
             </div>
           )}
           <label><span>Km {automatic ? (train ? '(Entur)' : '(Google)') : ''}</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
