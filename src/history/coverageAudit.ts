@@ -1,5 +1,6 @@
 import { historyArchive } from './catalog'
 import { leadersForSeason } from './leadershipChronology'
+import { careerTotals, careerStatDiscrepancies, careerNamesRepeated } from './careerTotals'
 import type { ArchiveBase, ArchiveSeason } from './types'
 
 /**
@@ -76,12 +77,15 @@ export const historyAuditSummary = {
   seasonsWithJerseys: seasonAudit.filter((season)=>season.jerseyCount>0).length,
   seasonsWithImageSources: seasonAudit.filter((season)=>season.hasImageReference).length,
   seasonsWithoutOpenIssues: seasonAudit.filter((season)=>season.issues.length===0).length,
+  careerStatisticRows: careerTotals.length,
+  careerSourceDiscrepancies: careerStatDiscrepancies.length,
+  careerRepeatedNames: careerNamesRepeated.length,
   archiveEntries: entities.length,
   archiveEntriesWithImages: entities.filter((entry)=>entry.media.length>0).length,
   archiveEntriesPartial: entities.filter((entry)=>entry.completeness !== 'verified').length,
   currentNotImported: [
     'Komplette kampfakta og resultatlister er ikke importert kamp for kamp fra alle 69 sesonger.',
-    'Alumni i SIL-arkivet omfatter over 300 spillere; en oppføring i Mitt Storhamar er ikke bevis på fullstendig karrierestatistikk.',
+    'SIL-arkivets samlede adelskalender er hentet inn. Fullstendige kamp- og sesongtall per spiller er fortsatt ikke importert.',
     '2020/21 er en historisk ufullført sesong og kan aldri merkes som ferdigspilt.',
     'Et historisk bilde i arkivet kan være en ekstern lenke; bildeadressen er ikke automatisk kontrollert for tilgjengelighet.',
   ],
