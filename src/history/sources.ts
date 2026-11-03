@@ -6,6 +6,7 @@ import type { ArchiveSource } from './types'
 // 3. Redaksjonelle kilder (f.eks. TV 2 Hockey, HA, VG) brukes når de tilfører dokumentert kontekst som primærkildene ikke dekker.
 // Ved reell kildekonflikt skal konflikten merkes i innholdet; vi skal ikke velge et tall eller en versjon uten forklaring.
 export const historySources: ArchiveSource[] = [
+  { id:'storhamar-chl-2025', title:'Storhamar Hockey – CHL-draktene 2025/26', url:'https://www.sil.no/chl-draktene-lansert/', publisher:'Storhamar Hockey', primary:true, note:'Offisiell lansering 27. juli 2025 av hjemmedrakt og bortedrakt for Champions Hockey League.' },
   {
     id: 'silarkivet',
     title: 'SIL-arkivet',
