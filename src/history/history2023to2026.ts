@@ -60,7 +60,7 @@ export const seasons2023To2026: ArchiveSeason[] = [
     standings: [{ competition: 'EHL', position: 1, note: 'Seriemester' }],
     playoffSummary: 'Norgesmester. Lillehammer 4–0, Stavanger Oilers 4–1 og Frisk Asker 4–2 i kamper.',
     topScorers: [{ personId: 'player-jacob-berglund', points: 70, note: 'SIL-arkivets samlede sesongoversikt.' }],
-    honourIds: ['honour-2026-league', 'honour-2026-nm'], jerseyIds: [], arenaIds: [olAmfiId], notableMomentIds: ['timeline-2026-patrick-number-41', 'timeline-2026-league', 'timeline-2026-tenth-nm'], lastVerifiedAt: verifiedAt,
+    honourIds: ['honour-2026-league', 'honour-2026-nm'], jerseyIds: ['jersey-2025-26-series','jersey-2025-preseason-hamar','jersey-2025-pink-cancer','jersey-2025-hockey-classic','jersey-2025-26-chl-home','jersey-2025-26-chl-away'], arenaIds: [olAmfiId], notableMomentIds: ['timeline-2026-patrick-number-41', 'timeline-2026-league', 'timeline-2026-tenth-nm'], lastVerifiedAt: verifiedAt,
   },
 ]
 
