@@ -27,4 +27,12 @@ jobs:
           for (const root of ['https://api.entur.io/geocoder/v3/autocomplete?q=Stange','https://api.entur.io/distance/stop-place-distances/NSR:StopPlace:708/NSR:StopPlace:192']) {
             await probe(root,'OPTIONS',{Origin:'https://zachariassl19.github.io','Access-Control-Request-Method':'GET','Access-Control-Request-Headers':'et-client-name,accept'});
           }
+
+          for (const id of ['NSR:StopPlace:60053','NSR:StopPlace:192']) {
+            for (const org of [1,2,3,5]) {
+              const base='https://api.entur.io/distance/stop-place-distances/NSR:StopPlace:708/'+id+'?organisationId='+org;
+              await probe(base,'GET', {...headers, Accept:'application/json'});
+            }
+          }
+          await probe('https://api.entur.io/geocoder/v3/autocomplete?q=Halden+stasjon&layers=stopPlace&stopPlaceTypes=railStation&multimodal=child&limit=10','GET',headers);
           NODE
