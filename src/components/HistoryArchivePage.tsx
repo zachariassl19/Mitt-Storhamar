@@ -9,6 +9,7 @@ import { historyArchive, historyCategories } from '../history/catalog'
 import { leadersForSeason, coachChronologySource, captainChronologySource } from '../history/leadershipChronology'
 import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageAudit'
 import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
+import { numberIndex } from '../history/numberIndex'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import {
   archiveItem, archiveItems, archiveRelationships, entryYear, historyChapters,
@@ -187,6 +188,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
   if (kind === 'player' || kind === 'legend') {
     const person = item as ArchivePerson & Partial<ArchiveLegend>
     const careerTotal = careerTotalForName(person.fullName)
+    const officialNumbers = numberIndex.flatMap((row) => row.holders.filter((holder) => holder.name === person.fullName).map((holder)=>({number:row.number,period:holder.period})))
     return <>
       {careerTotal && <section className="ha-person-stats">
         <span className="ha-kicker">KARRIERETALL · SIL-ARKIVET</span>
@@ -202,7 +204,8 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
       <div className="ha-fact-list">
       {person.position && <div><span>Posisjon</span><strong>{person.position}</strong></div>}
       {person.nationality && <div><span>Nasjonalitet</span><strong>{person.nationality}</strong></div>}
-      {person.shirtNumbers && person.shirtNumbers.length > 0 && <div><span>Draktnummer</span><strong>{person.shirtNumbers.join(', ')}</strong></div>}
+      {officialNumbers.length > 0 && <div><span>Dokumenterte draktnummer</span><strong>{officialNumbers.map((item)=>'#'+item.number+(item.period ? ' ('+item.period+')' : '')).join(', ')}</strong></div>}
+      {officialNumbers.length === 0 && person.shirtNumbers && person.shirtNumbers.length > 0 && <div><span>Draktnummer i spillerprofil</span><strong>{person.shirtNumbers.join(', ')}</strong></div>}
       {person.honouredNumber && <div><span>Hedret nummer</span><strong>#{person.honouredNumber}</strong></div>}
       {person.honouredAt && <div><span>Hedret</span><strong>{person.honouredAt}</strong></div>}
       {person.roles && person.roles.length > 0 && <div><span>Roller</span><strong>{person.roles.join(', ')}</strong></div>}
