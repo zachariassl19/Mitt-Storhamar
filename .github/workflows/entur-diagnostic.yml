@@ -1,0 +1,30 @@
+name: Entur diagnostic (temporary)
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe public Entur endpoints and browser CORS
+        run: |
+          node <<'NODE'
+          const headers = {'ET-Client-Name': 'mittstorhamar-supporterapp'};
+          async function probe(url, method='GET', customHeaders=headers) {
+            try {
+              const r = await fetch(url, {method, headers:customHeaders, signal:AbortSignal.timeout(15000)});
+              const body = await r.text();
+              console.log(JSON.stringify({url,method,status:r.status,body:body.slice(0,2400),cors:r.headers.get('access-control-allow-origin'),allowHeaders:r.headers.get('access-control-allow-headers')},null,2));
+              return {r,body}
+            } catch(e) {console.log(JSON.stringify({url,method,error:String(e)})); return null}
+          }
+          for (const station of ['Stange','Stange stasjon','Halden','Halden stasjon']) {
+            const params=new URLSearchParams({q:station,lang:'no',layers:'stopPlace',limit:'10'});
+            await probe('https://api.entur.io/geocoder/v3/autocomplete?'+params);
+          }
+          await probe('https://api.entur.io/distance/stop-place-distances/NSR:StopPlace:708/NSR:StopPlace:192','GET', {...headers, Accept:'application/json'});
+          for (const root of ['https://api.entur.io/geocoder/v3/autocomplete?q=Stange','https://api.entur.io/distance/stop-place-distances/NSR:StopPlace:708/NSR:StopPlace:192']) {
+            await probe(root,'OPTIONS',{Origin:'https://zachariassl19.github.io','Access-Control-Request-Method':'GET','Access-Control-Request-Headers':'et-client-name,accept'});
+          }
+          NODE
