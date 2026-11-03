@@ -196,3 +196,33 @@
   border-color: #e76f79;
   box-shadow: inset 4px 0 0 #cc4052, 0 14px 35px rgba(0,0,0,.18);
 }
+
+/* Travel registration is independent of the green Ja / red Nei attendance choice. */
+.past-trip-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 24px);
+  min-height: 37px;
+  margin: 0 12px 9px;
+  padding: 8px 11px;
+  border: 1px solid;
+  border-radius: 11px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.past-trip-status span { flex: 1; }
+.past-trip-status.saved {
+  color: #a3ecc4;
+  background: rgba(41, 160, 98, .12);
+  border-color: rgba(95, 208, 145, .3);
+}
+.past-trip-status.missing {
+  color: #ffe19c;
+  background: rgba(222, 161, 50, .1);
+  border-color: rgba(237, 183, 85, .3);
+}
+.past-trip-status svg { flex-shrink: 0; }
+.past-trip-status:hover { filter: brightness(1.1); }
