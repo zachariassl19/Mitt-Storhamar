@@ -1,6 +1,7 @@
 import { historyArchive } from './catalog'
 import { leadersForSeason } from './leadershipChronology'
 import { careerTotals, careerStatDiscrepancies, careerNamesRepeated } from './careerTotals'
+import { documentedNumberRows, officialNumberSourceIssues } from './numberIndex'
 import type { ArchiveBase, ArchiveSeason } from './types'
 
 /**
@@ -80,6 +81,8 @@ export const historyAuditSummary = {
   careerStatisticRows: careerTotals.length,
   careerSourceDiscrepancies: careerStatDiscrepancies.length,
   careerRepeatedNames: careerNamesRepeated.length,
+  numberHistoryRows: documentedNumberRows.length,
+  numberSourceIssues: officialNumberSourceIssues.length,
   archiveEntries: entities.length,
   archiveEntriesWithImages: entities.filter((entry)=>entry.media.length>0).length,
   archiveEntriesPartial: entities.filter((entry)=>entry.completeness !== 'verified').length,
