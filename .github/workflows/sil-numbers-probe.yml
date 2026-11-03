@@ -1,0 +1,35 @@
+name: SIL jersey numbers data probe
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Capture SIL archived jersey numbers
+        run: |
+          node <<'NODE'
+          const url='https://silarkivet.no/tidslinje/nummerhistorikk/';
+          const response=await fetch(url,{headers:{'User-Agent':'Mitt-Storhamar-Historical-Source-Audit/1.0'}});
+          if(!response.ok)throw Error('SIL HTTP '+response.status);
+          const html=await response.text();
+          function clean(s) {
+            return s.replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ')
+              .replace(/&amp;/g,'&').replace(/&#(\d+);/g,(_,v)=>String.fromCharCode(Number(v)))
+              .replace(/\s+/g,' ').trim();
+          }
+          const rows=[];
+          const outliers=[];
+          for(const tr of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)){
+            const cols=[...tr[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map(m=>clean(m[1]));
+            if(cols.length!==3) {if(cols.length>0)outliers.push(cols);continue;}
+            const [name,num,period]=cols;
+            const number=Number(num);
+            if(number<1||number>98||!Number.isInteger(number)||!name)continue;
+            rows.push({name,number:String(number).padStart(2,'0'),period});
+          }
+          console.log('HTML chars: '+html.length+' numberRows='+rows.length+' outliers='+JSON.stringify(outliers.slice(0,8)));
+          console.log('examples '+JSON.stringify(rows.slice(0,4))+' last '+JSON.stringify(rows.slice(-4)));
+          if(rows.length<300 || !rows.some(r=>r.name==='Eirik Skadsdammen'&&r.number==='08'))throw Error('Number page parser incomplete');
+          console.log('SIL_NUMBERS_BEGIN'+JSON.stringify({source:url,asOf:'2026-11-03',entries:rows,unparsed:outliers})+'SIL_NUMBERS_END');
+          NODE
