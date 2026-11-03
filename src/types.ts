@@ -53,6 +53,9 @@ export interface TripLeg {
   transport: TransportMode
   km?: number | null
   durationMinutes?: number | null
+  /** Explicit station endpoints for rail trips such as Stange → Hjem. */
+  trainFromStation?: string
+  trainToStation?: string
   estimatedCost?: number | null
   actualCost?: number | null
 }
