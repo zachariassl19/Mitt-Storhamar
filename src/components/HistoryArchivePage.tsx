@@ -10,6 +10,7 @@ import { leadersForSeason, coachChronologySource, captainChronologySource } from
 import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageAudit'
 import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
 import { numberIndex } from '../history/numberIndex'
+import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import {
   archiveItem, archiveItems, archiveRelationships, entryYear, historyChapters,
@@ -110,6 +111,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
     const season = item as ArchiveSeason
     const leadership = leadersForSeason(season.startYear)
     const coverage = seasonHistoryCoverage(season)
+    const silSeason = officialSeasonIndex(season.id)
     const coaches = [...new Set([...season.coaches, ...leadership.coaches.map((term)=>term.name)])]
     const captains = [...new Set([...season.captains, ...leadership.captains.map((term)=>term.name)])]
     return <>
@@ -120,6 +122,19 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
         {season.playoffSummary && <div><span>Sluttspill</span><strong>{season.playoffSummary}</strong></div>}
         {season.europeSummary && <div><span>Europa</span><strong>{season.europeSummary}</strong></div>}
       </div>
+      {silSeason && <section className="ha-season-sil-source ha-block">
+        <span className="ha-kicker">SIL-ARKIVETS OPPSUMMERING</span>
+        <h3>Sesongen {season.displayName}</h3>
+        <div className="ha-fact-list">
+          {silSeason.placement && <div><span>Tabellplassering</span><strong>{silSeason.placement}</strong></div>}
+          {silSeason.postSeason && <div><span>Sluttspill / kvalifisering</span><strong>{silSeason.postSeason}</strong></div>}
+          {silSeason.leadingPlayer && <div><span>Poengkonge / toppscorer</span><strong>{silSeason.leadingPlayer}</strong></div>}
+          {silSeason.leadingStatistic && <div><span>Registrert statistikk</span><strong>{silSeason.leadingStatistic}</strong></div>}
+          {silSeason.averageAttendance && <div><span>Publikumssnitt (SIL-indeks)</span><strong>{silSeason.averageAttendance}</strong></div>}
+        </div>
+        <p>Dette er den historiske sesongindeksens tall og formuleringer, ikke en fullstendig kamp-for-kamp-statistikk. Et målmerket tall (m) må ikke forveksles med poeng (p).</p>
+        <a className="ha-source-link" href={silSeason.sourceUrl || officialSeasonIndexSource} target="_blank" rel="noopener noreferrer">Åpne sesongens dokumentasjon i SIL-arkivet <ExternalLink size={15}/></a>
+      </section>}
       {(leadership.coaches.length>0 || leadership.captains.length>0) && <div className="ha-role-source-note">Trener-/kapteinoversiktene følger SIL-arkivets periodeangivelser. Trenerbytter midt i en sesong kan gi flere navn. <a href={coachChronologySource} target="_blank" rel="noopener noreferrer">Trenere</a> · <a href={captainChronologySource} target="_blank" rel="noopener noreferrer">Kapteiner</a></div>}
       <section className="ha-season-audit-inline">
         <strong>Dokumentasjonsstatus</strong>
