@@ -26,14 +26,18 @@ export function archiveItem(kind: BrowsableKind, id: string): ArchiveBase | unde
   return archiveItems(kind).find((item) => item.id === id)
 }
 
+export function normalizedSearchText(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('nb-NO').replace(/ø/g, 'o').replace(/æ/g, 'ae').replace(/å/g, 'a')
+}
+
 export function searchableText(item: ArchiveBase): string {
   const more = 'fullName' in item && typeof item.fullName === 'string' ? item.fullName : ''
-  return [item.title, item.summary ?? '', ...(item.tags ?? []), more]
-    .join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO')
+  return normalizedSearchText([item.title, item.summary ?? '', ...(item.tags ?? []), more].join(' '))
 }
 
 export function matchesArchiveSearch(item: ArchiveBase, query: string): boolean {
-  const clean = query.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO')
+  const clean = normalizedSearchText(query.trim())
   return clean === '' || clean.split(/\s+/).every((word) => searchableText(item).includes(word))
 }
 
