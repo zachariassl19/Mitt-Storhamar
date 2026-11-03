@@ -1,7 +1,6 @@
 import type { ArchiveJersey, ArchiveMedia } from './types'
 
 const seasonId = 'season-2025-26'
-const official = 'https://www.sil.no/chl-draktene-lansert/'
 const kitArchive = 'https://thekitarchive.com/hockey/storhamar-2025-26-jerseys/'
 const verifiedAt = '2026-11-03'
 
@@ -26,7 +25,7 @@ export const jerseys2025Chl: ArchiveJersey[] = [
       'Storhamar Hockey presenterte draktene 27. juli 2025 før hjemmekampene mot Eisbären Berlin og Sparta Praha.',
       'CHL stilte krav til mørk hjemmedrakt. Storhamar valgte derfor et design i gult og blått med en tydelig klubbidentitet. Draktene var eksklusive for Europa-turneringen og ble produsert etter CHLs maler.',
     ],
-    completeness: 'verified', sources: ['storhamar-official', 'silarkivet'],
+    completeness: 'verified', sources: ['storhamar-chl-2025', 'silarkivet'],
     media: [image(
       'media-2025-26-chl-home',
       'https://thekitarchive.com/hockey/image/2025/08/09/J4lbAILmEEl0YtL/storhamar-2025-26-european-home-1-jersey.jpg',
@@ -49,7 +48,7 @@ export const jerseys2025Chl: ArchiveJersey[] = [
       'Den hvite bortedrakten for CHL 2025/26 ble presentert sammen med det mørkeblå hjemmesettet 27. juli 2025.',
       'Storhamar Hockey beskrev hvitt som den foretrukne lyse fargen under CHL-reglene og valgte denne fargen for å gjøre noe annerledes. Blå og gule detaljer sørget for å bevare klubbidentiteten.',
     ],
-    completeness: 'verified', sources: ['storhamar-official', 'silarkivet'],
+    completeness: 'verified', sources: ['storhamar-chl-2025', 'silarkivet'],
     media: [image(
       'media-2025-26-chl-away',
       'https://thekitarchive.com/image/2025/08/09/cFjT7cYEAN58nYM/storhamar-2025-26-european-away-1-jersey.jpg',
@@ -65,6 +64,4 @@ export const jerseys2025Chl: ArchiveJersey[] = [
   },
 ]
 
-// Primary source for both variants: https://www.sil.no/chl-draktene-lansert/
-// The image documentation is credited separately above.
-void official
+// Original photos are attributed to Hockey Jersey Archive in each media record.
