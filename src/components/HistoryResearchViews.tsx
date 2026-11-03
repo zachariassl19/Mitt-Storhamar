@@ -31,6 +31,7 @@ export function HistoryAuditPage({ back, openSeason }: { back: () => void; openS
     </div></div>
     <div className="ha-audit-grid">
       <div><strong>{historyAuditSummary.totalSeasons}</strong><span>Sesonger registrert</span></div>
+      <div><strong>{historyAuditSummary.seasonIndexSourceRows}</strong><span>Sesonger med SIL-indeks</span></div>
       <div><strong>{historyAuditSummary.seasonsWithRosters}</strong><span>Med spillerstall</span></div>
       <div><strong>{historyAuditSummary.seasonsWithJerseys}</strong><span>Med draktkobling</span></div>
       <div><strong>{historyAuditSummary.seasonsWithFullLeagueTotals}</strong><span>Med fulle tabelltall</span></div>
