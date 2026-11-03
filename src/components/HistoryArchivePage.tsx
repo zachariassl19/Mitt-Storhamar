@@ -6,6 +6,10 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { historyArchive, historyCategories } from '../history/catalog'
+import { leadersForSeason, coachChronologySource, captainChronologySource } from '../history/leadershipChronology'
+import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageAudit'
+import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
+import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import {
   archiveItem, archiveItems, archiveRelationships, entryYear, historyChapters,
   isBrowsableKind, matchesArchiveSearch, sourceRoleLists,
@@ -17,7 +21,7 @@ import type {
   ArchiveTimelineEvent, ArchiveArena, ArchiveLegend,
 } from '../history/types'
 
-type Section = 'overview' | ArchiveEntityKind
+type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | ArchiveEntityKind
 type Selection = { kind: BrowsableKind; id: string }
 type ImageTarget = { media: ArchiveMedia; caption: string } | null
 type SortOrder = 'newest' | 'oldest' | 'alpha'
@@ -59,8 +63,8 @@ function imageFor(kind: BrowsableKind, item: ArchiveBase): ArchiveMedia | undefi
   if (own) return own
   if (kind === 'season') {
     const season = item as ArchiveSeason
-    for (const id of season.jerseyIds) {
-      const photo = (archiveItem('jersey', id) as ArchiveJersey | undefined)?.media.find((media) => media.src)
+    for (const jersey of linkedSeasonJerseys(season)) {
+      const photo = jersey.media.find((media) => media.src)
       if (photo) return photo
     }
   }
@@ -103,14 +107,24 @@ function HistoryPicture({ media, onOpen, compact = false }: {
 function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: ArchiveBase; openItem: (kind: BrowsableKind, id: string) => void }) {
   if (kind === 'season') {
     const season = item as ArchiveSeason
+    const leadership = leadersForSeason(season.startYear)
+    const coverage = seasonHistoryCoverage(season)
+    const coaches = [...new Set([...season.coaches, ...leadership.coaches.map((term)=>term.name)])]
+    const captains = [...new Set([...season.captains, ...leadership.captains.map((term)=>term.name)])]
     return <>
       <div className="ha-fact-list">
         {season.competitions.length > 0 && <div><span>Turneringer</span><strong>{season.competitions.join(', ')}</strong></div>}
-        {season.coaches.length > 0 && <div><span>Trenere</span><strong>{season.coaches.join(', ')}</strong></div>}
-        {season.captains.length > 0 && <div><span>Kapteiner</span><strong>{season.captains.join(', ')}</strong></div>}
+        {coaches.length > 0 && <div><span>Trenere</span><strong>{coaches.join(', ')}</strong></div>}
+        {captains.length > 0 && <div><span>Kapteiner</span><strong>{captains.join(', ')}</strong></div>}
         {season.playoffSummary && <div><span>Sluttspill</span><strong>{season.playoffSummary}</strong></div>}
         {season.europeSummary && <div><span>Europa</span><strong>{season.europeSummary}</strong></div>}
       </div>
+      {(leadership.coaches.length>0 || leadership.captains.length>0) && <div className="ha-role-source-note">Trener-/kapteinoversiktene følger SIL-arkivets periodeangivelser. Trenerbytter midt i en sesong kan gi flere navn. <a href={coachChronologySource} target="_blank" rel="noopener noreferrer">Trenere</a> · <a href={captainChronologySource} target="_blank" rel="noopener noreferrer">Kapteiner</a></div>}
+      <section className="ha-season-audit-inline">
+        <strong>Dokumentasjonsstatus</strong>
+        <p>{coverage.documentedRoster} spillere registrert · {coverage.jerseyCount} drakter koblet · {coverage.hasImageReference ? 'Bildekilde finnes' : 'Mangler bildekilde'}</p>
+        {coverage.issues.length > 0 && <details><summary>Hva mangler for denne sesongen? ({coverage.issues.length})</summary>{coverage.issues.map((issue)=><p key={issue}>• {issue}</p>)}</details>}
+      </section>
       {season.standings.length > 0 && <section className="ha-block">
         <h3>Tabell og seriespill</h3>
         <div className="ha-standings">{season.standings.map((row, index) => (
@@ -172,7 +186,20 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
   }
   if (kind === 'player' || kind === 'legend') {
     const person = item as ArchivePerson & Partial<ArchiveLegend>
-    return <div className="ha-fact-list">
+    const careerTotal = careerTotalForName(person.fullName)
+    return <>
+      {careerTotal && <section className="ha-person-stats">
+        <span className="ha-kicker">KARRIERETALL · SIL-ARKIVET</span>
+        <div className="ha-person-stat-grid">
+          <div><strong>{careerTotal.games}</strong><span>Kamper</span></div>
+          <div><strong>{careerTotal.goals}</strong><span>Mål</span></div>
+          <div><strong>{careerTotal.assists}</strong><span>Assist</span></div>
+          <div><strong>{careerTotal.points}</strong><span>Poeng</span></div>
+        </div>
+        <p>{careerTotal.seasons} sesonger · {careerTotal.penaltyMinutes} utvisningsminutter · tall til og med 2025/26.</p>
+        <a href={careerTotalsSource} target="_blank" rel="noopener noreferrer">Kilde: SIL-arkivets adelskalender <ExternalLink size={13}/></a>
+      </section>}
+      <div className="ha-fact-list">
       {person.position && <div><span>Posisjon</span><strong>{person.position}</strong></div>}
       {person.nationality && <div><span>Nasjonalitet</span><strong>{person.nationality}</strong></div>}
       {person.shirtNumbers && person.shirtNumbers.length > 0 && <div><span>Draktnummer</span><strong>{person.shirtNumbers.join(', ')}</strong></div>}
@@ -181,6 +208,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
       {person.roles && person.roles.length > 0 && <div><span>Roller</span><strong>{person.roles.join(', ')}</strong></div>}
       {person.storhamarPeriods && person.storhamarPeriods.length > 0 && <div><span>Storhamar-perioder</span><strong>{person.storhamarPeriods.map((period) => [period.fromSeasonId?.replace('season-', ''), period.toSeasonId?.replace('season-', '')].filter(Boolean).join('–')).join(', ')}</strong></div>}
     </div>
+    </>
   }
   if (kind === 'arena') {
     const arena = item as ArchiveArena
@@ -405,6 +433,11 @@ export function HistoryArchivePage() {
         <div><strong>10</strong><span>NM-gull</span></div>
         <div><strong>11</strong><span>Seriemesterskap</span></div>
       </div>
+      <div className="ha-extra-actions">
+        <button onClick={()=>goSection('audit')}><Shield size={17}/><span><strong>Kildekontroll</strong><small>Hva mangler i de 69 sesongene?</small></span><ChevronRight size={16}/></button>
+        <button onClick={()=>goSection('numbers')}><Shirt size={17}/><span><strong>Draktnummer 01–98</strong><small>Søk i nummerhistorien</small></span><ChevronRight size={16}/></button>
+        <button onClick={()=>goSection('career-stats')}><Trophy size={17}/><span><strong>Adelskalenderen</strong><small>Rekorder og karrieretall</small></span><ChevronRight size={16}/></button>
+      </div>
       <div className="ha-section-title"><span className="ha-kicker">START HER</span><h2>Utforsk Storhamar</h2><p>Velg en samling eller søk direkte etter et navn, en sesong eller en hendelse.</p></div>
       <label className="ha-search"><Search size={17}/><input aria-label="Søk i hele historiearkivet" placeholder="Søk etter drakter, spillere, år og gull…" value={query} onChange={(event)=>setQuery(event.target.value)}/>{query && <button onClick={()=>setQuery('')} aria-label="Tøm søk"><X size={15}/></button>}</label>
       {query.trim() ? <div className="ha-search-results">
@@ -435,6 +468,9 @@ export function HistoryArchivePage() {
         <div className="ha-research-note">Historiearkivet bygger på kilder, ikke antakelser. Enkelte eldre sesonger og spillerstaller er ufullstendige. Databasen går til og med sesongen 2025/26; pågående sesong registreres først som ferdig historie etter sesongslutt.</div>
       </>}
     </section>
+    : section === 'audit' ? <HistoryAuditPage back={()=>goSection('overview')} openSeason={(id)=>openItem('season',id)}/>
+    : section === 'numbers' ? <HistoryNumberPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
+    : section === 'career-stats' ? <CareerTotalsPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
     : isBrowsableKind(section) ? <section className="ha-shell">
       <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
       <div className="ha-section-heading">{(() => { const Icon=sectionIcon;return <Icon size={24}/> })()}<div><span className="ha-kicker">STORHAMAR · ARKIVET</span><h1>{sectionInfo?.title}</h1><p>{sectionInfo?.description}</p></div></div>
@@ -482,8 +518,10 @@ export function HistoryArchivePage() {
     : <section className="ha-shell">
       <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
       <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">TRIBUNENE · SUPPORTERNE</span><h1>Supporterkultur</h1></div></div>
-      <p className="ha-lead">Storhamar er mer enn resultater. Klubbens hjemmekamper, arenaer og store øyeblikk er også historien om menneskene på tribunene.</p>
-      <div className="ha-prose"><p>Arkivet setter publikumsrekorder og historiske arenaer i sammenheng med hvordan hockeyen vokste på Hamar. Egen dokumentert samling om supporterorganisasjoner, sanger og tifo bygges videre når kildene er tilstrekkelige.</p></div>
+      <p className="ha-lead">Storhamar er mer enn resultater. Den organiserte supporterkulturen er også en del av klubbhistorien.</p>
+      <div className="ha-prose"><p><strong>25. oktober 2001:</strong> Storhamar Supporterunion ble stiftet. Stiftelsesdato og formål om å støtte Storhamar Hockey er dokumentert i Brønnøysundregistrene.</p><p>SSU og tribunelivet er viktig for historien om hockeyen på Hamar. Vi har foreløpig ikke importert en komplett kronologi over tifoer, borteturer og supportersanger. Slikt skal bare føres inn når hendelsene kan kildebelegges.</p></div>
+      <button className="ha-load-more" onClick={()=>openItem('timeline','timeline-2001-ssu-founded')}>Les om SSUs stiftelse <ChevronRight size={17}/></button>
+      <a className="ha-source-link" href="https://virksomhet.brreg.no/nb/oppslag/enheter/994331981" target="_blank" rel="noopener noreferrer">Kilde: Brønnøysundregistrene <ExternalLink size={15}/></a>
       <div className="ha-link-list">
         {['arena-hamar-ol-amfi','arena-storhamar-ishall'].map((id)=>{
           const item=archiveItem('arena',id)
