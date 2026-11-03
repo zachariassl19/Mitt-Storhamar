@@ -37,3 +37,7 @@
   opacity: .45;
   box-shadow: none;
 }
+
+.game-final-save-card { margin-top: 18px; }
+.game-final-save-card .travel-footnote { margin-bottom: 13px; }
+.game-final-back { min-height: 46px; }

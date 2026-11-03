@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   Navigation,
   Route,
+  Save,
   Settings,
   Shield,
   Trophy,
@@ -27,7 +28,7 @@ import appPackage from '../package.json'
 import PreDepartureChecklist from './PreDepartureChecklist'
 import { GamePurchases } from './components/GamePurchases'
 import { MinStorhamarPage } from './components/MinStorhamarPage'
-import { TravelPlanner } from './components/TravelPlanner'
+import { TravelPlanner, type TravelPlannerHandle } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
@@ -545,6 +546,13 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
   const temporalState = getGameTemporalState(game)
   const future = temporalState === 'FUTURE' || temporalState === 'GAME_DAY_BEFORE_START'
   const features = gameFeatures(game)
+  const travelPlannerRef = useRef<TravelPlannerHandle>(null)
+  const [saveFeedback, setSaveFeedback] = useState<{ success: boolean; message: string } | null>(null)
+
+  function saveTripFromBottom() {
+    const result = travelPlannerRef.current?.save()
+    if (result) setSaveFeedback(result)
+  }
 
   return (
     <section className="game-detail-page">
@@ -567,7 +575,7 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
 
       <SmartGameDayPanel game={game} events={smartEvents} record={record} onEvent={onSmartEvent} />
 
-      <TravelPlanner game={game} trip={trip} onSaveTrip={onSaveTrip} onDeleteTrip={onDeleteTrip} />
+      <TravelPlanner ref={travelPlannerRef} game={game} trip={trip} onSaveTrip={onSaveTrip} onDeleteTrip={onDeleteTrip} />
 
       {canConfirmAttendance(game) && (
         <>
@@ -582,6 +590,20 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
           <GamePurchases game={game} purchases={purchases} onSave={onSavePurchase} onDelete={onDeletePurchase} />
         </>
       )}
+
+      <article className="card detail-card game-final-save-card">
+        <div className="card-heading"><div><span className="eyebrow">AVSLUTT</span><h2>Lagre reisen</h2></div></div>
+        <p className="travel-footnote">Reisen og reisefølget lagres her. Kjøp lagres når du legger dem til. Oppmøte bekreftes under «Fullfør kampdagen».</p>
+        {saveFeedback && <p role="status" className={saveFeedback.success ? 'save-success' : 'save-warning'}>{saveFeedback.message}</p>}
+        <button className="primary-action full-width unified-travel-save" onClick={saveTripFromBottom}>
+          <Save size={18} /> Lagre hele reisen
+        </button>
+        {saveFeedback?.success && (
+          <button className="secondary-action full-width game-final-back" onClick={onBack}>
+            <ArrowLeft size={17} /> Tilbake til kamper
+          </button>
+        )}
+      </article>
     </section>
   )
 }
