@@ -1,11 +1,15 @@
 /**
- * Entur's station-to-station rail distance is measured along the rail network,
- * not as a straight line or a road route. Time remains manual for past trips.
+ * Entur railway station lookup and rail-network distance.
+ *
+ * Live API verified on 2026-11-03:
+ *  - Geocoder needs multimodal=child to get Halden's actual rail stop (192),
+ *    rather than its multimodal parent (60053).
+ *  - Distance API requires organisationId=1 and responds with { distance: 236 }.
  *
  * Source: https://developer.entur.no/apis/prdudisapi
- * Geocoder: https://developer.entur.no/docs/open-services/geocoder/migration-v2-v3
  */
 const ENTUR_CLIENT_NAME = 'mittstorhamar-supporterapp'
+const DISTANCE_ORGANISATION_ID = '1'
 
 interface EnturFeature {
   properties?: {
@@ -13,6 +17,7 @@ interface EnturFeature {
     names?: { default?: string; display?: string }
     transportModes?: { mode: string }[]
     stopPlaceTypes?: string[]
+    stopPlaceRole?: string
   }
 }
 
@@ -39,25 +44,36 @@ async function resolveRailStation(input: string): Promise<string> {
     q: name,
     lang: 'no',
     layers: 'stopPlace',
+    stopPlaceTypes: 'railStation',
+    multimodal: 'child',
     limit: '10',
   }).toString()
 
-  const response = await fetch(url.toString(), {
-    headers: { 'ET-Client-Name': ENTUR_CLIENT_NAME },
-  })
-  if (!response.ok) throw new Error('Entur fant ikke stasjonene akkurat nå. Prøv igjen senere.')
+  let response: Response
+  try {
+    response = await fetch(url.toString(), {
+      headers: { 'ET-Client-Name': ENTUR_CLIENT_NAME },
+    })
+  } catch {
+    throw new Error('Kunne ikke kontakte Entur for stasjonssøk. Sjekk nettforbindelsen og prøv igjen.')
+  }
+  if (!response.ok) throw new Error(`Enturs stasjonssøk svarte med feil (${response.status}). Prøv igjen senere.`)
+
   const data = await response.json() as { features?: EnturFeature[] }
   const matches = (data.features ?? []).filter((feature) => {
     const props = feature.properties
-    const rail = props?.stopPlaceTypes?.includes('railStation') || props?.transportModes?.some((mode) => mode.mode === 'rail')
-    const id = props?.id
-    const title = props?.names?.default
-    return rail && typeof id === 'string' && id.startsWith('NSR:StopPlace:') &&
-      typeof title === 'string' && normalizedStationName(title) === normalizedStationName(name)
+    const isRail = props?.stopPlaceTypes?.includes('railStation') ||
+      props?.transportModes?.some((mode) => mode.mode === 'rail')
+    return isRail &&
+      props?.stopPlaceRole !== 'parent' &&
+      typeof props?.id === 'string' &&
+      /^NSR:StopPlace:\d+$/.test(props.id) &&
+      typeof props.names?.default === 'string' &&
+      normalizedStationName(props.names.default) === normalizedStationName(name)
   })
 
   if (!matches.length) {
-    throw new Error(`Fant ikke togstasjonen «${name}». Skriv stasjonsnavnet, for eksempel «Stange stasjon».`)
+    throw new Error(`Fant ikke togstasjonen «${name}». Skriv navnet på stasjonen, for eksempel «Stange stasjon» eller «Halden stasjon».`)
   }
 
   return matches[0].properties!.id!
@@ -69,8 +85,8 @@ export interface EnturRailDistance {
 }
 
 /**
- * Entur returns a shortest known rail-network station distance in kilometres.
- * This is not a precise reconstruction of a detour or a historic train service.
+ * Uses the shortest available railway distance in kilometres.
+ * It is not a reconstruction of a historic detour or replacement bus.
  */
 export async function calculateTrainRailDistance(fromStation: string, toStation: string): Promise<EnturRailDistance> {
   const [fromId, toId] = await Promise.all([
@@ -79,21 +95,46 @@ export async function calculateTrainRailDistance(fromStation: string, toStation:
   ])
   if (fromId === toId) return { km: 0, source: 'Entur' }
 
-  const url = `https://api.entur.io/distance/stop-place-distances/${encodeURIComponent(fromId)}/${encodeURIComponent(toId)}`
-  const response = await fetch(url, {
-    headers: {
-      'ET-Client-Name': ENTUR_CLIENT_NAME,
-      Accept: 'application/json',
-    },
-  })
-  if (!response.ok) throw new Error('Entur kunne ikke finne jernbaneavstand mellom stasjonene.')
-  const raw = await response.text()
+  const url = new URL(`https://api.entur.io/distance/stop-place-distances/${fromId}/${toId}`)
+  url.searchParams.set('organisationId', DISTANCE_ORGANISATION_ID)
+
+  let response: Response
+  try {
+    response = await fetch(url.toString(), {
+      headers: {
+        'ET-Client-Name': ENTUR_CLIENT_NAME,
+        Accept: 'application/json',
+      },
+    })
+  } catch {
+    throw new Error('Kunne ikke kontakte Entur for togavstand. Sjekk nettforbindelsen og prøv igjen.')
+  }
+
+  if (response.status === 404) {
+    throw new Error('Entur har ikke registrert togavstand mellom disse stasjonene. Du kan fylle inn kilometer manuelt.')
+  }
+  if (!response.ok) {
+    throw new Error(`Enturs avstandstjeneste svarte med feil (${response.status}). Du kan fylle inn kilometer manuelt.`)
+  }
+
   let value: unknown
-  try { value = JSON.parse(raw) } catch { value = raw }
-  const distance = typeof value === 'number' || typeof value === 'string' ? Number(value) : NaN
+  try {
+    value = await response.json()
+  } catch {
+    throw new Error('Entur svarte i et ukjent format. Fyll inn kilometer manuelt.')
+  }
+
+  // The 2026 API responds with {"organisationId":1, "distance":236, ...}.
+  const distanceValue = value && typeof value === 'object' && 'distance' in value
+    ? (value as { distance: unknown }).distance
+    : value
+  const distance = typeof distanceValue === 'number' || typeof distanceValue === 'string'
+    ? Number(distanceValue)
+    : NaN
 
   if (!Number.isFinite(distance) || distance < 0) {
     throw new Error('Entur har ingen registrert togavstand for denne strekningen. Fyll inn km manuelt.')
   }
+
   return { km: distance, source: 'Entur' }
 }

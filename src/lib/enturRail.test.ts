@@ -3,37 +3,60 @@ import { calculateTrainRailDistance, isNamedTrainStation } from './enturRail'
 
 afterEach(() => vi.unstubAllGlobals())
 
-function station(id: string, name: string) {
+function station(id: string, name: string, role = 'standalone') {
   return { properties: {
     id,
     names: { default: name },
     stopPlaceTypes: ['railStation'],
     transportModes: [{ mode: 'rail' }],
+    stopPlaceRole: role,
   } }
 }
 
-describe('Entur rail distance', () => {
-  it('requires explicit stations rather than assuming a home address is a station', async () => {
+describe('Entur train distance API', () => {
+  it('rejects Hjem as a railway station', async () => {
     expect(isNamedTrainStation('Hjem')).toBe(false)
     await expect(calculateTrainRailDistance('Stange', 'Hjem')).rejects.toThrow('togstasjon')
   })
 
-  it('resolves the stations and uses Entur km rather than road distance', async () => {
+  it('uses Halden rail child and parses Enturs verified 236 km response', async () => {
     const fetchMock = vi.fn()
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:111', 'Stange stasjon')] }) })
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:222', 'Halden')] }) })
-      .mockResolvedValueOnce({ ok: true, text: async () => '247' })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:708', 'Stange stasjon')] }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [
+        station('NSR:StopPlace:60053', 'Halden stasjon', 'parent'),
+        station('NSR:StopPlace:192', 'Halden stasjon', 'child'),
+      ] }) })
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({
+        organisationId: 1,
+        fromStopPlaceId: 'NSR:StopPlace:708',
+        toStopPlaceId: 'NSR:StopPlace:192',
+        distance: 236,
+      }) })
     vi.stubGlobal('fetch', fetchMock)
-    expect(await calculateTrainRailDistance('Stange', 'Halden stasjon')).toEqual({ km: 247, source: 'Entur' })
-    expect(fetchMock).toHaveBeenCalledTimes(3)
-    expect(fetchMock.mock.calls[2][0]).toContain('stop-place-distances')
+    const result = await calculateTrainRailDistance('Stange', 'Halden stasjon')
+    expect(result).toEqual({ km: 236, source: 'Entur' })
+    const lookupUrl = fetchMock.mock.calls[0][0] as string
+    expect(lookupUrl).toContain('multimodal=child')
+    expect(lookupUrl).toContain('stopPlaceTypes=railStation')
+    const distanceUrl = fetchMock.mock.calls[2][0] as string
+    expect(distanceUrl).toContain('NSR:StopPlace:708/NSR:StopPlace:192')
+    expect(distanceUrl).toContain('organisationId=1')
   })
 
-  it('leaves manual entry available when Entur reports an unknown route', async () => {
+  it('allows manual fallback when Entur returns a missing distance', async () => {
     const fetchMock = vi.fn()
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:111', 'Stange')] }) })
-      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:222', 'Halden')] }) })
-      .mockResolvedValueOnce({ ok: true, text: async () => '-1' })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:708', 'Stange stasjon')] }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:192', 'Halden stasjon', 'child')] }) })
+      .mockResolvedValueOnce({ ok: false, status: 404 })
+    vi.stubGlobal('fetch', fetchMock)
+    await expect(calculateTrainRailDistance('Stange', 'Halden')).rejects.toThrow('ikke registrert togavstand')
+  })
+
+  it('handles stations without known rail connections', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:708', 'Stange stasjon')] }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ features: [station('NSR:StopPlace:192', 'Halden stasjon', 'child')] }) })
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ distance: -1 }) })
     vi.stubGlobal('fetch', fetchMock)
     await expect(calculateTrainRailDistance('Stange', 'Halden')).rejects.toThrow('ingen registrert togavstand')
   })
