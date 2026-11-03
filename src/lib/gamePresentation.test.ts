@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { Game, GameDayRecord } from '../types'
-import { gameFeatures, gameStatusClass, isFridayGame } from './gamePresentation'
+import type { Game, GameDayRecord, Trip } from '../types'
+import { gameFeatures, gameStatusClass, isFridayGame, travelRegistrationStatus } from './gamePresentation'
 
 function game(patch: Partial<Game> = {}): Game {
   return {
@@ -38,6 +38,15 @@ describe('game presentation', () => {
     expect(gameFeatures(game({ competition: 'CHL' })).map((feature) => feature.key)).toContain('chl')
     expect(gameFeatures(game({ arena: 'Håkons Hall', startsAt: '2026-10-24T18:00:00+02:00' })).map((feature) => feature.key)).toContain('classic')
     expect(gameFeatures(game({ awayTeam: 'Vålerenga', startsAt: '2026-10-03T16:00:00+02:00' })).map((feature) => feature.key)).toContain('rivalry')
+  })
+
+  it('shows saved vs missing travel only for attended, confirmed games', () => {
+    const savedTrip = { id: 'trip:game:test', gameId: 'game:test' } as Trip
+    expect(travelRegistrationStatus('game:test', record('attended'), [])).toBe('missing')
+    expect(travelRegistrationStatus('game:test', record('attended'), [savedTrip])).toBe('saved')
+    expect(travelRegistrationStatus('game:test', record('not_attended'), [savedTrip])).toBeNull()
+    expect(travelRegistrationStatus('game:test', { ...record('attended'), completed: false }, [])).toBeNull()
+    expect(travelRegistrationStatus('another-game', record('attended'), [savedTrip])).toBe('missing')
   })
 
   it('gives confirmed attendance priority over future plan styling', () => {
