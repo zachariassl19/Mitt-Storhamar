@@ -1,0 +1,38 @@
+name: SIL season-index data probe
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Capture all historical season index entries
+        run: |
+          node <<'NODE'
+          const url='https://silarkivet.no/sesonger/';
+          const response=await fetch(url,{headers:{'User-Agent':'Mitt-Storhamar-Historical-Source-Audit/1.0'}});
+          if(!response.ok)throw Error('SIL HTTP '+response.status);
+          const html=await response.text();
+          function clean(s) {
+            return s.replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&ndash;/g,'–')
+              .replace(/&amp;/g,'&').replace(/&dagger;/g,'†').replace(/&#(\d+);/g,(_,v)=>String.fromCharCode(Number(v)))
+              .replace(/\s+/g,' ').trim();
+          }
+          const rows=[];const problems=[];
+          for(const tr of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)){
+            const cellMatches=[...tr[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)];
+            const cells=cellMatches.map(m=>clean(m[1]));
+            if(cells.length<4)continue;
+            const match=cells[0].match(/(19|20)\d{2}[-/]\d{2}/);
+            if(!match)continue;
+            const anchor=cellMatches[0][1].match(/<a\b[^>]*href=["']([^"']+)["']/i);
+            const sourceUrl=anchor?.[1]?.replaceAll('&amp;','&') || url;
+            const full=sourceUrl.startsWith('http')?sourceUrl:new URL(sourceUrl,url).toString();
+            rows.push({season:match[0].replace('/','-'),sourceUrl:full,cells});
+            if(cells.length!==6)problems.push({season:match[0],cells});
+          }
+          console.log('HTML '+html.length+' rows '+rows.length+' columns '+JSON.stringify(rows.slice(0,3))+' tail '+JSON.stringify(rows.slice(-3)));
+          console.log('Non-six-column '+JSON.stringify(problems.slice(0,8)));
+          if(rows.length<68||!rows.some(r=>r.season==='2025-26'))throw Error('Failed season table parser');
+          console.log('SIL_SEASONS_BEGIN'+JSON.stringify({source:url,asOf:'2025/26',fetchedAt:'2026-11-03',entries:rows,columnWarnings:problems})+'SIL_SEASONS_END');
+          NODE
