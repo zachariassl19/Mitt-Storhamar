@@ -3,6 +3,7 @@ import { Car, ChevronDown, MapPin, Navigation, Plus, Trash2 } from 'lucide-react
 import { GameCompanions } from './GameCompanions'
 import { companionSelectionForGame, saveGameCompanionSelection, type GameCompanionSelection } from '../lib/companions'
 import { canConfirmAttendance } from '../lib/gameTime'
+import { calculateTrainRailDistance, isNamedTrainStation } from '../lib/enturRail'
 import { calculateGoogleRoute, canAutoRoute, hasGoogleRoutesKey } from '../lib/googleRoutes'
 import { loadSavedLocations, saveSavedLocations, type SavedLocations } from '../lib/savedLocations'
 import { loadGameDayRecords } from '../lib/storage'
@@ -143,9 +144,12 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
   const nodes = useMemo(() => routeNodes(legs), [legs])
   const arenaIndex = nodes.findIndex((node) => samePlace(node, game.arena))
   const hasCar = legs.some((leg) => leg.transport === 'car')
-  const usesHome = nodes.some((node) => samePlace(node, 'Hjem'))
+  const usesHome = legs.some((leg) => canAutoRoute(leg.transport) &&
+    (samePlace(leg.fromName, 'Hjem') || samePlace(leg.toName, 'Hjem')))
   const hasWalkingOrBike = legs.some((leg) => leg.transport === 'walk' || leg.transport === 'bike')
-  const automaticLegCount = legs.filter((leg) => canAutoRoute(leg.transport)).length
+  const googleLegs = legs.filter((leg) => canAutoRoute(leg.transport))
+  const trainLegs = legs.filter((leg) => leg.transport === 'train')
+  const automaticLegCount = googleLegs.length + trainLegs.length
   const invalidRoute = legs.length === 0 || legs.some((leg) => !leg.fromName.trim() || !leg.toName.trim())
   const priceReference = averageEnergyPrice(carSettings.energy)
   const consumptionReference = averageConsumptionPer100(carSettings.energy)
@@ -186,6 +190,10 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
         if (leg.id !== id) return leg
         const next = { ...leg, ...patch }
         if (patch.transport === 'walk' || patch.transport === 'bike') next.estimatedCost = 0
+        if (patch.transport === 'train') {
+          next.trainFromStation = isNamedTrainStation(leg.fromName) ? leg.fromName : ''
+          next.trainToStation = isNamedTrainStation(leg.toName) ? leg.toName : ''
+        }
         return next
       }),
     }))
@@ -197,13 +205,20 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     setDraft((current) => {
       const sorted = normalizeLegs(current.legs)
       const next = sorted.map((leg) => ({ ...leg }))
+      const previousNodeName = index === 0 ? sorted[0]?.fromName : sorted[index - 1]?.toName
       if (index > 0 && next[index - 1]) {
         next[index - 1].toName = value
+        if (next[index - 1].transport === 'train' && next[index - 1].trainToStation === previousNodeName) {
+          next[index - 1].trainToStation = isNamedTrainStation(value) ? value : ''
+        }
         next[index - 1].km = null
         next[index - 1].durationMinutes = null
       }
       if (index < next.length && next[index]) {
         next[index].fromName = value
+        if (next[index].transport === 'train' && next[index].trainFromStation === previousNodeName) {
+          next[index].trainFromStation = isNamedTrainStation(value) ? value : ''
+        }
         next[index].km = null
         next[index].durationMinutes = null
       }
@@ -289,55 +304,74 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     if (invalidRoute || routingState === 'calculating') return
     if (usesHome && !savedLocations.homeAddress.trim()) {
       setRoutingState('error')
-      setRoutingMessage('Legg inn den private Hjem-adressen først. Du kan fortsatt lagre reisen uten å beregne ruta.')
+      setRoutingMessage('Legg inn den private Hjem-adressen for kjøre-/gangdelen først. Toget bruker egne stasjonsfelt nedenfor.')
       return
     }
-    if (!hasGoogleRoutesKey()) {
+    if (googleLegs.length > 0 && !hasGoogleRoutesKey()) {
       setRoutingState('error')
-      setRoutingMessage('Google Maps-nøkkelen mangler i den publiserte builden.')
+      setRoutingMessage('Google Maps-nøkkelen mangler. Togkilometer kan beregnes via Entur hvis du kun har tog-etapper.')
       return
     }
     if (automaticLegCount === 0) {
       setRoutingState('error')
-      setRoutingMessage('Ingen av delene i denne reisen kan beregnes med Google Routes ennå.')
+      setRoutingMessage('Denne reisen har ingen etapper som kan beregnes automatisk ennå.')
       return
     }
 
     setRoutingState('calculating')
-    setRoutingMessage('Beregner km og kjøretid…')
+    setRoutingMessage('Beregner rute og togkilometer…')
 
-    try {
-      const updates = new Map<string, { km: number; durationMinutes: number }>()
+    const updates = new Map<string, Partial<TripLeg>>()
+    const warnings: string[] = []
+    let googleCount = 0
+    let trainCount = 0
 
-      for (const leg of legs) {
-        if (!canAutoRoute(leg.transport)) continue
-        const result = await calculateGoogleRoute(
-          routeLocation(leg.fromName),
-          routeLocation(leg.toName),
-          leg.transport,
-        )
-        updates.set(leg.id, result)
+    for (const leg of legs) {
+      try {
+        if (canAutoRoute(leg.transport)) {
+          const result = await calculateGoogleRoute(
+            routeLocation(leg.fromName),
+            routeLocation(leg.toName),
+            leg.transport,
+          )
+          updates.set(leg.id, result)
+          googleCount++
+        } else if (leg.transport === 'train') {
+          const fromStation = leg.trainFromStation?.trim() || (isNamedTrainStation(leg.fromName) ? leg.fromName : '')
+          const toStation = leg.trainToStation?.trim() || (isNamedTrainStation(leg.toName) ? leg.toName : '')
+          const result = await calculateTrainRailDistance(fromStation, toStation)
+          // Entur's distance API provides km. Preserve existing manual train duration.
+          updates.set(leg.id, { km: result.km })
+          trainCount++
+        }
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : 'Ukjent feil'
+        warnings.push(`${leg.fromName} → ${leg.toName}: ${reason}`)
       }
-
-      const now = new Date().toISOString()
-      const calculatedLegs = normalizeDirections(legs.map((leg) => {
-        const update = updates.get(leg.id)
-        return withCalculatedCost(update ? { ...leg, ...update } : leg, carSettings)
-      }))
-      const next: Trip = {
-        ...draft,
-        status: confirmedAttendance ? 'completed' : draft.status,
-        legs: calculatedLegs,
-        updatedAt: now,
-      }
-
-      setDraft(cloneTrip(next))
-      setRoutingState('ready')
-      setRoutingMessage(`Google Routes beregnet ${updates.size} ${updates.size === 1 ? 'del' : 'deler'} av reisen. Trykk «Lagre hele reisen» nederst når du er ferdig.`)
-    } catch (error) {
-      setRoutingState('error')
-      setRoutingMessage(error instanceof Error ? error.message : 'Ruteberegningen feilet.')
     }
+
+    if (updates.size === 0) {
+      setRoutingState('error')
+      setRoutingMessage(warnings.join(' ') || 'Ingen ruter kunne beregnes. Du kan fylle inn km og minutter manuelt.')
+      return
+    }
+
+    const now = new Date().toISOString()
+    const calculatedLegs = normalizeDirections(legs.map((leg) => {
+      const update = updates.get(leg.id)
+      return withCalculatedCost(update ? { ...leg, ...update } : leg, carSettings)
+    }))
+    const next: Trip = {
+      ...draft,
+      status: confirmedAttendance ? 'completed' : draft.status,
+      legs: calculatedLegs,
+      updatedAt: now,
+    }
+
+    setDraft(cloneTrip(next))
+    setRoutingState('ready')
+    const completedParts = [googleCount && `${googleCount} Google-etapper`, trainCount && `${trainCount} tog-etapper via Entur`].filter(Boolean).join(' og ')
+    setRoutingMessage(`Beregnet ${completedParts}. ${trainCount ? 'Togkilometer er jernbaneavstand mellom stasjonene. Togtid må fylles inn manuelt. ' : ''}${warnings.length ? `Kunne ikke beregne: ${warnings.join(' ')} ` : ''}Husk å lagre hele reisen nederst.`)
   }
 
   function save(attendedOverride?: boolean): TravelPlannerSaveResult {
@@ -454,13 +488,14 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
 
       <div className={`route-provider-note ${routingState}`}>
         <div className="route-provider-heading">
-          <div><strong>Google Routes</strong><span>Automatisk km og reisetid for bil, supporterbuss, taxi, gange og sykkel.</span></div>
+          <div><strong>Google Routes + Entur</strong><span>Google beregner bil/gange/sykkel. Entur beregner tog-km mellom valgte stasjoner. Togtid fyller du inn selv.</span></div>
           <button onClick={() => void calculateRoute()} disabled={invalidRoute || routingState === 'calculating'}>
             <Navigation size={15} /> {routingState === 'calculating' ? 'Beregner…' : 'Beregn ruten'}
           </button>
         </div>
         {routingMessage && <p>{routingMessage}</p>}
-        {legs.some((leg) => !canAutoRoute(leg.transport)) && <p>Tog, rutebuss, fly og «annet» beholder manuell km/tid til Entur og egne løsninger kobles på.</p>}
+        {legs.some((leg) => !canAutoRoute(leg.transport) && leg.transport !== 'train') && <p>Rutebuss, fly og «annet» har fortsatt manuell km/tid.</p>}
+        {trainLegs.length > 0 && <p>For «Stange → Hjem» må du skrive togstasjonen du reiste til i feltet «Til stasjon» på togetappen, for eksempel «Halden stasjon». Siste del hjem registreres separat.</p>}
         {hasWalkingOrBike && <p>Google oppgir at gang- og sykkelruter er beta og kan mangle tydelige gang- eller sykkelveier.</p>}
       </div>
 
@@ -522,7 +557,8 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
   const [open, setOpen] = useState(false)
   const cost = legCost(leg, carSettings)
   const manualCost = leg.transport !== 'car' && leg.transport !== 'walk' && leg.transport !== 'bike'
-  const automatic = canAutoRoute(leg.transport)
+  const automatic = canAutoRoute(leg.transport) || leg.transport === 'train'
+  const train = leg.transport === 'train'
 
   return (
     <div className="route-segment">
@@ -543,10 +579,25 @@ function SegmentEditor({ leg, carSettings, onUpdate }: {
               estimatedCost: transport === 'walk' || transport === 'bike' ? 0 : null,
             })
           }}>{transportOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-          <label><span>Km {automatic ? '(Google)' : ''}</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
+          {train && (
+            <div className="train-station-fields">
+              <label><span>Fra togstasjon</span><input
+                value={leg.trainFromStation ?? (isNamedTrainStation(leg.fromName) ? leg.fromName : '')}
+                placeholder="f.eks. Stange stasjon"
+                onChange={(event) => onUpdate({ trainFromStation: event.target.value, km: null })}
+              /></label>
+              <label><span>Til togstasjon</span><input
+                value={leg.trainToStation ?? (isNamedTrainStation(leg.toName) ? leg.toName : '')}
+                placeholder="f.eks. Halden stasjon"
+                onChange={(event) => onUpdate({ trainToStation: event.target.value, km: null })}
+              /></label>
+              <p className="segment-help">Skriv stasjonsnavn, ikke «Hjem». Trykk «Beregn ruten» for togkilometer fra Entur. Togtid kan fylles inn manuelt. Stasjonsnavnene lagres med reisen.</p>
+            </div>
+          )}
+          <label><span>Km {automatic ? (train ? '(Entur)' : '(Google)') : ''}</span><input type="number" min="0" step="0.1" inputMode="decimal" value={leg.km ?? ''} placeholder="—" onChange={(event) => onUpdate({ km: numberOrNull(event.target.value) })} /></label>
           <label><span>Minutter {automatic ? '(Google)' : ''}</span><input type="number" min="0" step="1" inputMode="numeric" value={leg.durationMinutes ?? ''} placeholder="—" onChange={(event) => onUpdate({ durationMinutes: numberOrNull(event.target.value) })} /></label>
           {manualCost && <label className="wide"><span>{leg.transport === 'supporter_bus' ? 'Pris supporterbuss' : 'Pris'} (kr)</span><input type="number" min="0" step="1" inputMode="decimal" value={leg.estimatedCost ?? ''} placeholder="Ukjent" onChange={(event) => onUpdate({ estimatedCost: numberOrNull(event.target.value) })} /></label>}
-          {automatic && <p className="segment-help">Km og tid kan fylles automatisk med «Beregn ruten». Feltene kan fortsatt overstyres manuelt.</p>}
+          {automatic && !train && <p className="segment-help">Km og tid kan fylles automatisk med «Beregn ruten». Feltene kan fortsatt overstyres manuelt.</p>}
           {leg.transport === 'car' && <p className="segment-help">Bilens kostnad regnes fra km, forbruk og energipris når de er kjent.</p>}
           {(leg.transport === 'walk' || leg.transport === 'bike') && <p className="segment-help">Denne delen har 0 kr i transportkostnad.</p>}
         </div>
