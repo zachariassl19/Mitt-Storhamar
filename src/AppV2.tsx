@@ -27,6 +27,7 @@ import {
 import appPackage from '../package.json'
 import PreDepartureChecklist from './PreDepartureChecklist'
 import { GamePurchases } from './components/GamePurchases'
+import { HistoryArchivePage } from './components/HistoryArchivePage'
 import { MinStorhamarPage } from './components/MinStorhamarPage'
 import { TravelPlanner, type TravelPlannerHandle } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
@@ -333,12 +334,13 @@ export default function AppV2() {
                   currentPlan={currentPlan}
                   updatePlan={updatePlan}
                   openGames={() => navigate('games')}
+                  openHistory={() => navigate('history')}
                   openGame={openGame}
                 />
               )}
               {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} trips={trips} onSaveTrip={persistTrip} />}
               {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
-              {active === 'history' && <HistoryPage />}
+              {active === 'history' && <HistoryArchivePage />}
               {active === 'more' && (
                 <MorePage
                   hubData={hubData}
@@ -365,12 +367,13 @@ export default function AppV2() {
   )
 }
 
-function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, openGame }: {
+function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, openHistory, openGame }: {
   nextGame: Game
   matchday: boolean
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
   openGames: () => void
+  openHistory: () => void
   openGame: (game: Game) => void
 }) {
   const plan = currentPlan(nextGame.id)
@@ -432,7 +435,7 @@ function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, open
       </section>
 
       <section className="merit-grid"><article className="card merit-card"><Trophy /><span>NM-GULL</span><strong>10</strong></article><article className="card merit-card"><Shield /><span>SERIEGULL</span><strong>11</strong></article></section>
-      <section className="history-hero"><span>1957</span><h2>Storhamar-historien</h2><p>Fra uteisen til dagens Storhamar.</p><button>Utforsk tidslinjen <ChevronRight size={18} /></button></section>
+      <section className="history-hero"><span>1957</span><h2>Storhamar-historien</h2><p>Fra uteisen til dagens Storhamar.</p><button onClick={openHistory}>Utforsk historien <ChevronRight size={18} /></button></section>
     </>
   )
 }
@@ -867,11 +870,6 @@ function CareerPage({ hubData, trips, records, purchases }: { hubData: HubExport
       <article className="card achievement-card"><Medal size={28} /><div><span>VIKTIG REGEL</span><h3>Plan er ikke historikk</h3><p>«Ja» på en framtidig kamp og planlagte reiser gir ingen karrierestatistikk før kampdagen er fullført.</p></div></article>
     </section>
   )
-}
-
-function HistoryPage() {
-  const categories = [['Tidslinjen', 'Fra 1957 til i dag'], ['Meritter', 'NM-gull og seriegull'], ['Spillere', 'Profiler gjennom tidene'], ['Arenaer', 'Fra uteisen til CC Amfi'], ['Europa', 'CHL og europacup'], ['Rekorder', 'Klubbrekorder og milepæler']]
-  return <section className="page-section"><div className="page-heading"><span className="eyebrow">ARKIVET</span><h1>Historie</h1><p>Storhamars historie samlet i ett supporterarkiv.</p></div><div className="history-grid">{categories.map(([title, text]) => <button className="history-card" key={title}><div><strong>{title}</strong><span>{text}</span></div><ChevronRight /></button>)}</div></section>
 }
 
 function MorePage({ hubData, importMessage, importHubFile, removeImport, version }: { hubData: HubExport | null; importMessage: string; importHubFile: (file: File | undefined) => void; removeImport: () => void; version: string }) {
