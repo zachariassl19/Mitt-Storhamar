@@ -114,7 +114,7 @@ function countMissingTravelFields(
 }
 
 export type TravelPlannerSaveResult = { success: boolean; message: string }
-export type TravelPlannerHandle = { save: () => TravelPlannerSaveResult }
+export type TravelPlannerHandle = { save: (attendedOverride?: boolean) => TravelPlannerSaveResult }
 
 type TravelPlannerProps = {
   game: Game
@@ -340,7 +340,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     }
   }
 
-  function save(): TravelPlannerSaveResult {
+  function save(attendedOverride?: boolean): TravelPlannerSaveResult {
     if (invalidRoute) {
       const warning = 'Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.'
       setMessage(warning)
@@ -350,7 +350,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     const now = new Date().toISOString()
     const next: Trip = {
       ...draft,
-      status: confirmedAttendance ? 'completed' : draft.status,
+      status: attendedOverride === undefined ? (confirmedAttendance ? 'completed' : draft.status) : (attendedOverride ? 'completed' : 'planned'),
       legs: normalizeDirections(legs.map((leg) => withCalculatedCost(leg, carSettings))),
       updatedAt: now,
     }
