@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Car, ChevronDown, MapPin, Navigation, Plus, Save, Trash2 } from 'lucide-react'
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
+import { Car, ChevronDown, MapPin, Navigation, Plus, Trash2 } from 'lucide-react'
 import { GameCompanions } from './GameCompanions'
 import { companionSelectionForGame, saveGameCompanionSelection, type GameCompanionSelection } from '../lib/companions'
 import { canConfirmAttendance } from '../lib/gameTime'
@@ -113,13 +113,21 @@ function countMissingTravelFields(
   return missing
 }
 
-export function TravelPlanner({ game, trip, completedAttendance = false, onSaveTrip, onDeleteTrip }: {
+export type TravelPlannerSaveResult = { success: boolean; message: string }
+export type TravelPlannerHandle = { save: () => TravelPlannerSaveResult }
+
+type TravelPlannerProps = {
   game: Game
   trip?: Trip
   completedAttendance?: boolean
   onSaveTrip: (trip: Trip) => void
   onDeleteTrip: (tripId: string) => void
-}) {
+}
+
+export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>(function TravelPlanner(
+  { game, trip, completedAttendance = false, onSaveTrip, onDeleteTrip },
+  ref,
+) {
   const [draft, setDraft] = useState<Trip>(() => cloneTrip(trip ?? createTripForGame(game)))
   const [carSettings, setCarSettings] = useState<CarSettings>(() => loadCarSettings())
   const [savedLocations, setSavedLocations] = useState<SavedLocations>(() => loadSavedLocations())
@@ -332,10 +340,11 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
     }
   }
 
-  function save() {
+  function save(): TravelPlannerSaveResult {
     if (invalidRoute) {
-      setMessage('Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.')
-      return
+      const warning = 'Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.'
+      setMessage(warning)
+      return { success: false, message: warning }
     }
 
     const now = new Date().toISOString()
@@ -355,10 +364,14 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
 
     setDraft(cloneTrip(next))
     const missing = countMissingTravelFields(next.legs, hasCar, carSettings, usesHome, savedLocations.homeAddress)
-    setMessage(missing > 0
+    const successMessage = missing > 0
       ? `Lagret · ${missing} ${missing === 1 ? 'felt mangler' : 'felt mangler'}. Du kan fylle inn resten senere.`
-      : 'Hele reisen er lagret.')
+      : 'Hele reisen er lagret.'
+    setMessage(successMessage)
+    return { success: true, message: successMessage }
   }
+
+  useImperativeHandle(ref, () => ({ save }))
 
   function removeSavedTrip() {
     if (!trip) return
@@ -495,14 +508,11 @@ export function TravelPlanner({ game, trip, completedAttendance = false, onSaveT
 
       {trip && <button className="travel-delete-route" onClick={removeSavedTrip}><Trash2 size={15} /> Slett lagret reiserute</button>}
 
-      {message && <p className="save-success unified-travel-message">{message}</p>}
-      <p className="unified-travel-help">Reiserute, transportkostnader, bil/drivstoff og reisefølge lagres samlet. Ubesvarte felt kan fylles inn senere.</p>
-      <button className="primary-action full-width unified-travel-save" onClick={save} disabled={invalidRoute}>
-        <Save size={18} /> Lagre hele reisen
-      </button>
+      {message && <p className={`${invalidRoute ? 'save-warning' : 'save-success'} unified-travel-message`}>{message}</p>}
+      <p className="unified-travel-help">Reiserute, transportkostnader, bil/drivstoff og reisefølge lagres samlet med «Lagre hele reisen» nederst på kampsiden. Ubesvarte felt kan fylles inn senere.</p>
     </article>
   )
-}
+})
 
 function SegmentEditor({ leg, carSettings, onUpdate }: {
   leg: TripLeg
