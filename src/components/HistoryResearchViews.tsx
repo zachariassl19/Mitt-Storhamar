@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { ArrowLeft, ChevronRight, ExternalLink, Search, ShieldCheck, Shirt, Users } from 'lucide-react'
 import { careerTotals, careerTotalsSource, careerStatDiscrepancies, careerNamesRepeated } from '../history/careerTotals'
 import { historyAuditSummary, seasonAudit } from '../history/coverageAudit'
-import { numberIndex, officialNumberSource } from '../history/numberIndex'
+import { numberIndex, documentedNumberRows, officialNumberSource, officialNumberSourceIssues } from '../history/numberIndex'
 import { historyArchive } from '../history/catalog'
 
 type PersonKind = 'player' | 'legend'
@@ -73,27 +73,29 @@ export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPers
   const [selected,setSelected]=useState('08')
   const [search,setSearch]=useState('')
   const row=numberIndex.find((entry)=>entry.number===selected)!
-  const matches=numberIndex.filter((entry)=>entry.number.includes(search) || entry.holders.some((holder)=>holder.name.toLocaleLowerCase('nb-NO').includes(search.toLocaleLowerCase('nb-NO'))))
+  const normalized=search.toLocaleLowerCase('nb-NO').trim()
+  const matches=numberIndex.filter((entry)=>entry.number.includes(normalized) || entry.holders.some((holder)=>holder.name.toLocaleLowerCase('nb-NO').includes(normalized)))
   return <section className="ha-shell">
     <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til Historie</button>
     <div className="ha-section-heading"><Shirt size={24}/><div>
-      <span className="ha-kicker">DRAKTNUMMER · FRA 01 TIL 98</span>
+      <span className="ha-kicker">SIL-ARKIVET · 01 TIL 98</span>
       <h1>Hvem brukte nummeret?</h1>
-      <p>Søk og velg et draktnummer. Appen viser spillerprofilene vi har koblet, med lenke til den fullstendige oversikten i SIL-arkivet.</p>
+      <p>Alle {documentedNumberRows.length} oppføringer fra SIL-arkivets historiske nummerregister. Søk etter spiller, nummer eller se hvilke sesonger draktene ble brukt.</p>
     </div></div>
     <label className="ha-search"><Search size={17}/><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Søk nummer eller spiller…"/></label>
-    <div className="ha-number-grid">{matches.map((entry)=><button key={entry.number} onClick={()=>setSelected(entry.number)} className={selected===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} kjente navn</span></button>)}</div>
-    {matches.length===0 && <p>Ingen treff. Den fullstendige nummeroversikten ligger hos SIL-arkivet.</p>}
+    <div className="ha-number-grid">{matches.map((entry)=><button key={entry.number} onClick={()=>setSelected(entry.number)} className={selected===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} registrert</span></button>)}</div>
+    {matches.length===0 && <p>Ingen treff i nummerregisteret.</p>}
     <div className="ha-number-detail">
       <span className="ha-kicker">VALGT DRAKTNUMMER</span>
       <strong className="ha-number-large">#{row.number}</strong>
-      {row.holders.length===0 ? <p>Ingen spillerprofiler med dette nummeret er koblet i appen ennå. Det betyr ikke at nummeret aldri er brukt.</p> : <div className="ha-link-list">{row.holders.map((person)=>{
+      {row.holders.length===0 ? <p>SIL-arkivets oversikt har ingen registrert spiller med dette nummeret. Det betyr ikke at nummeret aldri er brukt.</p> : <div className="ha-link-list">{row.holders.map((person,index)=>{
         const target=person.profileId && person.profileKind ? {id:person.profileId,kind:person.profileKind} : null
-        return target ? <button key={person.name} onClick={()=>openPerson(target.kind,target.id)}><span>{person.name}</span><small>Spillerprofil</small><ChevronRight size={15}/></button> : <p key={person.name}>{person.name} · SIL-arkivet</p>
+        const subtitle=person.period || 'Periode ikke dokumentert i kilden'
+        return target ? <button key={person.name+index} onClick={()=>openPerson(target.kind,target.id)}><span>{person.name}<small className="ha-number-period">{subtitle}</small></span><small>Profil</small><ChevronRight size={15}/></button> : <div className="ha-number-unlinked" key={person.name+index}><strong>{person.name}</strong><span>{subtitle}</span>{person.sourceWarning && <small>{person.sourceWarning}</small>}</div>
       })}</div>}
     </div>
-    <a className="ha-source-link" href={officialNumberSource} rel="noopener noreferrer" target="_blank">Komplett historisk nummeroversikt hos SIL-arkivet <ExternalLink size={15}/></a>
-    <div className="ha-research-note">Appens nummeroversikt er foreløpig et utvalg basert på registrerte spillerprofiler. SIL-arkivet har flere historiske brukere av hvert nummer som fortsatt skal kobles til appen.</div>
+    <a className="ha-source-link" href={officialNumberSource} rel="noopener noreferrer" target="_blank">Sammenlign med originalregisteret hos SIL-arkivet <ExternalLink size={15}/></a>
+    <div className="ha-research-note">Alle nummeroppføringene fra kildetabellen er med. {officialNumberSourceIssues.length} rader er spesielt merket på grunn av manglende år eller feil i originalsidens HTML. Individuelle spillerprofiler er ennå ikke komplette for alle navnene.</div>
   </section>
 }
 
