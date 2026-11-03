@@ -35,7 +35,7 @@ import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
 import { confirmedHistoricalAttendance } from './lib/historicalAttendance'
-import { gameFeatureClassNames, gameFeatures, gameStatusClass } from './lib/gamePresentation'
+import { gameFeatureClassNames, gameFeatures, gameStatusClass, travelRegistrationStatus } from './lib/gamePresentation'
 import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
   classifyArenaProximity,
@@ -501,7 +501,25 @@ function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord, t
       {filter !== 'future' && past.length > 0 && <><div className="games-subheading past-heading"><span>TIDLIGERE KAMPER</span><strong>{past.length}</strong></div><div className="game-card-list">{[...past].reverse().map((game) => {
         const record = records[game.id]
         const plan = currentPlan(game.id)
-        return <article className={`card full-game-card past-game ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, record, now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} actual={record?.completed ? record.attendanceActual : undefined} /><HistoricalAttendanceButtons record={record} onYes={() => markHistoricalAttendance(game, 'attended')} onNo={() => markHistoricalAttendance(game, 'not_attended')} /></article>
+        const travelStatus = travelRegistrationStatus(game.id, record, trips)
+        return (
+          <article className={`card full-game-card past-game ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, record, now)}`} key={game.id}>
+            <GameRow game={game} plan={plan} onOpen={() => openGame(game)} actual={record?.completed ? record.attendanceActual : undefined} />
+            {travelStatus && (
+              <button
+                type="button"
+                className={`past-trip-status ${travelStatus}`}
+                onClick={() => openGame(game)}
+                aria-label={travelStatus === 'saved' ? 'Reise lagret. Åpne kampen for å se eller endre reisen.' : 'Reise ikke lagret. Åpne kampen for å legge inn reisen.'}
+              >
+                {travelStatus === 'saved' ? <CheckCircle2 size={15} /> : <Route size={15} />}
+                <span>{travelStatus === 'saved' ? 'Reise lagret' : 'Reise ikke lagret'}</span>
+                <ChevronRight size={15} />
+              </button>
+            )}
+            <HistoricalAttendanceButtons record={record} onYes={() => markHistoricalAttendance(game, 'attended')} onNo={() => markHistoricalAttendance(game, 'not_attended')} />
+          </article>
+        )
       })}</div></>}
     </section>
   )

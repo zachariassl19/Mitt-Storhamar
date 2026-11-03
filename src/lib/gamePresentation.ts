@@ -1,4 +1,4 @@
-import type { AttendancePlan, Game, GameDayRecord } from '../types'
+import type { AttendancePlan, Game, GameDayRecord, Trip } from '../types'
 
 export type GameFeatureKey = 'chl' | 'classic' | 'rivalry' | 'superfriday'
 
@@ -62,4 +62,14 @@ export function gameStatusClass(
   if (plan === 'maybe') return 'status-maybe'
   if (plan === 'no') return 'status-not-going'
   return 'status-unset'
+}
+
+/** Only confirmed attended games show whether their travel route has been saved. */
+export function travelRegistrationStatus(
+  gameId: string,
+  record: GameDayRecord | undefined,
+  trips: Trip[],
+): 'saved' | 'missing' | null {
+  if (!record?.completed || record.attendanceActual !== 'attended') return null
+  return trips.some((trip) => trip.gameId === gameId) ? 'saved' : 'missing'
 }
