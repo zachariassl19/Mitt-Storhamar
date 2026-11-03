@@ -205,9 +205,10 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     setDraft((current) => {
       const sorted = normalizeLegs(current.legs)
       const next = sorted.map((leg) => ({ ...leg }))
+      const previousNodeName = index === 0 ? sorted[0]?.fromName : sorted[index - 1]?.toName
       if (index > 0 && next[index - 1]) {
         next[index - 1].toName = value
-        if (next[index - 1].transport === 'train' && next[index - 1].trainToStation === node) {
+        if (next[index - 1].transport === 'train' && next[index - 1].trainToStation === previousNodeName) {
           next[index - 1].trainToStation = isNamedTrainStation(value) ? value : ''
         }
         next[index - 1].km = null
@@ -215,7 +216,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
       }
       if (index < next.length && next[index]) {
         next[index].fromName = value
-        if (next[index].transport === 'train' && next[index].trainFromStation === node) {
+        if (next[index].transport === 'train' && next[index].trainFromStation === previousNodeName) {
           next[index].trainFromStation = isNamedTrainStation(value) ? value : ''
         }
         next[index].km = null
