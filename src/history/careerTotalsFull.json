@@ -1,0 +1,4557 @@
+{
+  "source": "https://silarkivet.no/samletabeller/adelskalender-total/",
+  "asOf": "2025/26",
+  "fetchedAt": "2026-11-03",
+  "entries": [
+    {
+      "name": "Pål Johnsen",
+      "position": "F",
+      "seasons": 21,
+      "games": 963,
+      "goals": 286,
+      "assists": 585,
+      "points": 871,
+      "penaltyMinutes": 409
+    },
+    {
+      "name": "Eirik Skadsdammen",
+      "position": "F",
+      "seasons": 18,
+      "games": 907,
+      "goals": 262,
+      "assists": 291,
+      "points": 553,
+      "penaltyMinutes": 687
+    },
+    {
+      "name": "Tom Erik Olsen",
+      "position": "F",
+      "seasons": 16,
+      "games": 680,
+      "goals": 379,
+      "assists": 365,
+      "points": 744,
+      "penaltyMinutes": 351
+    },
+    {
+      "name": "Erik Kristiansen",
+      "position": "F",
+      "seasons": 20,
+      "games": 649,
+      "goals": 509,
+      "assists": 406,
+      "points": 915,
+      "penaltyMinutes": 816
+    },
+    {
+      "name": "Lars Løkken Østli",
+      "position": "B",
+      "seasons": 15,
+      "games": 641,
+      "goals": 110,
+      "assists": 181,
+      "points": 291,
+      "penaltyMinutes": 747
+    },
+    {
+      "name": "Lars Erik Hesbråten",
+      "position": "F/B",
+      "seasons": 12,
+      "games": 628,
+      "goals": 110,
+      "assists": 124,
+      "points": 234,
+      "penaltyMinutes": 293
+    },
+    {
+      "name": "Jonas Norgren",
+      "position": "K",
+      "seasons": 12,
+      "games": 627,
+      "goals": 0,
+      "assists": 6,
+      "points": 6,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Joakim Jensen",
+      "position": "F",
+      "seasons": 12,
+      "games": 622,
+      "goals": 286,
+      "assists": 277,
+      "points": 563,
+      "penaltyMinutes": 275
+    },
+    {
+      "name": "Martin Rønnild",
+      "position": "F",
+      "seasons": 11,
+      "games": 542,
+      "goals": 133,
+      "assists": 116,
+      "points": 249,
+      "penaltyMinutes": 743
+    },
+    {
+      "name": "Christian Larrivée",
+      "position": "F",
+      "seasons": 12,
+      "games": 530,
+      "goals": 201,
+      "assists": 350,
+      "points": 551,
+      "penaltyMinutes": 477
+    },
+    {
+      "name": "Ole Eskild Dahlstrøm",
+      "position": "F",
+      "seasons": 12,
+      "games": 527,
+      "goals": 249,
+      "assists": 351,
+      "points": 600,
+      "penaltyMinutes": 413
+    },
+    {
+      "name": "Geir Svendsberget",
+      "position": "F",
+      "seasons": 10,
+      "games": 513,
+      "goals": 157,
+      "assists": 93,
+      "points": 250,
+      "penaltyMinutes": 1201
+    },
+    {
+      "name": "Jon-Hroar Nordstrøm",
+      "position": "B",
+      "seasons": 14,
+      "games": 505,
+      "goals": 73,
+      "assists": 104,
+      "points": 177,
+      "penaltyMinutes": 397
+    },
+    {
+      "name": "Andreas Øksnes",
+      "position": "B",
+      "seasons": 11,
+      "games": 469,
+      "goals": 21,
+      "assists": 87,
+      "points": 108,
+      "penaltyMinutes": 408
+    },
+    {
+      "name": "Mattias Livf",
+      "position": "B",
+      "seasons": 9,
+      "games": 456,
+      "goals": 66,
+      "assists": 163,
+      "points": 229,
+      "penaltyMinutes": 298
+    },
+    {
+      "name": "Cato Ørbæk",
+      "position": "B",
+      "seasons": 11,
+      "games": 454,
+      "goals": 15,
+      "assists": 63,
+      "points": 78,
+      "penaltyMinutes": 569
+    },
+    {
+      "name": "Magnus Østeraas",
+      "position": "B",
+      "seasons": 11,
+      "games": 450,
+      "goals": 21,
+      "assists": 50,
+      "points": 71,
+      "penaltyMinutes": 370
+    },
+    {
+      "name": "Børre Østvang",
+      "position": "F",
+      "seasons": 14,
+      "games": 448,
+      "goals": 58,
+      "assists": 75,
+      "points": 133,
+      "penaltyMinutes": 144
+    },
+    {
+      "name": "Alexander Smirnov",
+      "position": "B",
+      "seasons": 9,
+      "games": 439,
+      "goals": 88,
+      "assists": 228,
+      "points": 316,
+      "penaltyMinutes": 509
+    },
+    {
+      "name": "Martin B. Huse",
+      "position": "F",
+      "seasons": 10,
+      "games": 437,
+      "goals": 56,
+      "assists": 85,
+      "points": 141,
+      "penaltyMinutes": 244
+    },
+    {
+      "name": "Tommy Larsen",
+      "position": "B",
+      "seasons": 11,
+      "games": 428,
+      "goals": 20,
+      "assists": 56,
+      "points": 76,
+      "penaltyMinutes": 167
+    },
+    {
+      "name": "Jimmy Andersson",
+      "position": "B",
+      "seasons": 11,
+      "games": 419,
+      "goals": 38,
+      "assists": 127,
+      "points": 165,
+      "penaltyMinutes": 359
+    },
+    {
+      "name": "Eirik Salsten",
+      "position": "F",
+      "seasons": 10,
+      "games": 407,
+      "goals": 89,
+      "assists": 148,
+      "points": 237,
+      "penaltyMinutes": 260
+    },
+    {
+      "name": "Patrick Thoresen",
+      "position": "F",
+      "seasons": 9,
+      "games": 401,
+      "goals": 164,
+      "assists": 320,
+      "points": 484,
+      "penaltyMinutes": 329
+    },
+    {
+      "name": "Andreas Hjelm",
+      "position": "B",
+      "seasons": 7,
+      "games": 396,
+      "goals": 40,
+      "assists": 160,
+      "points": 200,
+      "penaltyMinutes": 54
+    },
+    {
+      "name": "Mats L. Mostue",
+      "position": "B",
+      "seasons": 10,
+      "games": 390,
+      "goals": 21,
+      "assists": 66,
+      "points": 87,
+      "penaltyMinutes": 172
+    },
+    {
+      "name": "A.S. Danielsen",
+      "position": "B",
+      "seasons": 9,
+      "games": 388,
+      "goals": 32,
+      "assists": 75,
+      "points": 103,
+      "penaltyMinutes": 379
+    },
+    {
+      "name": "Snorre Hallem",
+      "position": "F",
+      "seasons": 8,
+      "games": 387,
+      "goals": 78,
+      "assists": 70,
+      "points": 148,
+      "penaltyMinutes": 401
+    },
+    {
+      "name": "Svein Harald Arnesen",
+      "position": "K",
+      "seasons": 10,
+      "games": 382,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 51
+    },
+    {
+      "name": "Per Arne Kristiansen",
+      "position": "B",
+      "seasons": 14,
+      "games": 371,
+      "goals": 60,
+      "assists": 45,
+      "points": 105,
+      "penaltyMinutes": 362
+    },
+    {
+      "name": "Carl O. B. Andersen",
+      "position": "B",
+      "seasons": 9,
+      "games": 370,
+      "goals": 78,
+      "assists": 174,
+      "points": 252,
+      "penaltyMinutes": 291
+    },
+    {
+      "name": "Mikael Zettergren",
+      "position": "F",
+      "seasons": 7,
+      "games": 365,
+      "goals": 98,
+      "assists": 149,
+      "points": 247,
+      "penaltyMinutes": 136
+    },
+    {
+      "name": "Trygve Hillestad",
+      "position": "F",
+      "seasons": 8,
+      "games": 364,
+      "goals": 29,
+      "assists": 37,
+      "points": 66,
+      "penaltyMinutes": 124
+    },
+    {
+      "name": "Klas Forfang",
+      "position": "F",
+      "seasons": 11,
+      "games": 360,
+      "goals": 72,
+      "assists": 88,
+      "points": 160,
+      "penaltyMinutes": 146
+    },
+    {
+      "name": "Jacob Berglund",
+      "position": "F",
+      "seasons": 7,
+      "games": 354,
+      "goals": 201,
+      "assists": 224,
+      "points": 425,
+      "penaltyMinutes": 227
+    },
+    {
+      "name": "Steinar Johansen",
+      "position": "F",
+      "seasons": 23,
+      "games": 334,
+      "goals": 243,
+      "assists": 14,
+      "points": 257,
+      "penaltyMinutes": 36
+    },
+    {
+      "name": "Steffen Thoresen",
+      "position": "F",
+      "seasons": 6,
+      "games": 327,
+      "goals": 101,
+      "assists": 100,
+      "points": 201,
+      "penaltyMinutes": 533
+    },
+    {
+      "name": "Petter Salsten",
+      "position": "B",
+      "seasons": 7,
+      "games": 324,
+      "goals": 109,
+      "assists": 167,
+      "points": 276,
+      "penaltyMinutes": 276
+    },
+    {
+      "name": "Simen André Edvardsen",
+      "position": "F",
+      "seasons": 7,
+      "games": 319,
+      "goals": 56,
+      "assists": 87,
+      "points": 143,
+      "penaltyMinutes": 90
+    },
+    {
+      "name": "Åge Ellingsen",
+      "position": "B",
+      "seasons": 9,
+      "games": 318,
+      "goals": 125,
+      "assists": 140,
+      "points": 265,
+      "penaltyMinutes": 385
+    },
+    {
+      "name": "Peter Madach",
+      "position": "B/F",
+      "seasons": 9,
+      "games": 311,
+      "goals": 144,
+      "assists": 215,
+      "points": 359,
+      "penaltyMinutes": 412
+    },
+    {
+      "name": "Christian Bull",
+      "position": "B",
+      "seasons": 6,
+      "games": 310,
+      "goals": 32,
+      "assists": 63,
+      "points": 95,
+      "penaltyMinutes": 129
+    },
+    {
+      "name": "Robert Hestmann",
+      "position": "K",
+      "seasons": 6,
+      "games": 309,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Ole Roberth Holmen",
+      "position": "F",
+      "seasons": 16,
+      "games": 308,
+      "goals": 156,
+      "assists": 33,
+      "points": 189,
+      "penaltyMinutes": 245
+    },
+    {
+      "name": "Ketil Kristiansen",
+      "position": "F",
+      "seasons": 9,
+      "games": 301,
+      "goals": 34,
+      "assists": 49,
+      "points": 83,
+      "penaltyMinutes": 174
+    },
+    {
+      "name": "Mads Hansen",
+      "position": "F",
+      "seasons": 6,
+      "games": 296,
+      "goals": 89,
+      "assists": 173,
+      "points": 262,
+      "penaltyMinutes": 257
+    },
+    {
+      "name": "Geir Østberg",
+      "position": "K",
+      "seasons": 7,
+      "games": 277,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Erik Svendby",
+      "position": "B/F",
+      "seasons": 15,
+      "games": 275,
+      "goals": 94,
+      "assists": 14,
+      "points": 108,
+      "penaltyMinutes": 132
+    },
+    {
+      "name": "Markus Stensrud",
+      "position": "K",
+      "seasons": 5,
+      "games": 274,
+      "goals": 0,
+      "assists": 4,
+      "points": 4,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Ole Arne Langdalen",
+      "position": "F",
+      "seasons": 11,
+      "games": 264,
+      "goals": 53,
+      "assists": 20,
+      "points": 73,
+      "penaltyMinutes": 70
+    },
+    {
+      "name": "Eirik Børresen",
+      "position": "F",
+      "seasons": 6,
+      "games": 257,
+      "goals": 29,
+      "assists": 24,
+      "points": 53,
+      "penaltyMinutes": 80
+    },
+    {
+      "name": "Olav Slåtlandet",
+      "position": "F",
+      "seasons": 12,
+      "games": 255,
+      "goals": 65,
+      "assists": 31,
+      "points": 96,
+      "penaltyMinutes": 98
+    },
+    {
+      "name": "Antti Rahkonen",
+      "position": "B",
+      "seasons": 5,
+      "games": 252,
+      "goals": 52,
+      "assists": 107,
+      "points": 159,
+      "penaltyMinutes": 184
+    },
+    {
+      "name": "Ruben Smith",
+      "position": "K",
+      "seasons": 5,
+      "games": 250,
+      "goals": 0,
+      "assists": 7,
+      "points": 7,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Michael Smithurst",
+      "position": "B",
+      "seasons": 5,
+      "games": 245,
+      "goals": 19,
+      "assists": 62,
+      "points": 81,
+      "penaltyMinutes": 62
+    },
+    {
+      "name": "Øystein Tronrud",
+      "position": "F",
+      "seasons": 7,
+      "games": 237,
+      "goals": 130,
+      "assists": 152,
+      "points": 282,
+      "penaltyMinutes": 222
+    },
+    {
+      "name": "Morten Fjeld",
+      "position": "F",
+      "seasons": 5,
+      "games": 237,
+      "goals": 43,
+      "assists": 90,
+      "points": 133,
+      "penaltyMinutes": 337
+    },
+    {
+      "name": "Remo Martinsen",
+      "position": "K",
+      "seasons": 9,
+      "games": 237,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Oskar Östlund",
+      "position": "K",
+      "seasons": 4,
+      "games": 236,
+      "goals": 0,
+      "assists": 8,
+      "points": 8,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Patrick Eide",
+      "position": "F",
+      "seasons": 7,
+      "games": 231,
+      "goals": 115,
+      "assists": 63,
+      "points": 178,
+      "penaltyMinutes": 60
+    },
+    {
+      "name": "Christian A. Olasveengen",
+      "position": "F",
+      "seasons": 7,
+      "games": 231,
+      "goals": 28,
+      "assists": 40,
+      "points": 68,
+      "penaltyMinutes": 66
+    },
+    {
+      "name": "Ole Fredrik Kirkebye",
+      "position": "B",
+      "seasons": 6,
+      "games": 229,
+      "goals": 8,
+      "assists": 7,
+      "points": 15,
+      "penaltyMinutes": 76
+    },
+    {
+      "name": "Andreas Dahl",
+      "position": "F",
+      "seasons": 5,
+      "games": 228,
+      "goals": 56,
+      "assists": 67,
+      "points": 123,
+      "penaltyMinutes": 116
+    },
+    {
+      "name": "Kristian Forsberg",
+      "position": "F",
+      "seasons": 4,
+      "games": 227,
+      "goals": 38,
+      "assists": 48,
+      "points": 86,
+      "penaltyMinutes": 148
+    },
+    {
+      "name": "Morten Lillehagen",
+      "position": "F",
+      "seasons": 11,
+      "games": 227,
+      "goals": 45,
+      "assists": 6,
+      "points": 51,
+      "penaltyMinutes": 52
+    },
+    {
+      "name": "Samuel Solem",
+      "position": "F",
+      "seasons": 4,
+      "games": 226,
+      "goals": 44,
+      "assists": 61,
+      "points": 105,
+      "penaltyMinutes": 196
+    },
+    {
+      "name": "Pål Martinsen",
+      "position": "F",
+      "seasons": 6,
+      "games": 225,
+      "goals": 67,
+      "assists": 78,
+      "points": 145,
+      "penaltyMinutes": 185
+    },
+    {
+      "name": "Joakim Persson",
+      "position": "F",
+      "seasons": 6,
+      "games": 223,
+      "goals": 82,
+      "assists": 58,
+      "points": 140,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Ørjan Mikkelsen",
+      "position": "F",
+      "seasons": 6,
+      "games": 222,
+      "goals": 12,
+      "assists": 12,
+      "points": 24,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Erik de la Rose",
+      "position": "B",
+      "seasons": 5,
+      "games": 219,
+      "goals": 26,
+      "assists": 116,
+      "points": 142,
+      "penaltyMinutes": 172
+    },
+    {
+      "name": "Rune Gulliksen",
+      "position": "F",
+      "seasons": 6,
+      "games": 217,
+      "goals": 100,
+      "assists": 96,
+      "points": 196,
+      "penaltyMinutes": 88
+    },
+    {
+      "name": "Magnus E. Haugen",
+      "position": "B",
+      "seasons": 6,
+      "games": 212,
+      "goals": 3,
+      "assists": 24,
+      "points": 27,
+      "penaltyMinutes": 90
+    },
+    {
+      "name": "Jan Tore Rønningen",
+      "position": "B",
+      "seasons": 7,
+      "games": 209,
+      "goals": 17,
+      "assists": 24,
+      "points": 41,
+      "penaltyMinutes": 143
+    },
+    {
+      "name": "Simen L. Hansen",
+      "position": "B",
+      "seasons": 6,
+      "games": 209,
+      "goals": 6,
+      "assists": 13,
+      "points": 19,
+      "penaltyMinutes": 48
+    },
+    {
+      "name": "Johnny Bruun",
+      "position": "F",
+      "seasons": 4,
+      "games": 201,
+      "goals": 42,
+      "assists": 58,
+      "points": 100,
+      "penaltyMinutes": 48
+    },
+    {
+      "name": "Martin Åhlberg",
+      "position": "F",
+      "seasons": 5,
+      "games": 194,
+      "goals": 153,
+      "assists": 85,
+      "points": 238,
+      "penaltyMinutes": 86
+    },
+    {
+      "name": "Knut Henrik Spets",
+      "position": "F",
+      "seasons": 4,
+      "games": 190,
+      "goals": 54,
+      "assists": 41,
+      "points": 95,
+      "penaltyMinutes": 86
+    },
+    {
+      "name": "Nathan Martz",
+      "position": "F",
+      "seasons": 4,
+      "games": 189,
+      "goals": 61,
+      "assists": 152,
+      "points": 213,
+      "penaltyMinutes": 457
+    },
+    {
+      "name": "Morten Andersen",
+      "position": "K",
+      "seasons": 8,
+      "games": 188,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Marcus Bryhnisveen",
+      "position": "F",
+      "seasons": 3,
+      "games": 188,
+      "goals": 34,
+      "assists": 31,
+      "points": 65,
+      "penaltyMinutes": 77
+    },
+    {
+      "name": "Kent Inge Kristiansen",
+      "position": "B",
+      "seasons": 7,
+      "games": 187,
+      "goals": 9,
+      "assists": 18,
+      "points": 27,
+      "penaltyMinutes": 106
+    },
+    {
+      "name": "Bjørn Stenberg",
+      "position": "K",
+      "seasons": 10,
+      "games": 186,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Andreas Martinsen",
+      "position": "F",
+      "seasons": 2,
+      "games": 186,
+      "goals": 60,
+      "assists": 107,
+      "points": 167,
+      "penaltyMinutes": 270
+    },
+    {
+      "name": "Robin Dahlstrøm",
+      "position": "F",
+      "seasons": 4,
+      "games": 184,
+      "goals": 62,
+      "assists": 57,
+      "points": 119,
+      "penaltyMinutes": 224
+    },
+    {
+      "name": "Fredrik Lystad Jacobsen",
+      "position": "F",
+      "seasons": 3,
+      "games": 182,
+      "goals": 40,
+      "assists": 46,
+      "points": 86,
+      "penaltyMinutes": 211
+    },
+    {
+      "name": "Sjur Rakstad-Larsen",
+      "position": "F",
+      "seasons": 6,
+      "games": 180,
+      "goals": 16,
+      "assists": 26,
+      "points": 42,
+      "penaltyMinutes": 21
+    },
+    {
+      "name": "Lenny Eriksson",
+      "position": "B",
+      "seasons": 5,
+      "games": 179,
+      "goals": 58,
+      "assists": 113,
+      "points": 171,
+      "penaltyMinutes": 127
+    },
+    {
+      "name": "Kenneth Pappalardo",
+      "position": "F",
+      "seasons": 3,
+      "games": 179,
+      "goals": 39,
+      "assists": 49,
+      "points": 88,
+      "penaltyMinutes": 63
+    },
+    {
+      "name": "Mikael Tjälldèn",
+      "position": "B",
+      "seasons": 4,
+      "games": 178,
+      "goals": 9,
+      "assists": 30,
+      "points": 39,
+      "penaltyMinutes": 271
+    },
+    {
+      "name": "Arne Bergseng",
+      "position": "F",
+      "seasons": 6,
+      "games": 177,
+      "goals": 161,
+      "assists": 134,
+      "points": 295,
+      "penaltyMinutes": 96
+    },
+    {
+      "name": "Sander Hurrød",
+      "position": "B",
+      "seasons": 3,
+      "games": 177,
+      "goals": 21,
+      "assists": 78,
+      "points": 99,
+      "penaltyMinutes": 77
+    },
+    {
+      "name": "Martin Gran",
+      "position": "F",
+      "seasons": 4,
+      "games": 176,
+      "goals": 18,
+      "assists": 18,
+      "points": 36,
+      "penaltyMinutes": 46
+    },
+    {
+      "name": "Kjell Åge Furuholt",
+      "position": "B",
+      "seasons": 14,
+      "games": 176,
+      "goals": 8,
+      "assists": 0,
+      "points": 8,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Hans Persson",
+      "position": "B",
+      "seasons": 5,
+      "games": 174,
+      "goals": 20,
+      "assists": 27,
+      "points": 47,
+      "penaltyMinutes": 46
+    },
+    {
+      "name": "Axel Sandnes",
+      "position": "F",
+      "seasons": 3,
+      "games": 170,
+      "goals": 7,
+      "assists": 15,
+      "points": 22,
+      "penaltyMinutes": 91
+    },
+    {
+      "name": "Morten Rakstad-Larsen",
+      "position": "F/B",
+      "seasons": 10,
+      "games": 169,
+      "goals": 62,
+      "assists": 5,
+      "points": 67,
+      "penaltyMinutes": 47
+    },
+    {
+      "name": "Victor Svensson",
+      "position": "F",
+      "seasons": 3,
+      "games": 168,
+      "goals": 46,
+      "assists": 109,
+      "points": 155,
+      "penaltyMinutes": 142
+    },
+    {
+      "name": "Sverre Rønningen",
+      "position": "B",
+      "seasons": 4,
+      "games": 166,
+      "goals": 19,
+      "assists": 60,
+      "points": 79,
+      "penaltyMinutes": 274
+    },
+    {
+      "name": "Mats B. Olsen",
+      "position": "F",
+      "seasons": 3,
+      "games": 165,
+      "goals": 16,
+      "assists": 25,
+      "points": 41,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Jonas Strand",
+      "position": "K",
+      "seasons": 6,
+      "games": 164,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ole P. Øvergaard",
+      "position": "F",
+      "seasons": 4,
+      "games": 163,
+      "goals": 5,
+      "assists": 16,
+      "points": 21,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Stefan Espeland",
+      "position": "B",
+      "seasons": 3,
+      "games": 163,
+      "goals": 21,
+      "assists": 109,
+      "points": 130,
+      "penaltyMinutes": 118
+    },
+    {
+      "name": "Sander V. Engebråten",
+      "position": "B",
+      "seasons": 5,
+      "games": 161,
+      "goals": 18,
+      "assists": 52,
+      "points": 70,
+      "penaltyMinutes": 72
+    },
+    {
+      "name": "Jonas Djupvik Løvlie",
+      "position": "F",
+      "seasons": 4,
+      "games": 160,
+      "goals": 23,
+      "assists": 37,
+      "points": 60,
+      "penaltyMinutes": 143
+    },
+    {
+      "name": "Tommy Johansen",
+      "position": "K",
+      "seasons": 3,
+      "games": 160,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Simen Saxrud",
+      "position": "F",
+      "seasons": 6,
+      "games": 159,
+      "goals": 11,
+      "assists": 13,
+      "points": 24,
+      "penaltyMinutes": 117
+    },
+    {
+      "name": "Lars Bergseng",
+      "position": "F",
+      "seasons": 5,
+      "games": 158,
+      "goals": 160,
+      "assists": 65,
+      "points": 225,
+      "penaltyMinutes": 247
+    },
+    {
+      "name": "Patrik Bäärnhielm",
+      "position": "B",
+      "seasons": 3,
+      "games": 158,
+      "goals": 12,
+      "assists": 43,
+      "points": 55,
+      "penaltyMinutes": 98
+    },
+    {
+      "name": "Lorentz Holtet",
+      "position": "B",
+      "seasons": 9,
+      "games": 157,
+      "goals": 16,
+      "assists": 3,
+      "points": 19,
+      "penaltyMinutes": 72
+    },
+    {
+      "name": "Eerikki Koivu",
+      "position": "B",
+      "seasons": 3,
+      "games": 154,
+      "goals": 24,
+      "assists": 41,
+      "points": 65,
+      "penaltyMinutes": 250
+    },
+    {
+      "name": "Eskild B. Olsen",
+      "position": "F",
+      "seasons": 4,
+      "games": 151,
+      "goals": 30,
+      "assists": 78,
+      "points": 108,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Petter Thoresen",
+      "position": "F",
+      "seasons": 5,
+      "games": 150,
+      "goals": 64,
+      "assists": 91,
+      "points": 155,
+      "penaltyMinutes": 198
+    },
+    {
+      "name": "Finn Paulsen",
+      "position": "F",
+      "seasons": 10,
+      "games": 148,
+      "goals": 79,
+      "assists": 9,
+      "points": 88,
+      "penaltyMinutes": 62
+    },
+    {
+      "name": "Jørgen Langdalen",
+      "position": "F",
+      "seasons": 5,
+      "games": 145,
+      "goals": 4,
+      "assists": 3,
+      "points": 7,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Mathias Papuga",
+      "position": "B",
+      "seasons": 4,
+      "games": 143,
+      "goals": 5,
+      "assists": 29,
+      "points": 34,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Terje Nordlien",
+      "position": "B",
+      "seasons": 13,
+      "games": 142,
+      "goals": 4,
+      "assists": 0,
+      "points": 4,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Ola Johannessen",
+      "position": "B",
+      "seasons": 3,
+      "games": 141,
+      "goals": 5,
+      "assists": 14,
+      "points": 19,
+      "penaltyMinutes": 66
+    },
+    {
+      "name": "Hampus Gustafsson",
+      "position": "F",
+      "seasons": 3,
+      "games": 139,
+      "goals": 44,
+      "assists": 53,
+      "points": 97,
+      "penaltyMinutes": 183
+    },
+    {
+      "name": "Andrè B. Paulsen",
+      "position": "F",
+      "seasons": 6,
+      "games": 139,
+      "goals": 22,
+      "assists": 21,
+      "points": 43,
+      "penaltyMinutes": 22
+    },
+    {
+      "name": "Patrick Elvsveen",
+      "position": "F",
+      "seasons": 4,
+      "games": 133,
+      "goals": 17,
+      "assists": 17,
+      "points": 34,
+      "penaltyMinutes": 69
+    },
+    {
+      "name": "Sondre Bjerke",
+      "position": "B",
+      "seasons": 3,
+      "games": 131,
+      "goals": 5,
+      "assists": 29,
+      "points": 34,
+      "penaltyMinutes": 61
+    },
+    {
+      "name": "Kjetil Martinsen",
+      "position": "F",
+      "seasons": 2,
+      "games": 130,
+      "goals": 12,
+      "assists": 12,
+      "points": 24,
+      "penaltyMinutes": 54
+    },
+    {
+      "name": "Anders Kolbuholen",
+      "position": "B",
+      "seasons": 3,
+      "games": 130,
+      "goals": 4,
+      "assists": 11,
+      "points": 15,
+      "penaltyMinutes": 40
+    },
+    {
+      "name": "Joe Gatenby",
+      "position": "B",
+      "seasons": 2,
+      "games": 130,
+      "goals": 4,
+      "assists": 33,
+      "points": 37,
+      "penaltyMinutes": 28
+    },
+    {
+      "name": "Torkil Brustad",
+      "position": "F",
+      "seasons": 3,
+      "games": 122,
+      "goals": 17,
+      "assists": 27,
+      "points": 44,
+      "penaltyMinutes": 47
+    },
+    {
+      "name": "Jim Marthinsen",
+      "position": "K",
+      "seasons": 3,
+      "games": 121,
+      "goals": 0,
+      "assists": 4,
+      "points": 4,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Eirik Dagfinrud",
+      "position": "B",
+      "seasons": 3,
+      "games": 120,
+      "goals": 3,
+      "assists": 4,
+      "points": 7,
+      "penaltyMinutes": 83
+    },
+    {
+      "name": "David Aas-Larsen",
+      "position": "F",
+      "seasons": 2,
+      "games": 117,
+      "goals": 13,
+      "assists": 25,
+      "points": 38,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Peter Quenneville",
+      "position": "F",
+      "seasons": 2,
+      "games": 116,
+      "goals": 74,
+      "assists": 83,
+      "points": 157,
+      "penaltyMinutes": 45
+    },
+    {
+      "name": "Terje Kojedal",
+      "position": "F",
+      "seasons": 7,
+      "games": 116,
+      "goals": 80,
+      "assists": 9,
+      "points": 89,
+      "penaltyMinutes": 23
+    },
+    {
+      "name": "Teddy Midttun",
+      "position": "B",
+      "seasons": 4,
+      "games": 116,
+      "goals": 2,
+      "assists": 8,
+      "points": 10,
+      "penaltyMinutes": 134
+    },
+    {
+      "name": "Stig Johansen",
+      "position": "F",
+      "seasons": 3,
+      "games": 115,
+      "goals": 37,
+      "assists": 78,
+      "points": 115,
+      "penaltyMinutes": 70
+    },
+    {
+      "name": "Alexander Reichenberg",
+      "position": "F",
+      "seasons": 2,
+      "games": 115,
+      "goals": 36,
+      "assists": 41,
+      "points": 77,
+      "penaltyMinutes": 43
+    },
+    {
+      "name": "Teemu Kohvakka",
+      "position": "F",
+      "seasons": 2,
+      "games": 114,
+      "goals": 27,
+      "assists": 61,
+      "points": 88,
+      "penaltyMinutes": 121
+    },
+    {
+      "name": "Jan Roger Kristiansen",
+      "position": "F",
+      "seasons": 8,
+      "games": 114,
+      "goals": 7,
+      "assists": 0,
+      "points": 7,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Simen H. Johannessen",
+      "position": "F",
+      "seasons": 3,
+      "games": 113,
+      "goals": 4,
+      "assists": 4,
+      "points": 8,
+      "penaltyMinutes": 63
+    },
+    {
+      "name": "Austin Cangelosi",
+      "position": "F",
+      "seasons": 2,
+      "games": 113,
+      "goals": 46,
+      "assists": 64,
+      "points": 110,
+      "penaltyMinutes": 79
+    },
+    {
+      "name": "Tomas Berg",
+      "position": "F",
+      "seasons": 2,
+      "games": 112,
+      "goals": 60,
+      "assists": 53,
+      "points": 113,
+      "penaltyMinutes": 54
+    },
+    {
+      "name": "Anders Gulliksen",
+      "position": "F",
+      "seasons": 3,
+      "games": 112,
+      "goals": 4,
+      "assists": 11,
+      "points": 15,
+      "penaltyMinutes": 24
+    },
+    {
+      "name": "Roar Skaug",
+      "position": "B",
+      "seasons": 4,
+      "games": 111,
+      "goals": 7,
+      "assists": 6,
+      "points": 13,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Hans Garli Stubrud",
+      "position": "F",
+      "seasons": 4,
+      "games": 110,
+      "goals": 17,
+      "assists": 16,
+      "points": 33,
+      "penaltyMinutes": 52
+    },
+    {
+      "name": "Jonas Göthberg",
+      "position": "B",
+      "seasons": 2,
+      "games": 109,
+      "goals": 15,
+      "assists": 34,
+      "points": 49,
+      "penaltyMinutes": 56
+    },
+    {
+      "name": "Linus Stensson",
+      "position": "F",
+      "seasons": 2,
+      "games": 107,
+      "goals": 35,
+      "assists": 45,
+      "points": 80,
+      "penaltyMinutes": 196
+    },
+    {
+      "name": "Henning Paulsen",
+      "position": "F",
+      "seasons": 4,
+      "games": 107,
+      "goals": 3,
+      "assists": 10,
+      "points": 13,
+      "penaltyMinutes": 100
+    },
+    {
+      "name": "Ole Kristian Kristiansen",
+      "position": "B",
+      "seasons": 9,
+      "games": 105,
+      "goals": 16,
+      "assists": 0,
+      "points": 16,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Andreas Paulsen Aas",
+      "position": "B",
+      "seasons": 4,
+      "games": 103,
+      "goals": 0,
+      "assists": 6,
+      "points": 6,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Jacob L. Noer",
+      "position": "F",
+      "seasons": 4,
+      "games": 102,
+      "goals": 43,
+      "assists": 26,
+      "points": 70,
+      "penaltyMinutes": 56
+    },
+    {
+      "name": "Joakim Andersson",
+      "position": "F",
+      "seasons": 2,
+      "games": 102,
+      "goals": 34,
+      "assists": 24,
+      "points": 58,
+      "penaltyMinutes": 170
+    },
+    {
+      "name": "Per Kristian Jonassen",
+      "position": "B",
+      "seasons": 2,
+      "games": 102,
+      "goals": 15,
+      "assists": 18,
+      "points": 33,
+      "penaltyMinutes": 123
+    },
+    {
+      "name": "Christian Saxrud",
+      "position": "F",
+      "seasons": 4,
+      "games": 102,
+      "goals": 3,
+      "assists": 3,
+      "points": 6,
+      "penaltyMinutes": 116
+    },
+    {
+      "name": "Henrik Petterson",
+      "position": "F",
+      "seasons": 2,
+      "games": 101,
+      "goals": 59,
+      "assists": 38,
+      "points": 97,
+      "penaltyMinutes": 72
+    },
+    {
+      "name": "Mikael Dokken",
+      "position": "F",
+      "seasons": 2,
+      "games": 100,
+      "goals": 10,
+      "assists": 11,
+      "points": 21,
+      "penaltyMinutes": 85
+    },
+    {
+      "name": "Bjørn Johnsen",
+      "position": "B",
+      "seasons": 9,
+      "games": 99,
+      "goals": 9,
+      "assists": 0,
+      "points": 9,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Stein Yttereng",
+      "position": "F",
+      "seasons": 3,
+      "games": 98,
+      "goals": 31,
+      "assists": 17,
+      "points": 48,
+      "penaltyMinutes": 64
+    },
+    {
+      "name": "Rune Botner",
+      "position": "F",
+      "seasons": 3,
+      "games": 98,
+      "goals": 26,
+      "assists": 21,
+      "points": 47,
+      "penaltyMinutes": 32
+    },
+    {
+      "name": "Christian R. Nicolaisen",
+      "position": "F",
+      "seasons": 4,
+      "games": 97,
+      "goals": 8,
+      "assists": 4,
+      "points": 12,
+      "penaltyMinutes": 22
+    },
+    {
+      "name": "Trym Gran",
+      "position": "K",
+      "seasons": 3,
+      "games": 93,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Per Arne Johansen",
+      "position": "F",
+      "seasons": 9,
+      "games": 89,
+      "goals": 46,
+      "assists": 0,
+      "points": 46,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mikkel Søgaard",
+      "position": "B",
+      "seasons": 2,
+      "games": 88,
+      "goals": 5,
+      "assists": 22,
+      "points": 27,
+      "penaltyMinutes": 101
+    },
+    {
+      "name": "Gunnar Bingen",
+      "position": "K",
+      "seasons": 6,
+      "games": 87,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Robin Haglund",
+      "position": "F",
+      "seasons": 2,
+      "games": 85,
+      "goals": 7,
+      "assists": 13,
+      "points": 20,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Svenn Rakstad-Larsen",
+      "position": "F",
+      "seasons": 8,
+      "games": 84,
+      "goals": 41,
+      "assists": 0,
+      "points": 41,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Odd Saugerud",
+      "position": "F",
+      "seasons": 7,
+      "games": 84,
+      "goals": 10,
+      "assists": 1,
+      "points": 11,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Johan Åström",
+      "position": "F",
+      "seasons": 2,
+      "games": 82,
+      "goals": 29,
+      "assists": 16,
+      "points": 45,
+      "penaltyMinutes": 46
+    },
+    {
+      "name": "Lubos Sikela",
+      "position": "B",
+      "seasons": 2,
+      "games": 82,
+      "goals": 11,
+      "assists": 6,
+      "points": 17,
+      "penaltyMinutes": 147
+    },
+    {
+      "name": "Andreas Gröndahl",
+      "position": "B",
+      "seasons": 2,
+      "games": 81,
+      "goals": 24,
+      "assists": 51,
+      "points": 75,
+      "penaltyMinutes": 86
+    },
+    {
+      "name": "Johan Ramstedt",
+      "position": "F",
+      "seasons": 2,
+      "games": 81,
+      "goals": 17,
+      "assists": 52,
+      "points": 69,
+      "penaltyMinutes": 80
+    },
+    {
+      "name": "Steinar Kristiansen",
+      "position": "B",
+      "seasons": 6,
+      "games": 81,
+      "goals": 5,
+      "assists": 0,
+      "points": 5,
+      "penaltyMinutes": 27
+    },
+    {
+      "name": "Karl Even Schøyen",
+      "position": "F",
+      "seasons": 4,
+      "games": 81,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Rasmus Ahlholm",
+      "position": "F",
+      "seasons": 3,
+      "games": 80,
+      "goals": 38,
+      "assists": 62,
+      "points": 100,
+      "penaltyMinutes": 100
+    },
+    {
+      "name": "A.T. Braavold",
+      "position": "B",
+      "seasons": 3,
+      "games": 80,
+      "goals": 2,
+      "assists": 8,
+      "points": 10,
+      "penaltyMinutes": 24
+    },
+    {
+      "name": "Jouri Leonov",
+      "position": "F",
+      "seasons": 3,
+      "games": 78,
+      "goals": 40,
+      "assists": 61,
+      "points": 101,
+      "penaltyMinutes": 87
+    },
+    {
+      "name": "Jakub Kindl",
+      "position": "B",
+      "seasons": 2,
+      "games": 76,
+      "goals": 5,
+      "assists": 34,
+      "points": 39,
+      "penaltyMinutes": 54
+    },
+    {
+      "name": "Nikolai Davydkin",
+      "position": "B",
+      "seasons": 2,
+      "games": 76,
+      "goals": 18,
+      "assists": 19,
+      "points": 37,
+      "penaltyMinutes": 99
+    },
+    {
+      "name": "Kjell Haakonsen",
+      "position": "F",
+      "seasons": 8,
+      "games": 75,
+      "goals": 32,
+      "assists": 0,
+      "points": 32,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Sindre Hallem",
+      "position": "F",
+      "seasons": 3,
+      "games": 75,
+      "goals": 7,
+      "assists": 4,
+      "points": 11,
+      "penaltyMinutes": 41
+    },
+    {
+      "name": "Glenn Ryberg",
+      "position": "F",
+      "seasons": 5,
+      "games": 74,
+      "goals": 1,
+      "assists": 3,
+      "points": 4,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Viktor Kokman",
+      "position": "K",
+      "seasons": 3,
+      "games": 74,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Sindre Larsen",
+      "position": "F",
+      "seasons": 6,
+      "games": 72,
+      "goals": 70,
+      "assists": 0,
+      "points": 70,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Trond Søberg",
+      "position": "K",
+      "seasons": 7,
+      "games": 72,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Aaron Irving",
+      "position": "B",
+      "seasons": 1,
+      "games": 71,
+      "goals": 18,
+      "assists": 36,
+      "points": 54,
+      "penaltyMinutes": 55
+    },
+    {
+      "name": "Harald Bastiansen",
+      "position": "F",
+      "seasons": 2,
+      "games": 70,
+      "goals": 38,
+      "assists": 48,
+      "points": 86,
+      "penaltyMinutes": 56
+    },
+    {
+      "name": "Sven Ole Flensborg",
+      "position": "F",
+      "seasons": 7,
+      "games": 70,
+      "goals": 47,
+      "assists": 0,
+      "points": 47,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Patrick Yetman",
+      "position": "F",
+      "seasons": 3,
+      "games": 69,
+      "goals": 57,
+      "assists": 41,
+      "points": 98,
+      "penaltyMinutes": 38
+    },
+    {
+      "name": "Niklas Fogström",
+      "position": "F",
+      "seasons": 1,
+      "games": 69,
+      "goals": 7,
+      "assists": 22,
+      "points": 29,
+      "penaltyMinutes": 49
+    },
+    {
+      "name": "Blake Cosgrove",
+      "position": "B",
+      "seasons": 2,
+      "games": 69,
+      "goals": 7,
+      "assists": 21,
+      "points": 28,
+      "penaltyMinutes": 100
+    },
+    {
+      "name": "Markus Aas-Eng Mikkelsen",
+      "position": "B",
+      "seasons": 4,
+      "games": 68,
+      "goals": 1,
+      "assists": 5,
+      "points": 6,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Lars Midtlien",
+      "position": "K",
+      "seasons": 2,
+      "games": 68,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Joel Johansson",
+      "position": "B",
+      "seasons": 1,
+      "games": 67,
+      "goals": 19,
+      "assists": 26,
+      "points": 45,
+      "penaltyMinutes": 65
+    },
+    {
+      "name": "Per Ragnar Pettersen",
+      "position": "K",
+      "seasons": 6,
+      "games": 67,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Olle Liss",
+      "position": "F",
+      "seasons": 1,
+      "games": 67,
+      "goals": 15,
+      "assists": 18,
+      "points": 33,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Håkan Åhlund",
+      "position": "F",
+      "seasons": 2,
+      "games": 66,
+      "goals": 12,
+      "assists": 36,
+      "points": 48,
+      "penaltyMinutes": 68
+    },
+    {
+      "name": "Jorma Virtanen",
+      "position": "K",
+      "seasons": 3,
+      "games": 65,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Erik Andersen",
+      "position": "B",
+      "seasons": 3,
+      "games": 64,
+      "goals": 2,
+      "assists": 1,
+      "points": 3,
+      "penaltyMinutes": 24
+    },
+    {
+      "name": "Josh Nicholls",
+      "position": "F",
+      "seasons": 2,
+      "games": 63,
+      "goals": 34,
+      "assists": 25,
+      "points": 59,
+      "penaltyMinutes": 34
+    },
+    {
+      "name": "Amil Krupic",
+      "position": "B",
+      "seasons": 1,
+      "games": 63,
+      "goals": 6,
+      "assists": 41,
+      "points": 47,
+      "penaltyMinutes": 18
+    },
+    {
+      "name": "Knut Ivar Berger",
+      "position": "F",
+      "seasons": 5,
+      "games": 62,
+      "goals": 27,
+      "assists": 0,
+      "points": 27,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Cole Schneider",
+      "position": "F",
+      "seasons": 1,
+      "games": 60,
+      "goals": 39,
+      "assists": 39,
+      "points": 78,
+      "penaltyMinutes": 35
+    },
+    {
+      "name": "Chris Leinweber",
+      "position": "B",
+      "seasons": 1,
+      "games": 60,
+      "goals": 11,
+      "assists": 16,
+      "points": 27,
+      "penaltyMinutes": 100
+    },
+    {
+      "name": "Perry Johnson",
+      "position": "B",
+      "seasons": 1,
+      "games": 60,
+      "goals": 4,
+      "assists": 18,
+      "points": 22,
+      "penaltyMinutes": 48
+    },
+    {
+      "name": "Vetle Lindstad",
+      "position": "B",
+      "seasons": 2,
+      "games": 60,
+      "goals": 0,
+      "assists": 4,
+      "points": 4,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Daniel Jørgensen",
+      "position": "K",
+      "seasons": 2,
+      "games": 60,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Henrik Fayen-Vestavik",
+      "position": "K",
+      "seasons": 2,
+      "games": 60,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Sergei Pushkov",
+      "position": "F",
+      "seasons": 1,
+      "games": 59,
+      "goals": 15,
+      "assists": 32,
+      "points": 47,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Martin Thelander",
+      "position": "B",
+      "seasons": 1,
+      "games": 59,
+      "goals": 4,
+      "assists": 19,
+      "points": 23,
+      "penaltyMinutes": 158
+    },
+    {
+      "name": "Tor Arne Eriksen",
+      "position": "F",
+      "seasons": 7,
+      "games": 59,
+      "goals": 9,
+      "assists": 0,
+      "points": 9,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Villiam Strøm",
+      "position": "F",
+      "seasons": 1,
+      "games": 58,
+      "goals": 3,
+      "assists": 7,
+      "points": 10,
+      "penaltyMinutes": 30
+    },
+    {
+      "name": "Isac Skedung",
+      "position": "F",
+      "seasons": 1,
+      "games": 58,
+      "goals": 7,
+      "assists": 8,
+      "points": 15,
+      "penaltyMinutes": 37
+    },
+    {
+      "name": "Øyvind Løsåmoen",
+      "position": "B",
+      "seasons": 2,
+      "games": 57,
+      "goals": 27,
+      "assists": 27,
+      "points": 54,
+      "penaltyMinutes": 93
+    },
+    {
+      "name": "Scott Hotham",
+      "position": "B",
+      "seasons": 1,
+      "games": 57,
+      "goals": 8,
+      "assists": 23,
+      "points": 31,
+      "penaltyMinutes": 83
+    },
+    {
+      "name": "Petter Birkheim",
+      "position": "B",
+      "seasons": 1,
+      "games": 57,
+      "goals": 4,
+      "assists": 9,
+      "points": 13,
+      "penaltyMinutes": 34
+    },
+    {
+      "name": "Jon T. Rømoen",
+      "position": "B",
+      "seasons": 1,
+      "games": 57,
+      "goals": 1,
+      "assists": 3,
+      "points": 4,
+      "penaltyMinutes": 24
+    },
+    {
+      "name": "Daniel Wälitalo",
+      "position": "K",
+      "seasons": 1,
+      "games": 57,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jesper Engelin",
+      "position": "K",
+      "seasons": 1,
+      "games": 57,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jonathan Hafsmoe",
+      "position": "F",
+      "seasons": 4,
+      "games": 56,
+      "goals": 2,
+      "assists": 6,
+      "points": 8,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Mika Rautio",
+      "position": "K",
+      "seasons": 1,
+      "games": 56,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Fredrik Fleischer",
+      "position": "F",
+      "seasons": 2,
+      "games": 56,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Ari Turpeinen",
+      "position": "F",
+      "seasons": 1,
+      "games": 55,
+      "goals": 17,
+      "assists": 32,
+      "points": 49,
+      "penaltyMinutes": 92
+    },
+    {
+      "name": "Derek Eastman",
+      "position": "B",
+      "seasons": 1,
+      "games": 55,
+      "goals": 10,
+      "assists": 28,
+      "points": 38,
+      "penaltyMinutes": 118
+    },
+    {
+      "name": "Kurt Davis",
+      "position": "B",
+      "seasons": 2,
+      "games": 55,
+      "goals": 9,
+      "assists": 25,
+      "points": 34,
+      "penaltyMinutes": 38
+    },
+    {
+      "name": "Colin Campbell",
+      "position": "F",
+      "seasons": 1,
+      "games": 55,
+      "goals": 25,
+      "assists": 20,
+      "points": 45,
+      "penaltyMinutes": 18
+    },
+    {
+      "name": "Anton Karlsson",
+      "position": "F",
+      "seasons": 1,
+      "games": 54,
+      "goals": 16,
+      "assists": 17,
+      "points": 33,
+      "penaltyMinutes": 44
+    },
+    {
+      "name": "Isak Hansen",
+      "position": "B",
+      "seasons": 2,
+      "games": 54,
+      "goals": 3,
+      "assists": 7,
+      "points": 10,
+      "penaltyMinutes": 47
+    },
+    {
+      "name": "Andrew Engelage",
+      "position": "K",
+      "seasons": 1,
+      "games": 54,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Kodie Curran",
+      "position": "B",
+      "seasons": 1,
+      "games": 52,
+      "goals": 24,
+      "assists": 49,
+      "points": 73,
+      "penaltyMinutes": 77
+    },
+    {
+      "name": "Urban Omark",
+      "position": "F",
+      "seasons": 1,
+      "games": 52,
+      "goals": 12,
+      "assists": 31,
+      "points": 43,
+      "penaltyMinutes": 38
+    },
+    {
+      "name": "Daniel Østbye",
+      "position": "B",
+      "seasons": 3,
+      "games": 52,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Håvard Salsten",
+      "position": "F",
+      "seasons": 2,
+      "games": 51,
+      "goals": 18,
+      "assists": 31,
+      "points": 49,
+      "penaltyMinutes": 45
+    },
+    {
+      "name": "Fredrik Möller",
+      "position": "F",
+      "seasons": 1,
+      "games": 50,
+      "goals": 19,
+      "assists": 13,
+      "points": 32,
+      "penaltyMinutes": 52
+    },
+    {
+      "name": "Trevor Koenig",
+      "position": "K",
+      "seasons": 1,
+      "games": 50,
+      "goals": 0,
+      "assists": 11,
+      "points": 11,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Luke Moffatt",
+      "position": "F",
+      "seasons": 1,
+      "games": 49,
+      "goals": 26,
+      "assists": 32,
+      "points": 58,
+      "penaltyMinutes": 30
+    },
+    {
+      "name": "Johan Älgekrans",
+      "position": "F",
+      "seasons": 1,
+      "games": 49,
+      "goals": 8,
+      "assists": 30,
+      "points": 38,
+      "penaltyMinutes": 32
+    },
+    {
+      "name": "Antti Hildèn",
+      "position": "F",
+      "seasons": 1,
+      "games": 49,
+      "goals": 10,
+      "assists": 19,
+      "points": 29,
+      "penaltyMinutes": 67
+    },
+    {
+      "name": "Jaakko Harikkala",
+      "position": "B",
+      "seasons": 1,
+      "games": 49,
+      "goals": 8,
+      "assists": 18,
+      "points": 26,
+      "penaltyMinutes": 107
+    },
+    {
+      "name": "Fredrik Börjesson",
+      "position": "B/F",
+      "seasons": 1,
+      "games": 49,
+      "goals": 8,
+      "assists": 15,
+      "points": 23,
+      "penaltyMinutes": 48
+    },
+    {
+      "name": "Robert Borgquist",
+      "position": "K",
+      "seasons": 1,
+      "games": 49,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Stian Hoelseth",
+      "position": "B",
+      "seasons": 2,
+      "games": 49,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mikael Bohman",
+      "position": "K",
+      "seasons": 1,
+      "games": 49,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "André Manskov Hansen",
+      "position": "F",
+      "seasons": 1,
+      "games": 48,
+      "goals": 20,
+      "assists": 15,
+      "points": 35,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Roar Johansen",
+      "position": "K",
+      "seasons": 6,
+      "games": 48,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Linus Johansson",
+      "position": "F",
+      "seasons": 1,
+      "games": 47,
+      "goals": 18,
+      "assists": 42,
+      "points": 60,
+      "penaltyMinutes": 95
+    },
+    {
+      "name": "Martin Johnsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 47,
+      "goals": 16,
+      "assists": 36,
+      "points": 52,
+      "penaltyMinutes": 31
+    },
+    {
+      "name": "Konsta Mäkinen",
+      "position": "F",
+      "seasons": 1,
+      "games": 47,
+      "goals": 3,
+      "assists": 6,
+      "points": 9,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Marius Mathisrud",
+      "position": "F",
+      "seasons": 1,
+      "games": 47,
+      "goals": 2,
+      "assists": 4,
+      "points": 6,
+      "penaltyMinutes": 45
+    },
+    {
+      "name": "Greg Barber",
+      "position": "F",
+      "seasons": 1,
+      "games": 46,
+      "goals": 23,
+      "assists": 23,
+      "points": 46,
+      "penaltyMinutes": 73
+    },
+    {
+      "name": "Daniel Hermansson",
+      "position": "F",
+      "seasons": 1,
+      "games": 46,
+      "goals": 7,
+      "assists": 13,
+      "points": 20,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Lars Lundin",
+      "position": "B",
+      "seasons": 1,
+      "games": 46,
+      "goals": 2,
+      "assists": 6,
+      "points": 8,
+      "penaltyMinutes": 32
+    },
+    {
+      "name": "Geir Velta",
+      "position": "x",
+      "seasons": 3,
+      "games": 46,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Henrik Höglund",
+      "position": "F",
+      "seasons": 1,
+      "games": 45,
+      "goals": 17,
+      "assists": 19,
+      "points": 36,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Simen Sveen",
+      "position": "F",
+      "seasons": 3,
+      "games": 45,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Stig Frydenlund",
+      "position": "F",
+      "seasons": 3,
+      "games": 45,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Bjørn Lien",
+      "position": "x",
+      "seasons": 3,
+      "games": 44,
+      "goals": 4,
+      "assists": 4,
+      "points": 8,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Phil Marinaccio",
+      "position": "F",
+      "seasons": 2,
+      "games": 43,
+      "goals": 16,
+      "assists": 21,
+      "points": 37,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Bjørn Elisenberg",
+      "position": "B",
+      "seasons": 4,
+      "games": 43,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Matt Prapavessis",
+      "position": "B",
+      "seasons": 1,
+      "games": 42,
+      "goals": 12,
+      "assists": 35,
+      "points": 47,
+      "penaltyMinutes": 26
+    },
+    {
+      "name": "Jan Kristiansen",
+      "position": "F",
+      "seasons": 5,
+      "games": 42,
+      "goals": 17,
+      "assists": 0,
+      "points": 17,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mike Zanutto",
+      "position": "F",
+      "seasons": 1,
+      "games": 41,
+      "goals": 14,
+      "assists": 12,
+      "points": 26,
+      "penaltyMinutes": 62
+    },
+    {
+      "name": "Chris Zanutto",
+      "position": "B",
+      "seasons": 1,
+      "games": 41,
+      "goals": 3,
+      "assists": 1,
+      "points": 4,
+      "penaltyMinutes": 121
+    },
+    {
+      "name": "Tony Cameranesi",
+      "position": "F",
+      "seasons": 1,
+      "games": 40,
+      "goals": 18,
+      "assists": 30,
+      "points": 48,
+      "penaltyMinutes": 50
+    },
+    {
+      "name": "Tom Cato Myhre",
+      "position": "F",
+      "seasons": 1,
+      "games": 40,
+      "goals": 7,
+      "assists": 9,
+      "points": 16,
+      "penaltyMinutes": 24
+    },
+    {
+      "name": "Joonas Rönnberg",
+      "position": "B",
+      "seasons": 1,
+      "games": 40,
+      "goals": 2,
+      "assists": 11,
+      "points": 13,
+      "penaltyMinutes": 38
+    },
+    {
+      "name": "Luka Gračnar",
+      "position": "K",
+      "seasons": 1,
+      "games": 40,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Widar Rom",
+      "position": "F",
+      "seasons": 5,
+      "games": 39,
+      "goals": 5,
+      "assists": 0,
+      "points": 5,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Zach O'Brien",
+      "position": "F",
+      "seasons": 1,
+      "games": 39,
+      "goals": 10,
+      "assists": 27,
+      "points": 37,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Mikael Ståhl",
+      "position": "F",
+      "seasons": 1,
+      "games": 38,
+      "goals": 36,
+      "assists": 22,
+      "points": 58,
+      "penaltyMinutes": 64
+    },
+    {
+      "name": "Martin Polivka",
+      "position": "B",
+      "seasons": 1,
+      "games": 38,
+      "goals": 6,
+      "assists": 10,
+      "points": 16,
+      "penaltyMinutes": 58
+    },
+    {
+      "name": "Tom Johansen",
+      "position": "F",
+      "seasons": 1,
+      "games": 38,
+      "goals": 9,
+      "assists": 6,
+      "points": 15,
+      "penaltyMinutes": 22
+    },
+    {
+      "name": "Håkon Molstad",
+      "position": "B",
+      "seasons": 4,
+      "games": 37,
+      "goals": 4,
+      "assists": 0,
+      "points": 4,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Terje Johnsen",
+      "position": "x",
+      "seasons": 5,
+      "games": 37,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Oliver Nilsgård",
+      "position": "F",
+      "seasons": 1,
+      "games": 37,
+      "goals": 2,
+      "assists": 6,
+      "points": 8,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Claes Westberg",
+      "position": "B",
+      "seasons": 1,
+      "games": 36,
+      "goals": 11,
+      "assists": 18,
+      "points": 29,
+      "penaltyMinutes": 44
+    },
+    {
+      "name": "Jan Karlsson",
+      "position": "B",
+      "seasons": 1,
+      "games": 36,
+      "goals": 7,
+      "assists": 12,
+      "points": 19,
+      "penaltyMinutes": 54
+    },
+    {
+      "name": "Pål Kristiansen",
+      "position": "B",
+      "seasons": 1,
+      "games": 36,
+      "goals": 4,
+      "assists": 4,
+      "points": 8,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Geir Falck",
+      "position": "x",
+      "seasons": 2,
+      "games": 36,
+      "goals": 5,
+      "assists": 1,
+      "points": 6,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Magne Nordnes",
+      "position": "F",
+      "seasons": 1,
+      "games": 36,
+      "goals": 1,
+      "assists": 2,
+      "points": 3,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Knut Melby",
+      "position": "B",
+      "seasons": 4,
+      "games": 36,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Freddie Øvergaard",
+      "position": "K",
+      "seasons": 4,
+      "games": 36,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Joey Tenute",
+      "position": "F",
+      "seasons": 1,
+      "games": 35,
+      "goals": 10,
+      "assists": 19,
+      "points": 29,
+      "penaltyMinutes": 40
+    },
+    {
+      "name": "Tommy Marthinsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 35,
+      "goals": 1,
+      "assists": 5,
+      "points": 6,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Espen Kristiansen",
+      "position": "B",
+      "seasons": 4,
+      "games": 35,
+      "goals": 1,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Ove Haagensen",
+      "position": "K",
+      "seasons": 4,
+      "games": 35,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Frode Stenberg",
+      "position": "F",
+      "seasons": 5,
+      "games": 34,
+      "goals": 16,
+      "assists": 0,
+      "points": 16,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "David Booth",
+      "position": "F",
+      "seasons": 1,
+      "games": 33,
+      "goals": 19,
+      "assists": 22,
+      "points": 41,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Jens Jakobs",
+      "position": "F",
+      "seasons": 1,
+      "games": 33,
+      "goals": 4,
+      "assists": 17,
+      "points": 21,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Espen Larsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 33,
+      "goals": 4,
+      "assists": 0,
+      "points": 4,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Tom Ivar Hesbråten",
+      "position": "F",
+      "seasons": 1,
+      "games": 33,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Bryan Schmidt",
+      "position": "B",
+      "seasons": 1,
+      "games": 32,
+      "goals": 4,
+      "assists": 7,
+      "points": 11,
+      "penaltyMinutes": 34
+    },
+    {
+      "name": "Vladislav Vlcek",
+      "position": "B",
+      "seasons": 1,
+      "games": 32,
+      "goals": 3,
+      "assists": 2,
+      "points": 5,
+      "penaltyMinutes": 18
+    },
+    {
+      "name": "Øystein Bertheussen",
+      "position": "F",
+      "seasons": 1,
+      "games": 32,
+      "goals": 3,
+      "assists": 2,
+      "points": 5,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Kurt Sandnes",
+      "position": "F",
+      "seasons": 1,
+      "games": 32,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Øyvind Eriksen",
+      "position": "B",
+      "seasons": 1,
+      "games": 32,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Igor Alexandrov",
+      "position": "F",
+      "seasons": 1,
+      "games": 31,
+      "goals": 16,
+      "assists": 13,
+      "points": 29,
+      "penaltyMinutes": 77
+    },
+    {
+      "name": "Ronny Tajet",
+      "position": "F",
+      "seasons": 3,
+      "games": 31,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Rune Bratteland",
+      "position": "F",
+      "seasons": 1,
+      "games": 31,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Justin Cox",
+      "position": "F",
+      "seasons": 1,
+      "games": 30,
+      "goals": 8,
+      "assists": 13,
+      "points": 21,
+      "penaltyMinutes": 41
+    },
+    {
+      "name": "Chris Marinucci",
+      "position": "F",
+      "seasons": 1,
+      "games": 30,
+      "goals": 10,
+      "assists": 10,
+      "points": 20,
+      "penaltyMinutes": 67
+    },
+    {
+      "name": "Morten Odden",
+      "position": "F",
+      "seasons": 1,
+      "games": 30,
+      "goals": 8,
+      "assists": 10,
+      "points": 18,
+      "penaltyMinutes": 42
+    },
+    {
+      "name": "Jarkko Väänänen",
+      "position": "F",
+      "seasons": 1,
+      "games": 30,
+      "goals": 7,
+      "assists": 9,
+      "points": 16,
+      "penaltyMinutes": 29
+    },
+    {
+      "name": "Jørgen Salsten",
+      "position": "B",
+      "seasons": 1,
+      "games": 30,
+      "goals": 3,
+      "assists": 4,
+      "points": 7,
+      "penaltyMinutes": 22
+    },
+    {
+      "name": "Christian Olsvik",
+      "position": "F",
+      "seasons": 1,
+      "games": 30,
+      "goals": 5,
+      "assists": 2,
+      "points": 7,
+      "penaltyMinutes": 10
+    },
+    {
+      "name": "Sander V-Kjelsås",
+      "position": "B",
+      "seasons": 3,
+      "games": 30,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Are Lundefaret",
+      "position": "F",
+      "seasons": 1,
+      "games": 29,
+      "goals": 12,
+      "assists": 7,
+      "points": 19,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Trond Langdalen",
+      "position": "F",
+      "seasons": 3,
+      "games": 29,
+      "goals": 11,
+      "assists": 0,
+      "points": 11,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Magnus Mjørud",
+      "position": "F",
+      "seasons": 3,
+      "games": 29,
+      "goals": 1,
+      "assists": 2,
+      "points": 3,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Øyvind Ryberg",
+      "position": "x",
+      "seasons": 3,
+      "games": 29,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Erik Bekkelund",
+      "position": "F",
+      "seasons": 4,
+      "games": 29,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Juha Jokiharju",
+      "position": "F",
+      "seasons": 1,
+      "games": 28,
+      "goals": 8,
+      "assists": 21,
+      "points": 29,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Bjørn Nyhus",
+      "position": "F",
+      "seasons": 3,
+      "games": 28,
+      "goals": 14,
+      "assists": 0,
+      "points": 14,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Dimitri Lavrentiev",
+      "position": "F",
+      "seasons": 1,
+      "games": 28,
+      "goals": 6,
+      "assists": 6,
+      "points": 12,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Tore E. Tangen",
+      "position": "F",
+      "seasons": 5,
+      "games": 28,
+      "goals": 7,
+      "assists": 0,
+      "points": 7,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Simon Tombre",
+      "position": "F",
+      "seasons": 1,
+      "games": 28,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Anders Soløst",
+      "position": "K",
+      "seasons": 1,
+      "games": 28,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Linus Morken",
+      "position": "F",
+      "seasons": 2,
+      "games": 28,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Knut Moe",
+      "position": "B/F",
+      "seasons": 4,
+      "games": 27,
+      "goals": 6,
+      "assists": 0,
+      "points": 6,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jake Newton",
+      "position": "B",
+      "seasons": 1,
+      "games": 26,
+      "goals": 6,
+      "assists": 10,
+      "points": 16,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Pavel Setikovsky",
+      "position": "B",
+      "seasons": 1,
+      "games": 26,
+      "goals": 7,
+      "assists": 5,
+      "points": 12,
+      "penaltyMinutes": 16
+    },
+    {
+      "name": "Ján Brejčák",
+      "position": "B",
+      "seasons": 1,
+      "games": 26,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 82
+    },
+    {
+      "name": "Tom-Rune Edvardsen",
+      "position": "F",
+      "seasons": 3,
+      "games": 26,
+      "goals": 1,
+      "assists": 2,
+      "points": 3,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Clas Jensen",
+      "position": "B",
+      "seasons": 3,
+      "games": 26,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Emil Frøshaug",
+      "position": "B",
+      "seasons": 1,
+      "games": 26,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Lane Scheidl",
+      "position": "F",
+      "seasons": 1,
+      "games": 25,
+      "goals": 4,
+      "assists": 9,
+      "points": 13,
+      "penaltyMinutes": 45
+    },
+    {
+      "name": "Per Henrik Nygård",
+      "position": "B",
+      "seasons": 1,
+      "games": 24,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mika Risbakken",
+      "position": "B",
+      "seasons": 2,
+      "games": 24,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Brent Gauvreau",
+      "position": "F",
+      "seasons": 1,
+      "games": 23,
+      "goals": 14,
+      "assists": 11,
+      "points": 25,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Troy Josephs",
+      "position": "F",
+      "seasons": 1,
+      "games": 23,
+      "goals": 12,
+      "assists": 11,
+      "points": 23,
+      "penaltyMinutes": 46
+    },
+    {
+      "name": "Maxim Trépanier",
+      "position": "F",
+      "seasons": 1,
+      "games": 23,
+      "goals": 5,
+      "assists": 8,
+      "points": 13,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Ole E. Andersen",
+      "position": "B",
+      "seasons": 1,
+      "games": 23,
+      "goals": 4,
+      "assists": 7,
+      "points": 11,
+      "penaltyMinutes": 20
+    },
+    {
+      "name": "Mike Wilson",
+      "position": "F",
+      "seasons": 1,
+      "games": 23,
+      "goals": 1,
+      "assists": 2,
+      "points": 3,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Håkon Engh",
+      "position": "B",
+      "seasons": 2,
+      "games": 23,
+      "goals": 0,
+      "assists": 3,
+      "points": 3,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Oddbjørn Engeli",
+      "position": "B",
+      "seasons": 3,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Espen Ottersen",
+      "position": "F",
+      "seasons": 1,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Per Aulie",
+      "position": "K",
+      "seasons": 2,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ole Birger Mæhlum",
+      "position": "B",
+      "seasons": 2,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ronny Martinsen",
+      "position": "K",
+      "seasons": 2,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Åge Hole",
+      "position": "x",
+      "seasons": 3,
+      "games": 23,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Chris Clark",
+      "position": "F",
+      "seasons": 1,
+      "games": 22,
+      "goals": 14,
+      "assists": 8,
+      "points": 22,
+      "penaltyMinutes": 100
+    },
+    {
+      "name": "Lennart Gunnarsson",
+      "position": "F",
+      "seasons": 1,
+      "games": 22,
+      "goals": 7,
+      "assists": 9,
+      "points": 16,
+      "penaltyMinutes": 42
+    },
+    {
+      "name": "Marko Toivonen",
+      "position": "B",
+      "seasons": 1,
+      "games": 22,
+      "goals": 5,
+      "assists": 7,
+      "points": 12,
+      "penaltyMinutes": 50
+    },
+    {
+      "name": "Lars Erik Larsson",
+      "position": "B",
+      "seasons": 1,
+      "games": 22,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Mathias K. Strand",
+      "position": "F",
+      "seasons": 1,
+      "games": 22,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Mikkel Stensrud",
+      "position": "B",
+      "seasons": 2,
+      "games": 21,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Fredrik Arnesen",
+      "position": "F",
+      "seasons": 2,
+      "games": 21,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Alex D'Orio",
+      "position": "K",
+      "seasons": 1,
+      "games": 21,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Vidar Nerem",
+      "position": "K",
+      "seasons": 2,
+      "games": 21,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mathias S. Arnkværn",
+      "position": "K",
+      "seasons": 2,
+      "games": 21,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Björn Eide",
+      "position": "B",
+      "seasons": 1,
+      "games": 20,
+      "goals": 3,
+      "assists": 2,
+      "points": 5,
+      "penaltyMinutes": 14
+    },
+    {
+      "name": "Magnus Lindahl",
+      "position": "F",
+      "seasons": 1,
+      "games": 20,
+      "goals": 1,
+      "assists": 4,
+      "points": 5,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Knut Sandvold",
+      "position": "F",
+      "seasons": 3,
+      "games": 20,
+      "goals": 3,
+      "assists": 0,
+      "points": 3,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ole Indergaard",
+      "position": "F",
+      "seasons": 1,
+      "games": 20,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Kåre Nordnes",
+      "position": "B",
+      "seasons": 1,
+      "games": 20,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Christer Stramrud",
+      "position": "F",
+      "seasons": 1,
+      "games": 20,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Miles Gendron",
+      "position": "B",
+      "seasons": 1,
+      "games": 19,
+      "goals": 3,
+      "assists": 5,
+      "points": 8,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Kenney Morrison",
+      "position": "B",
+      "seasons": 1,
+      "games": 19,
+      "goals": 0,
+      "assists": 5,
+      "points": 5,
+      "penaltyMinutes": 42
+    },
+    {
+      "name": "Evan Buitenhuis",
+      "position": "K",
+      "seasons": 1,
+      "games": 19,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Douglas Osness",
+      "position": "F",
+      "seasons": 1,
+      "games": 18,
+      "goals": 13,
+      "assists": 5,
+      "points": 18,
+      "penaltyMinutes": 39
+    },
+    {
+      "name": "Bert Lindberg",
+      "position": "B",
+      "seasons": 1,
+      "games": 18,
+      "goals": 4,
+      "assists": 4,
+      "points": 8,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Svein Solvik",
+      "position": "x",
+      "seasons": 3,
+      "games": 18,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Arne Johansen",
+      "position": "B",
+      "seasons": 2,
+      "games": 18,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Erik Amundsen",
+      "position": "F",
+      "seasons": 3,
+      "games": 18,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Lars Erik Kjær",
+      "position": "K",
+      "seasons": 1,
+      "games": 18,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Tjus Koblar",
+      "position": "F",
+      "seasons": 1,
+      "games": 18,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Petteri Nummelin",
+      "position": "B",
+      "seasons": 1,
+      "games": 17,
+      "goals": 3,
+      "assists": 10,
+      "points": 13,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Stein Lorang Andersen",
+      "position": "B/F",
+      "seasons": 2,
+      "games": 17,
+      "goals": 5,
+      "assists": 0,
+      "points": 5,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Even Langdalen",
+      "position": "F",
+      "seasons": 1,
+      "games": 17,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ville Immonen",
+      "position": "F",
+      "seasons": 1,
+      "games": 15,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 12
+    },
+    {
+      "name": "Martin Brandsnes",
+      "position": "F",
+      "seasons": 2,
+      "games": 15,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Stein André Hagen",
+      "position": "B",
+      "seasons": 2,
+      "games": 15,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Bjørn Hval",
+      "position": "",
+      "seasons": 2,
+      "games": 14,
+      "goals": 3,
+      "assists": 0,
+      "points": 3,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Emil L. Sæteraas",
+      "position": "B",
+      "seasons": 1,
+      "games": 13,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Jan Erik Hauge",
+      "position": "F",
+      "seasons": 2,
+      "games": 13,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ole M. Johansen",
+      "position": "K",
+      "seasons": 3,
+      "games": 13,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Kristoffer Sandnes",
+      "position": "F",
+      "seasons": 1,
+      "games": 13,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Sverre Nergaard",
+      "position": "x",
+      "seasons": 1,
+      "games": 12,
+      "goals": 3,
+      "assists": 0,
+      "points": 3,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Dahlsveen",
+      "position": "B",
+      "seasons": 2,
+      "games": 12,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ørjan Pettersson",
+      "position": "F",
+      "seasons": 1,
+      "games": 12,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 8
+    },
+    {
+      "name": "Kristian J. Blystad",
+      "position": "F",
+      "seasons": 1,
+      "games": 12,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Egil Borg",
+      "position": "x",
+      "seasons": 2,
+      "games": 11,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ola S. Hurthi",
+      "position": "B",
+      "seasons": 1,
+      "games": 11,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Anders Haugum",
+      "position": "K",
+      "seasons": 1,
+      "games": 11,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Steinar Mikkelsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 10,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Hermann Aarflot",
+      "position": "B",
+      "seasons": 2,
+      "games": 10,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Bjørn Stenberg",
+      "position": "F",
+      "seasons": 1,
+      "games": 9,
+      "goals": 2,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Alexander M. Kristiansen",
+      "position": "B/F",
+      "seasons": 2,
+      "games": 9,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Elias Antonsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 9,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Rune Frankmoen",
+      "position": "x",
+      "seasons": 2,
+      "games": 9,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mathias F. Karlsen",
+      "position": "B",
+      "seasons": 1,
+      "games": 9,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Kaj Erik Nordtømme",
+      "position": "K",
+      "seasons": 1,
+      "games": 8,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Tony Bråtebæk",
+      "position": "F",
+      "seasons": 1,
+      "games": 8,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Mathias Holst Jenssen",
+      "position": "F",
+      "seasons": 2,
+      "games": 7,
+      "goals": 1,
+      "assists": 1,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Espen Botheim",
+      "position": "F",
+      "seasons": 1,
+      "games": 7,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Dima Smirnov",
+      "position": "F",
+      "seasons": 1,
+      "games": 7,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Bjørn Gulbrandsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 7,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Svein Roar Hansen",
+      "position": "F",
+      "seasons": 3,
+      "games": 7,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 6
+    },
+    {
+      "name": "Jens U. Bacher",
+      "position": "B",
+      "seasons": 1,
+      "games": 7,
+      "goals": 0,
+      "assists": 1,
+      "points": 0,
+      "penaltyMinutes": 2
+    },
+    {
+      "name": "Harald Amble",
+      "position": "x",
+      "seasons": 1,
+      "games": 7,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Alexander Hellnemo",
+      "position": "K",
+      "seasons": 1,
+      "games": 7,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Svein Holm",
+      "position": "B",
+      "seasons": 1,
+      "games": 6,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ola Sætrang",
+      "position": "F",
+      "seasons": 2,
+      "games": 6,
+      "goals": 1,
+      "assists": 0,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Thomas Bækken",
+      "position": "F",
+      "seasons": 1,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Andreas Røykås Marthinsen",
+      "position": "B",
+      "seasons": 1,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Tom Gulbrandsen",
+      "position": "",
+      "seasons": 1,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Trond Fossum",
+      "position": "L",
+      "seasons": 1,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ove Hammerstad",
+      "position": "B",
+      "seasons": 1,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Sondre Berg",
+      "position": "B",
+      "seasons": 2,
+      "games": 6,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Chris Crane",
+      "position": "F",
+      "seasons": 1,
+      "games": 5,
+      "goals": 1,
+      "assists": 3,
+      "points": 4,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Anders Jonassen",
+      "position": "F",
+      "seasons": 2,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Magnus Vestlund",
+      "position": "K",
+      "seasons": 1,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "David Langseth",
+      "position": "F",
+      "seasons": 1,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Stian Høygård",
+      "position": "F",
+      "seasons": 1,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Morten A. Hoel",
+      "position": "K",
+      "seasons": 3,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Bjørn I. Baggethun",
+      "position": "K",
+      "seasons": 3,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Noah Bjerke-Narud",
+      "position": "B",
+      "seasons": 2,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Amund Martinsen",
+      "position": "K",
+      "seasons": 2,
+      "games": 5,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Stig Sæther",
+      "position": "F",
+      "seasons": 1,
+      "games": 4,
+      "goals": 1,
+      "assists": 0,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Christian B. Melaas",
+      "position": "K",
+      "seasons": 1,
+      "games": 4,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Petter Torp",
+      "position": "F",
+      "seasons": 1,
+      "games": 4,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Amund Bergsodden",
+      "position": "B",
+      "seasons": 1,
+      "games": 4,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Lars Petter Hansen",
+      "position": "K",
+      "seasons": 1,
+      "games": 4,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Marcus Fjeld",
+      "position": "F",
+      "seasons": 1,
+      "games": 4,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Tobias Degvold",
+      "position": "B",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 2,
+      "points": 2,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Manuel Ågren",
+      "position": "F",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Åge Dahl",
+      "position": "B",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Andrè Evensen",
+      "position": "F",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Magnus Mo Bjørnseth",
+      "position": "K",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Ronny Enger",
+      "position": "K",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Christian Øygarden",
+      "position": "B",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Karl M. Sælid",
+      "position": "B",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Even H. Christiansen",
+      "position": "B",
+      "seasons": 1,
+      "games": 3,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Daniel Despotovic",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Aaron Gavey",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 25
+    },
+    {
+      "name": "Edvard Karlsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "C. van Doorn",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Kristian Dahlø",
+      "position": "K",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Jan Einar Olsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Edgar Malman",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Roy Andersen",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Martin Lindstad",
+      "position": "B",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Kåre Ådne Olsen",
+      "position": "K",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Erik Larssen",
+      "position": "x",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Simen Hallem Sønsthagen",
+      "position": "K",
+      "seasons": 2,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Lukas Tjore",
+      "position": "F",
+      "seasons": 1,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Joachim Barmoen",
+      "position": "F",
+      "seasons": 2,
+      "games": 2,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Anders Myrvold",
+      "position": "B",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 4
+    },
+    {
+      "name": "Marcus L. Hoen",
+      "position": "B",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "S. Heggelund-Nilsen",
+      "position": "K",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Simen Hulleberg",
+      "position": "F",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Shayan Zahedi",
+      "position": "K",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Daniel Nielsen",
+      "position": "F",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Anders Vold",
+      "position": "B",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Alexander Storsveen",
+      "position": "B",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Hans J. Engh",
+      "position": "K",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Fredrik H. Bråthen",
+      "position": "K",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Rudi A. Syversen",
+      "position": "F",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Marcus Rønning",
+      "position": "F",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 0,
+      "points": 0,
+      "penaltyMinutes": 0
+    },
+    {
+      "name": "Sander Rønning",
+      "position": "F",
+      "seasons": 1,
+      "games": 1,
+      "goals": 0,
+      "assists": 1,
+      "points": 1,
+      "penaltyMinutes": 0
+    }
+  ]
+}

@@ -153,3 +153,73 @@
 @media (prefers-reduced-motion:reduce) {
   .ha-category { transform:none !important; }
 }
+
+/* Deep history review: separate source evidence from publication completeness. */
+.ha-extra-actions { display:grid; gap:8px; margin:0 0 26px; }
+.ha-extra-actions button {
+  width:100%; display:flex; align-items:center; gap:11px; min-height:57px;
+  padding:10px 13px; border:1px solid rgba(242,201,76,.18); border-radius:13px;
+  text-align:left; cursor:pointer; background:linear-gradient(120deg,#122f5a,#0b254a);
+}
+.ha-extra-actions button > svg:first-child { flex:0 0 auto; color:#f2c94c; }
+.ha-extra-actions button > svg:last-child { flex:0 0 auto; margin-left:auto; color:#adc5de; }
+.ha-extra-actions button > span { display:flex; flex-direction:column; gap:2px; }
+.ha-extra-actions strong { font-size:12px; font-weight:850; }
+.ha-extra-actions small { color:#b4c8e5; font-size:10px; }
+.ha-role-source-note { margin:8px 0 16px; color:#a8c1df; font-size:10px; line-height:1.6; }
+.ha-role-source-note a, .ha-person-stats a { color:#f4d576; text-decoration:underline; }
+.ha-season-audit-inline { background:#122c52; border:1px solid rgba(242,201,76,.19); border-radius:13px; padding:12px 13px; margin:12px 0 20px; }
+.ha-season-audit-inline > strong { color:#efcf7d; font-size:12px; }
+.ha-season-audit-inline > p { font-size:10px; margin:7px 0 0; color:#cedced; }
+.ha-season-audit-inline details { margin-top:8px; font-size:10px; color:#c0d3e9; }
+.ha-season-audit-inline summary { cursor:pointer; color:#f7d47c; font-weight:800; padding:5px 0; }
+.ha-season-audit-inline details p { margin:5px 0; font-size:10px; }
+.ha-person-stats { border:1px solid rgba(242,201,76,.22); border-radius:14px; background:linear-gradient(110deg,#173e6c,#0c2449); padding:15px; }
+.ha-person-stats p { color:#b6cee9; font-size:10px; margin:9px 0; }
+.ha-person-stats a { display:inline-flex; align-items:center; gap:5px; font-size:10px; }
+.ha-person-stat-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; margin:12px 0; }
+.ha-person-stat-grid div { text-align:center; border-radius:10px; background:rgba(255,255,255,.055); padding:11px 4px; }
+.ha-person-stat-grid strong { display:block; font-weight:900; color:#f3d16d; font-size:20px; }
+.ha-person-stat-grid span { display:block; font-size:9px; color:#b4c9e5; margin-top:3px; }
+.ha-audit-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:14px 0; }
+.ha-audit-grid div { padding:13px 7px; background:linear-gradient(145deg,#15335e,#0b2448); border:1px solid var(--line); border-radius:12px; text-align:center; }
+.ha-audit-grid strong { display:block; font-size:21px; font-weight:900; color:#f3d372; }
+.ha-audit-grid span { display:block; font-size:9px; line-height:1.35; color:#b5c9e1; margin-top:5px; }
+.ha-audit-toggle { cursor:pointer; }
+.ha-audit-toggle input { accent-color:#f2c94c; }
+.ha-audit-seasons { display:grid; gap:8px; margin:10px 0 18px; }
+.ha-audit-season { padding:11px; background:#0c2348; border:1px solid var(--line); border-radius:12px; }
+.ha-audit-season-top { display:flex; align-items:center; gap:8px; width:100%; padding:0 0 8px; border:0; background:none; text-align:left; cursor:pointer; }
+.ha-audit-season-top strong { flex:1; font-size:12px; }
+.ha-audit-season-top span { font-size:9px; font-weight:800; }
+.ha-audit-open { color:#efcc76; }
+.ha-audit-done { color:#83d4aa; }
+.ha-audit-season-top svg { color:#9cb7d1; }
+.ha-audit-labels { display:flex; flex-wrap:wrap; gap:5px; }
+.ha-audit-labels span { color:#adbfdb; background:rgba(255,255,255,.055); border-radius:6px; padding:4px 6px; font-size:9px; }
+.ha-audit-season details { margin-top:8px; font-size:10px; color:#bdcde5; }
+.ha-audit-season summary { cursor:pointer; font-weight:800; color:#f3d377; }
+.ha-audit-season details p { font-size:10px; margin:5px 0 0; }
+.ha-number-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; max-height:275px; overflow-y:auto; margin:9px 0 16px; }
+.ha-number-grid button { min-width:0; background:#10284f; border:1px solid rgba(255,255,255,.12); border-radius:9px; padding:10px 1px; cursor:pointer; }
+.ha-number-grid button.active { border-color:#f5cb64; background:#4a451f; }
+.ha-number-grid strong { display:block; font-size:17px; color:#f6db85; }
+.ha-number-grid span { display:block; font-size:8px; color:#a7bfdc; margin-top:3px; }
+.ha-number-detail { border:1px solid rgba(245,209,104,.24); background:linear-gradient(145deg,#102e56,#0a2248); padding:17px; border-radius:15px; }
+.ha-number-large { display:block; font-size:45px; line-height:1.1; color:#f6d375; margin:9px 0 14px; }
+.ha-number-detail > p { font-size:11px; color:#b6cce5; }
+.ha-career-header, .ha-career-row { display:grid; grid-template-columns:minmax(0,2.4fr) repeat(4,minmax(0,.65fr)); gap:2px; align-items:center; }
+.ha-career-header { color:#e5cc83; text-transform:uppercase; font-size:9px; padding:10px 7px; font-weight:900; }
+.ha-career-header span:not(:first-child), .ha-career-row > strong, .ha-career-row > span:not(:first-child) { text-align:center; }
+.ha-career-table { display:grid; gap:4px; }
+.ha-career-row { min-height:42px; background:#0f294f; border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:5px 7px; font-size:10px; }
+.ha-career-row > button, .ha-career-row > span:first-child { display:flex; align-items:center; gap:5px; min-width:0; text-align:left; border:0; background:transparent; font-size:10px; padding:1px; }
+.ha-career-row > button svg { flex:0 0 auto; color:#9dbae0; }
+.ha-career-row small { font-size:9px; color:#f4d06d; min-width:13px; }
+.ha-career-row strong { color:#f6dc8c; font-size:11px; }
+@media (max-width:385px) {
+ .ha-audit-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .ha-number-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+ .ha-career-row, .ha-career-header { grid-template-columns:minmax(0,2.1fr) repeat(4,minmax(0,.6fr)); font-size:9px; }
+ .ha-person-stat-grid strong { font-size:16px; }
+}

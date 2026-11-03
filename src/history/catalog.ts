@@ -134,6 +134,7 @@ import {
   resolveTimelineResearch,
 } from './researchResolutions'
 import { historySources } from './sources'
+import { auditedMilestones } from './auditedMilestones'
 import type { ArchiveEntityKind, HistoryArchive } from './types'
 
 export interface HistoryCategory {
@@ -271,5 +272,5 @@ export const historyArchive: HistoryArchive = {
   arenas: [...earlyArenas, ...arenas1977To1984, ...arenas1990To1994, ...additionalHistoricArenas, ...domesticHistoricArenas],
   europe: allEuropeCampaigns,
   records: [...records1961To1967, ...records1967To1977, ...records1977To1984, ...records1984To1990, ...records1990To1994, ...records1994To1997, ...records1997To2000, ...records2000To2005, ...records2005To2010, ...records2010To2015, ...records2015To2020, ...modernHistoryRecords, ...records2024Detailed],
-  timeline: rawTimeline.map(resolveTimelineResearch),
+  timeline: [...rawTimeline.map(resolveTimelineResearch), ...auditedMilestones],
 }

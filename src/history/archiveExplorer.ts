@@ -1,5 +1,6 @@
 import { historyArchive } from './catalog'
-import type { ArchiveBase, ArchiveEntityKind, ArchiveLink, HistoryArchive } from './types'
+import { coachTerms, captainTerms, coachChronologySource, captainChronologySource } from './leadershipChronology'
+import type { ArchiveBase, ArchiveLink, HistoryArchive } from './types'
 
 export type BrowsableKind = 'season' | 'honour' | 'jersey' | 'legend' | 'player' | 'arena' | 'europe' | 'record' | 'timeline'
 const collectionKeys: Record<BrowsableKind, keyof HistoryArchive> = {
@@ -14,7 +15,7 @@ const collectionKeys: Record<BrowsableKind, keyof HistoryArchive> = {
   timeline: 'timeline',
 }
 
-export function isBrowsableKind(kind: ArchiveEntityKind): kind is BrowsableKind {
+export function isBrowsableKind(kind: string): kind is BrowsableKind {
   return Object.prototype.hasOwnProperty.call(collectionKeys, kind)
 }
 
@@ -72,9 +73,10 @@ export function archiveRelationships(kind: BrowsableKind, item: ArchiveBase): Ar
     collected.push(
       ...season.honourIds.map((id) => ({ kind: 'honour' as const, id })),
       ...season.jerseyIds.map((id) => ({ kind: 'jersey' as const, id })),
+      ...historyArchive.jerseys.filter((jersey) => jersey.seasonIds.includes(season.id)).map((jersey) => ({ kind: 'jersey' as const, id: jersey.id })),
       ...season.arenaIds.map((id) => ({ kind: 'arena' as const, id })),
       ...season.notableMomentIds.map((id) => ({ kind: 'timeline' as const, id })),
-      ...season.roster.slice(0, 35).map((person) => ({ kind: 'player' as const, id: person.personId })),
+      ...season.roster.map((person) => ({ kind: 'player' as const, id: person.personId })),
     )
   } else if (kind === 'jersey') {
     const jersey = item as (typeof historyArchive.jerseys)[number]
@@ -199,36 +201,29 @@ export const historyChapters: HistoryChapter[] = [
   },
 ]
 
+
+function displayLeadershipYears(from: number, to: number) {
+  const short = (value: number) => String((value + 1) % 100).padStart(2, '0')
+  const first = `${from}/${short(from)}`
+  const last = `${to}/${short(to)}`
+  return from === to ? first : `${first}–${last}`
+}
+
 export const sourceRoleLists = {
   captain: {
-    title: 'Kapteiner', sourceUrl:'https://silarkivet.no/tidslinje/kapteiner/',
-    entries: [
-      ['Per Arne Kristiansen','1982–86'],['Åge Ellingsen','1986–87, 1989–90, 1991–94'],
-      ['Harald Bastiansen','1987–88'],['Øystein Tronrud','1988–89'],
-      ['Peter Madach','1990–91'],['Petter Salsten','1994–98'],
-      ['Ole Eskild Dahlstrøm','1998–99'],['Carl Oscar Bøe Andersen','1999–00'],
-      ['Michael Smithurst','2000–03'],['Mikael Tjälldén','2003–06'],
-      ['Mattias Livf','2006–10'],['Pål Johnsen','2010–13'],
-      ['Mads Hansen','2013–15'],['Christian Larrivée','2015–17'],
-      ['Patrick Thoresen','2017, 2018–24'],['Kodie Curran','2017–18'],['Jacob Berglund','fra 2024'],
-    ] as [string,string][],
+    title: 'Kapteiner',
+    sourceUrl: captainChronologySource,
+    entries: captainTerms.map((term): [string, string] => [
+      term.name,
+      displayLeadershipYears(term.fromSeason, term.toSeason) + (term.note ? ' · ' + term.note : ''),
+    ]),
   },
   coach: {
-    title: 'Trenere',sourceUrl:'https://silarkivet.no/tidslinje/trenere/',
-    entries: [
-      ['Per Ragnar Pettersen','1976–77'],['Svenn Rakstad-Larsen','1977–79'],
-      ['Mats Axelsson','1979–80'],['Steinar Johansen / J.F. Stenberg / M. Rakstad-Larsen','1980–81'],
-      ['Hans Westberg','1981–83'],['Kåre Syversen','1983'],
-      ['M. Lillehagen / S. Johansen m.fl.','1983–84'],['Lasse Beckmann','1984–87'],
-      ['Lenny Eriksson','1987–90'],['M. Lillehagen / O.R. Holmen','1990–91'],
-      ['Lennart Åhlberg','1991–94'],['Göran Sjöberg','1994–95'],
-      ['Petter Thoresen','1995–2000, 2005–07, fra 2022'],
-      ['Alexander Smirnov / Rune Gulliksen','2000–01'],['Rune Gulliksen','2001–02, 2009–10, 2014'],
-      ['Petter Salsten','2002, 2003–05'],['Lars Molin','2002–03'],
-      ['Alexander Smirnov / T. Orskaug','2007–09'],
-      ['Peter Johansson','2010–11'],['Michael Smithurst','2011–14'],
-      ['Alexander Smirnov','2014–16'],['Sjur Robert Nilsen','2016–17'],
-      ['Fredrik Söderström','2017–19'],['Miikka Elomo','2019–20'],['Anders Gjøse','2020–22'],
-    ] as [string,string][],
+    title: 'Trenere',
+    sourceUrl: coachChronologySource,
+    entries: coachTerms.map((term): [string, string] => [
+      term.name,
+      displayLeadershipYears(term.fromSeason, term.toSeason) + (term.note ? ' · ' + term.note : ''),
+    ]),
   },
 } as const
