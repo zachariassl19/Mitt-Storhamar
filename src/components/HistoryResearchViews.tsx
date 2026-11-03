@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, ChevronRight, ExternalLink, Search, ShieldCheck, Shirt, Users } from 'lucide-react'
-import { careerTotals, careerTotalsSource } from '../history/careerTotals'
+import { careerTotals, careerTotalsSource, careerStatDiscrepancies, careerNamesRepeated } from '../history/careerTotals'
 import { historyAuditSummary, seasonAudit } from '../history/coverageAudit'
 import { numberIndex, officialNumberSource } from '../history/numberIndex'
 import { historyArchive } from '../history/catalog'
@@ -99,23 +99,35 @@ export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPers
 type StatKey = 'games' | 'points' | 'goals' | 'assists'
 export function CareerTotalsPage({ back, openPerson }: { back:()=>void;openPerson:OpenPerson }) {
   const [sort,setSort]=useState<StatKey>('games')
-  const ordered=useMemo(()=>[...careerTotals].sort((a,b)=>b[sort]-a[sort]),[sort])
+  const [query,setQuery]=useState('')
+  const [visibleCount,setVisibleCount]=useState(60)
+  const ordered=useMemo(()=>{
+    const clean=query.toLocaleLowerCase('nb-NO').trim()
+    return [...careerTotals]
+      .filter((entry)=>entry.name.toLocaleLowerCase('nb-NO').includes(clean))
+      .sort((a,b)=>b[sort]-a[sort] || a.name.localeCompare(b.name,'nb-NO'))
+  },[sort,query])
   const sorter: {key:StatKey;label:string}[] = [
     {key:'games',label:'Kamper'},{key:'points',label:'Poeng'},{key:'goals',label:'Mål'},{key:'assists',label:'Assist'},
   ]
   return <section className="ha-shell">
     <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til Historie</button>
-    <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">SIL-ARKIVET · A JOUR ETTER 2025/26</span><h1>Adelskalenderen</h1><p>Dokumenterte karrieretall for 30 historiske Storhamar-profiler. Flere spillere og hele tabellen finnes hos SIL-arkivet.</p></div></div>
-    <div className="ha-pill-filters">{sorter.map((item)=><button key={item.key} className={sort===item.key?'active':''} onClick={()=>setSort(item.key)}>{item.label}</button>)}</div>
+    <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">SIL-ARKIVET · A JOUR ETTER 2025/26</span><h1>Adelskalenderen</h1><p>Alle {careerTotals.length} dokumenterte rader fra SIL-arkivets samlede karrieretabell. Tallene er historiske og ikke live-statistikk for 2026/27.</p></div></div>
+    <label className="ha-search"><Search size={17}/><input aria-label="Søk i den historiske adelskalenderen" value={query} onChange={(e)=>{setQuery(e.target.value);setVisibleCount(60)}} placeholder="Søk etter spiller…"/></label>
+    <div className="ha-pill-filters">{sorter.map((item)=><button key={item.key} className={sort===item.key?'active':''} onClick={()=>{setSort(item.key);setVisibleCount(60)}}>{item.label}</button>)}</div>
+    <p className="ha-results-count">{ordered.length} registreringer · viser {Math.min(ordered.length,visibleCount)}</p>
     <div className="ha-career-header"><span>Spiller</span><span>K</span><span>M</span><span>A</span><span>P</span></div>
-    <div className="ha-career-table">{ordered.map((entry,index)=>{
-      const profile=personProfile(entry.name)
-      return <div key={entry.name} className="ha-career-row">
-        {profile ? <button onClick={()=>openPerson(profile.kind,profile.id)}><small>{index+1}</small>{entry.name}<ChevronRight size={12}/></button> : <span><small>{index+1}</small>{entry.name}</span>}
+    <div className="ha-career-table">{ordered.slice(0,visibleCount).map((entry,index)=>{
+      const duplicate=careerNamesRepeated.includes(entry.name)
+      const profile=duplicate ? null : personProfile(entry.name)
+      const discrepancy=entry.goals+entry.assists !== entry.points
+      return <div key={entry.name+'-'+index} className={'ha-career-row '+(discrepancy?'ha-career-discrepancy':'')}>
+        {profile ? <button onClick={()=>openPerson(profile.kind,profile.id)}><small>{index+1}</small>{entry.name}<ChevronRight size={12}/></button> : <span><small>{index+1}</small>{entry.name}{duplicate ? ' *' : ''}</span>}
         <strong>{entry.games}</strong><span>{entry.goals}</span><span>{entry.assists}</span><strong>{entry.points}</strong>
       </div>
     })}</div>
-    <p className="ha-topic-note">K = kamper, M = mål, A = målgivende pasninger, P = poeng. Dette er SIL-arkivets historiske totaler til og med 2025/26 og ikke oppdaterte live-tall for 2026/27.</p>
-    <a className="ha-source-link" href={careerTotalsSource} rel="noopener noreferrer" target="_blank">Se hele offisielle adelskalenderen hos SIL-arkivet <ExternalLink size={15}/></a>
+    {visibleCount<ordered.length && <button className="ha-load-more" onClick={()=>setVisibleCount((n)=>n+60)}>Vis flere ({ordered.length-visibleCount} gjenstår) <ChevronRight size={17}/></button>}
+    <p className="ha-topic-note">K = kamper, M = mål, A = målgivende pasninger, P = poeng. Den historiske tabellen inneholder {careerStatDiscrepancies.length} rader hvor M + A ikke stemmer med oppgitt P i SIL-kilden. Disse er markert i tabellen og ikke korrigert uten dokumentasjon. {careerNamesRepeated.length} navn forekommer flere ganger og er ikke automatisk koblet til én personprofil.</p>
+    <a className="ha-source-link" href={careerTotalsSource} rel="noopener noreferrer" target="_blank">Åpne originaltabellen hos SIL-arkivet <ExternalLink size={15}/></a>
   </section>
 }
