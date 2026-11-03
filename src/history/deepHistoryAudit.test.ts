@@ -5,6 +5,7 @@ import { historyAuditSummary, linkedSeasonJerseys, seasonAudit, seasonHistoryCov
 import { coachTerms, captainTerms, leadersForSeason } from './leadershipChronology'
 import { numberIndex, documentedNumberRows, officialNumberSourceIssues } from './numberIndex'
 import { archiveRelationships } from './archiveExplorer'
+import { seasonIndexEntries, officialSeasonIndex } from './seasonSourceIndex'
 
 describe('Storhamar historical source control', () => {
   it('reviews all 69 completed-era seasons without hiding missing data', () => {
@@ -17,6 +18,19 @@ describe('Storhamar historical source control', () => {
     const early = seasonHistoryCoverage(historyArchive.seasons.find((item)=>item.id==='season-1957-58')!)
     expect(early.issues.some((issue)=>issue.includes('spillerstall'))).toBe(true)
     expect(seasonAudit.find((item)=>item.id==='season-2020-21')?.isPandemicException).toBe(true)
+  })
+
+  it('indexes 69 SIL season pages, including early Hedmarksliga without inventing a playoff', () => {
+    expect(seasonIndexEntries).toHaveLength(69)
+    expect(officialSeasonIndex('season-2025-26')).toMatchObject({
+      placement:'1. plass', postSeason:'MESTER', leadingPlayer:'Jacob Berglund',
+      leadingStatistic:'70p',
+    })
+    expect(officialSeasonIndex('season-1959-60')).toMatchObject({
+      placement:'1. pl. «Hedmarksligaen»',postSeason:null,
+      leadingPlayer:'Svenn Rakstad-Larsen',leadingStatistic:'*9 m.',
+    })
+    expect(seasonIndexEntries.every((item)=>item.sourceUrl.startsWith('https://silarkivet.no/'))).toBe(true)
   })
 
   it('includes reciprocal historical jersey connections on season pages', () => {
