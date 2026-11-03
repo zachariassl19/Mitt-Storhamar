@@ -61,7 +61,7 @@ export const historyAudit = {
       newerOfficialVariantsTracked: officialJerseyLabels.length,
       archiveJerseys: historyArchive.jerseys.length,
       archiveJerseysWithRealImages: historyArchive.jerseys.filter((jersey) => jersey.media.length > 0).length,
-      openResearch: ['Dedikert 2025/26 CHL-drakt er ikke opprettet uten en sikker draktkilde.'],
+      openResearch: ['Nyere draktvarianter for den pågående sesongen 2026/27 føres ikke som ferdig historie før sesongen er avsluttet.'],
     },
     rafters: {
       canonicalLegends: canonicalRafterLegendIds.length,
