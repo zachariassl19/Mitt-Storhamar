@@ -11,6 +11,8 @@ const recentJerseyIds = [
   'jersey-2025-preseason-hamar',
   'jersey-2025-pink-cancer',
   'jersey-2025-hockey-classic',
+  'jersey-2025-26-chl-home',
+  'jersey-2025-26-chl-away',
 ]
 
 describe('History 1–7 full-control pass', () => {
