@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft,
   CalendarDays,
@@ -34,6 +34,7 @@ import { games } from './data/games'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
+import { confirmedHistoricalAttendance } from './lib/historicalAttendance'
 import { gameFeatureClassNames, gameFeatures, gameStatusClass } from './lib/gamePresentation'
 import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
@@ -335,7 +336,7 @@ export default function AppV2() {
                   openGame={openGame}
                 />
               )}
-              {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} />}
+              {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} trips={trips} onSaveTrip={persistTrip} />}
               {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
               {active === 'history' && <HistoryPage />}
               {active === 'more' && (
@@ -460,47 +461,26 @@ function HistoricalAttendanceButtons({ record, onYes, onNo }: {
   )
 }
 
-function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord }: {
+function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord, trips, onSaveTrip }: {
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
   openGame: (game: Game) => void
   records: Record<string, GameDayRecord>
   onSaveRecord: (record: GameDayRecord) => void
+  trips: Trip[]
+  onSaveTrip: (trip: Trip) => void
 }) {
   const [filter, setFilter] = useState<'all' | 'past' | 'future'>('all')
   const now = Date.now()
   const past = games.filter((game) => new Date(game.startsAt).getTime() < now)
   const future = games.filter((game) => new Date(game.startsAt).getTime() >= now)
 
-  function openHistoricalGame(game: Game) {
-    const existing = records[game.id]
-    if (!(existing?.completed && existing.attendanceActual === 'attended')) {
-      const nowIso = new Date().toISOString()
-      onSaveRecord({
-        ...(existing ?? blankGameDayRecord(game.id)),
-        gameId: game.id,
-        attendanceActual: 'attended',
-        completed: false,
-        completedAt: undefined,
-        updatedAt: nowIso,
-      })
+  function markHistoricalAttendance(game: Game, actual: 'attended' | 'not_attended') {
+    onSaveRecord(confirmedHistoricalAttendance(game.id, actual, records[game.id]))
+    const existingTrip = tripForGame(trips, game.id)
+    if (existingTrip && existingTrip.status !== (actual === 'attended' ? 'completed' : 'planned')) {
+      onSaveTrip({ ...existingTrip, status: actual === 'attended' ? 'completed' : 'planned', updatedAt: new Date().toISOString() })
     }
-    openGame(game)
-  }
-
-  function markHistoricalNotAttended(game: Game) {
-    const existing = records[game.id]
-    const nowIso = new Date().toISOString()
-    onSaveRecord({
-      ...(existing ?? blankGameDayRecord(game.id)),
-      gameId: game.id,
-      attendanceActual: 'not_attended',
-      entryType: 'unknown',
-      ticketCost: null,
-      completed: true,
-      completedAt: existing?.completed && existing.attendanceActual === 'not_attended' && existing.completedAt ? existing.completedAt : nowIso,
-      updatedAt: nowIso,
-    })
   }
 
   return (
@@ -521,7 +501,7 @@ function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord }:
       {filter !== 'future' && past.length > 0 && <><div className="games-subheading past-heading"><span>TIDLIGERE KAMPER</span><strong>{past.length}</strong></div><div className="game-card-list">{[...past].reverse().map((game) => {
         const record = records[game.id]
         const plan = currentPlan(game.id)
-        return <article className={`card full-game-card past-game ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, record, now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} actual={record?.completed ? record.attendanceActual : undefined} /><HistoricalAttendanceButtons record={record} onYes={() => openHistoricalGame(game)} onNo={() => markHistoricalNotAttended(game)} /></article>
+        return <article className={`card full-game-card past-game ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, record, now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} actual={record?.completed ? record.attendanceActual : undefined} /><HistoricalAttendanceButtons record={record} onYes={() => markHistoricalAttendance(game, 'attended')} onNo={() => markHistoricalAttendance(game, 'not_attended')} /></article>
       })}</div></>}
     </section>
   )
@@ -547,11 +527,17 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
   const future = temporalState === 'FUTURE' || temporalState === 'GAME_DAY_BEFORE_START'
   const features = gameFeatures(game)
   const travelPlannerRef = useRef<TravelPlannerHandle>(null)
+  const completionRef = useRef<GameDayCompletionHandle>(null)
   const [saveFeedback, setSaveFeedback] = useState<{ success: boolean; message: string } | null>(null)
 
-  function saveTripFromBottom() {
-    const result = travelPlannerRef.current?.save()
-    if (result) setSaveFeedback(result)
+  function saveAllFromBottom() {
+    // A finished game saves attendance, ticket and the travel form in one action.
+    const attendance = completionRef.current?.save()
+    const result = travelPlannerRef.current?.save(attendance ? attendance.attendanceActual === 'attended' : undefined)
+    if (!result) return
+    setSaveFeedback(result.success
+      ? { success: true, message: attendance ? 'Hele kampdagen er lagret. Oppmøte, billett og reise er oppdatert.' : result.message }
+      : { success: false, message: attendance ? `Oppmøte og billett er lagret, men reisen mangler: ${result.message}` : result.message })
   }
 
   return (
@@ -580,23 +566,22 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
       {canConfirmAttendance(game) && (
         <>
           <GameDayCompletion
+            ref={completionRef}
             game={game}
             record={record}
-            trip={trip}
             smartEvents={smartEvents}
             onSaveRecord={onSaveRecord}
-            onSaveTrip={onSaveTrip}
           />
           <GamePurchases game={game} purchases={purchases} onSave={onSavePurchase} onDelete={onDeletePurchase} />
         </>
       )}
 
       <article className="card detail-card game-final-save-card">
-        <div className="card-heading"><div><span className="eyebrow">AVSLUTT</span><h2>Lagre reisen</h2></div></div>
-        <p className="travel-footnote">Reisen og reisefølget lagres her. Kjøp lagres når du legger dem til. Oppmøte bekreftes under «Fullfør kampdagen».</p>
+        <div className="card-heading"><div><span className="eyebrow">AVSLUTT</span><h2>{canConfirmAttendance(game) ? 'Lagre kampdagen' : 'Lagre reisen'}</h2></div></div>
+        <p className="travel-footnote">{canConfirmAttendance(game) ? 'Oppmøte, billett, reise og reisefølge lagres samlet her.' : 'Reise og reisefølge lagres her.'} Kjøp lagres når du legger dem til.</p>
         {saveFeedback && <p role="status" className={saveFeedback.success ? 'save-success' : 'save-warning'}>{saveFeedback.message}</p>}
-        <button className="primary-action full-width unified-travel-save" onClick={saveTripFromBottom}>
-          <Save size={18} /> Lagre hele reisen
+        <button className="primary-action full-width unified-travel-save" onClick={saveAllFromBottom}>
+          <Save size={18} /> {canConfirmAttendance(game) ? 'Lagre hele kampdagen' : 'Lagre hele reisen'}
         </button>
         {saveFeedback?.success && (
           <button className="secondary-action full-width game-final-back" onClick={onBack}>
@@ -791,14 +776,14 @@ function SmartGameDayPanel({ game, events, record, onEvent }: {
   )
 }
 
-function GameDayCompletion({ game, record, trip, smartEvents, onSaveRecord, onSaveTrip }: {
+type GameDayCompletionHandle = { save: () => GameDayRecord }
+
+const GameDayCompletion = forwardRef<GameDayCompletionHandle, {
   game: Game
   record?: GameDayRecord
-  trip?: Trip
   smartEvents: SmartGameDayEvent[]
   onSaveRecord: (record: GameDayRecord) => void
-  onSaveTrip: (trip: Trip) => void
-}) {
+}>(function GameDayCompletion({ game, record, smartEvents, onSaveRecord }, ref) {
   const [draft, setDraft] = useState<GameDayRecord>(() => record ? { ...record } : blankGameDayRecord(game.id))
   const [message, setMessage] = useState('')
   const gpsSuggested = shouldSuggestAttendance(game, smartEvents)
@@ -818,9 +803,11 @@ function GameDayCompletion({ game, record, trip, smartEvents, onSaveRecord, onSa
     const next: GameDayRecord = { ...draft, completed: true, completedAt: now, updatedAt: now }
     onSaveRecord(next)
     setDraft(next)
-    if (next.attendanceActual === 'attended' && trip) onSaveTrip({ ...trip, status: 'completed', updatedAt: now })
-    setMessage(next.attendanceActual === 'attended' ? 'Kampdagen er fullført. Kampen teller nå i Min Storhamar.' : 'Kampdagen er lagret. Kampen teller ikke som sett.')
+    setMessage(next.attendanceActual === 'attended' ? 'Oppmøte bekreftet. Kampen teller nå i Min Storhamar.' : 'Oppmøte lagret. Kampen teller ikke som sett.')
+    return next
   }
+
+  useImperativeHandle(ref, () => ({ save: complete }))
 
   return (
     <article className="card detail-card post-game-card">
@@ -830,11 +817,10 @@ function GameDayCompletion({ game, record, trip, smartEvents, onSaveRecord, onSa
       {draft.attendanceActual === 'attended' && <div className="post-game-fields"><label><span>Inngangstype</span><select value={draft.entryType} onChange={(event) => setDraft((current) => ({ ...current, entryType: event.target.value as EntryType, ticketCost: event.target.value === 'work_accreditation' && current.ticketCost == null ? 0 : current.ticketCost }))}>{entryOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label><label><span>Billettkostnad</span><input type="number" min="0" inputMode="decimal" placeholder="Ukjent" value={draft.ticketCost ?? ''} onChange={(event) => setDraft((current) => ({ ...current, ticketCost: numberOrNull(event.target.value) }))} /></label></div>}
       {draft.completed && <div className={`completed-summary ${draft.attendanceActual}`}><strong>{actualLabel(draft.attendanceActual)}</strong>{draft.attendanceActual === 'attended' && <span>{entryLabel(draft.entryType)} · {draft.ticketCost == null ? 'ukjent pris' : formatMoney(draft.ticketCost)}</span>}</div>}
       {message && <p className="save-success">{message}</p>}
-      <button className="primary-action full-width" onClick={complete}><CheckCircle2 size={17} /> {draft.completed ? 'Lagre endringer' : 'Fullfør kampdagen'}</button>
-      <p className="travel-footnote">Kun en fullført kampdag med «Jeg var der» teller som kamp sett. En tidligere planlagt «Ja» påvirker ikke statistikken.</p>
+      <p className="travel-footnote">Oppmøte og billett lagres med «Lagre hele kampdagen» nederst på siden. Du kan også registrere «Ja» eller «Nei» direkte i kamplisten.</p>
     </article>
   )
-}
+})
 
 function CareerPage({ hubData, trips, records, purchases }: { hubData: HubExport | null; trips: Trip[]; records: Record<string, GameDayRecord>; purchases: GamePurchase[] }) {
   const local = confirmedLocalCareerStats(records, trips)
@@ -889,7 +875,7 @@ function GameRow({ game, plan, onOpen, actual }: { game: Game; plan: AttendanceP
     <button className="game-row game-row-with-logos" onClick={onOpen} type="button">
       <div className="date-block"><strong>{new Intl.DateTimeFormat('nb-NO', { day: 'numeric', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</strong><span>{new Intl.DateTimeFormat('nb-NO', { month: 'short', timeZone: 'Europe/Oslo' }).format(new Date(game.startsAt))}</span></div>
       <div className="logo-pair" aria-hidden="true"><TeamLogo team={game.homeTeam} /><TeamLogo team={game.awayTeam} /></div>
-      <div className="game-row-main"><div className="game-meta"><span>{game.competition}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span>{game.special && !hasClassic && <span className="special-tag">{game.special}</span>}{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}{!result && plan !== 'unset' && <span className={`tiny-plan ${plan}`}>{planLabel(plan)}</span>}{actual === 'attended' && <span className="tiny-actual">VAR DER</span>}{actual === 'not_attended' && <span className="tiny-actual not-attended">IKKE DER</span>}</div><strong>{game.homeTeam} – {game.awayTeam}</strong><small>{game.arena} · {result ? 'Ferdig' : timeText(game)}</small></div>
+      <div className="game-row-main"><div className="game-meta"><span>{game.competition}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span>{game.special && !hasClassic && <span className="special-tag">{game.special}</span>}{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}{!result && !actual && plan !== 'unset' && <span className={`tiny-plan ${plan}`}>{planLabel(plan)}</span>}{actual === 'attended' && <span className="tiny-actual">VAR DER</span>}{actual === 'not_attended' && <span className="tiny-actual not-attended">IKKE DER</span>}</div><strong>{game.homeTeam} – {game.awayTeam}</strong><small>{game.arena} · {result ? 'Ferdig' : timeText(game)}</small></div>
       {result ? <div className="game-result"><strong>{game.homeScore}–{game.awayScore}</strong>{game.decisionType && game.decisionType !== 'REG' && <span>{decisionLabel(game).trim()}</span>}</div> : <ChevronRight size={18} />}
     </button>
   )
