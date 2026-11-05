@@ -84,16 +84,26 @@ export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPers
       <p>Alle {documentedNumberRows.length} oppføringer fra SIL-arkivets historiske nummerregister. Søk etter spiller, nummer eller se hvilke sesonger draktene ble brukt.</p>
     </div></div>
     <label className="ha-search"><Search size={17}/><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Søk nummer eller spiller…"/></label>
-    <div className="ha-number-grid">{matches.map((entry)=><button key={entry.number} onClick={()=>setSelected(entry.number)} className={selected===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} registrert</span></button>)}</div>
-    {matches.length===0 && <p>Ingen treff i nummerregisteret.</p>}
-    <div className="ha-number-detail">
-      <span className="ha-kicker">VALGT DRAKTNUMMER</span>
-      <strong className="ha-number-large">#{row.number}</strong>
-      {row.holders.length===0 ? <p>SIL-arkivets oversikt har ingen registrert spiller med dette nummeret. Det betyr ikke at nummeret aldri er brukt.</p> : <div className="ha-link-list">{row.holders.map((person,index)=>{
-        const target=person.profileId && person.profileKind ? {id:person.profileId,kind:person.profileKind} : null
-        const subtitle=person.period || 'Periode ikke dokumentert i kilden'
-        return target ? <button key={person.name+index} onClick={()=>openPerson(target.kind,target.id)}><span>{person.name}<small className="ha-number-period">{subtitle}</small></span><small>Profil</small><ChevronRight size={15}/></button> : <div className="ha-number-unlinked" key={person.name+index}><strong>{person.name}</strong><span>{subtitle}</span>{person.sourceWarning && <small>{person.sourceWarning}</small>}</div>
-      })}</div>}
+    <div className="ha-number-panel">
+      <div className="ha-number-grid" aria-label="Velg draktnummer">{matches.map((entry)=><button type="button" aria-pressed={selected===entry.number} key={entry.number} onClick={()=>setSelected(entry.number)} className={selected===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} registrert</span></button>)}</div>
+      {matches.length===0 && <p className="ha-number-no-results">Ingen treff i nummerregisteret.</p>}
+      <div className="ha-number-detail">
+        <div className="ha-number-selected-heading">
+          <div><span className="ha-kicker">VALGT DRAKTNUMMER</span><strong className="ha-number-large">#{row.number}</strong></div>
+          <span className="ha-number-count">{row.holders.length} {row.holders.length===1?'spiller':'spillere'}</span>
+        </div>
+        {row.holders.length===0 ? <p>SIL-arkivets oversikt har ingen registrert spiller med dette nummeret. Det betyr ikke at nummeret aldri er brukt.</p> : <div className="ha-number-players">{row.holders.map((person,index)=>{
+          const target=person.profileId && person.profileKind ? {id:person.profileId,kind:person.profileKind} : null
+          const subtitle=person.period || 'Periode ikke dokumentert'
+          const main = <>
+            <span className="ha-number-player-info"><strong>{person.name}</strong><span>{subtitle}</span>{person.sourceWarning && <small className="ha-number-source-warning">{person.sourceWarning}</small>}</span>
+            {target ? <span className="ha-number-profile-link">Profil <ChevronRight size={15}/></span> : <span className="ha-number-profile-unlinked">Kun kilde</span>}
+          </>
+          return target
+            ? <button type="button" className="ha-number-player" key={person.name+index} onClick={()=>openPerson(target.kind,target.id)}>{main}</button>
+            : <div className="ha-number-player" key={person.name+index}>{main}</div>
+        })}</div>}
+      </div>
     </div>
     <a className="ha-source-link" href={officialNumberSource} rel="noopener noreferrer" target="_blank">Sammenlign med originalregisteret hos SIL-arkivet <ExternalLink size={15}/></a>
     <div className="ha-research-note">Alle nummeroppføringene fra kildetabellen er med. {officialNumberSourceIssues.length} rader er spesielt merket på grunn av manglende år eller feil i originalsidens HTML. Individuelle spillerprofiler er ennå ikke komplette for alle navnene.</div>
