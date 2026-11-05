@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { historyArchive, historyCategories } from '../history/catalog'
+import { featuredPlayerStoryNames, playerStories, playerStoryForName } from '../history/playerStories'
 import { leadersForSeason, coachChronologySource, captainChronologySource } from '../history/leadershipChronology'
 import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageAudit'
 import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
@@ -275,13 +276,16 @@ function DetailView({ selection, back, openItem, openPhoto }: {
   if (!item) return <section className="ha-shell"><button className="ha-back" onClick={back}><ArrowLeft size={17}/>Tilbake</button><p>Oppføringen er ikke tilgjengelig.</p></section>
   const media = item.media.filter((photo) => photo.src)
   const linked = archiveRelationships(selection.kind, item)
-  const references = sourceLinks(item)
+  const isPerson = selection.kind === 'player' || selection.kind === 'legend'
+  const personStory = isPerson ? playerStoryForName((item as ArchivePerson).fullName) : undefined
+  const references = [...sourceLinks(item), ...(personStory?.sources ?? [])]
+    .filter((link, index, array) => array.findIndex((other) => other.url === link.url) === index)
   return <section className="ha-shell ha-detail">
     <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til {KIND_LABELS[selection.kind].toLowerCase()}arkivet</button>
     <div className="ha-detail-heading">
       <span className="ha-kicker">{KIND_LABELS[selection.kind]} · Storhamars historie</span>
       <h1>{item.title}</h1>
-      <span className={'ha-proof ' + item.completeness}>{item.completeness === 'verified' ? <CheckCircle2 size={13}/> : <Clock3 size={13}/>} {completenessLabel(item)}</span>
+      {!isPerson && <span className={'ha-proof ' + item.completeness}>{item.completeness === 'verified' ? <CheckCircle2 size={13}/> : <Clock3 size={13}/>} {completenessLabel(item)}</span>}
     </div>
     {media.length > 0 && <div className="ha-gallery">
       <HistoryPicture key={media[photoIndex]?.id} media={media[photoIndex]} onOpen={openPhoto}/>
@@ -290,8 +294,18 @@ function DetailView({ selection, back, openItem, openPhoto }: {
         {media.map((photo, index) => <button className={photoIndex === index ? 'selected' : ''} key={photo.id} onClick={() => setPhotoIndex(index)} aria-label={'Vis bilde ' + (index + 1)}><img loading="lazy" src={photo.src} alt={photo.alt}/></button>)}
       </div>}
     </div>}
-    {item.summary && <p className="ha-lead">{item.summary}</p>}
-    {item.body && item.body.length > 0 && <section className="ha-prose">{item.body.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</section>}
+    {(personStory?.lead || item.summary) && <p className="ha-lead">{personStory?.lead ?? item.summary}</p>}
+    {personStory ? (
+      <section className="ha-player-story" aria-label={'Historien om ' + personStory.name}>
+        {personStory.chapters.map((chapter, index) => <div className="ha-story-chapter" key={chapter.heading}>
+          <span className="ha-story-ordinal">{String(index + 1).padStart(2, '0')}</span>
+          <h2>{chapter.heading}</h2>
+          <p>{chapter.text}</p>
+        </div>)}
+      </section>
+    ) : item.body && item.body.length > 0 ? (
+      <section className="ha-prose">{item.body.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</section>
+    ) : null}
     <DetailsData kind={selection.kind} item={item} openItem={openItem}/>
     {linked.length > 0 && <section className="ha-block">
       <h3>Se også i Storhamar-historien</h3>
@@ -305,12 +319,12 @@ function DetailView({ selection, back, openItem, openPhoto }: {
       })}</div>
     </section>}
     {references.length > 0 && <section className="ha-block ha-sources">
-      <h3>Kilder og bildedokumentasjon</h3>
-      <p>SIL-arkivet er hovedkilde. Andre primærkilder brukes der de dokumenterer flere detaljer.</p>
+      <h3>Kilder og bilder</h3>
+      {!isPerson && <p>SIL-arkivet er hovedkilde. Andre primærkilder brukes der de dokumenterer flere detaljer.</p>}
       {references.map((source, index) => <a key={source.url + index} href={source.url} target="_blank" rel="noopener noreferrer">{source.label}<ExternalLink size={14}/></a>)}
       {item.media.some((photo) => photo.rightsNote) && <small>Bildene vises fra kildenes egne adresser med oppgitt kreditering. Rettigheter og videre bruk følger originalkildene.</small>}
     </section>}
-    {item.completeness !== 'verified' && <p className="ha-research-note">Denne oppføringen er merket som ufullstendig. Manglende historiske tall og fakta vises ikke som null eller som antatte opplysninger.</p>}
+    {item.completeness !== 'verified' && !isPerson && <p className="ha-research-note">Denne oppføringen er merket som ufullstendig. Manglende historiske tall og fakta vises ikke som null eller som antatte opplysninger.</p>}
   </section>
 }
 
@@ -429,6 +443,16 @@ export function HistoryArchivePage() {
   }
 
   const featuredJersey = archiveItem('jersey','jersey-1957-67')?.media[0]
+  const featuredProfiles = featuredPlayerStoryNames.map((name) => {
+    const person = historyArchive.legends.find((entry) => entry.fullName === name)
+      ?? historyArchive.players.find((entry) => entry.fullName === name)
+    if (!person) return null
+    return {
+      kind: historyArchive.legends.some((entry) => entry.id === person.id) ? 'legend' as const : 'player' as const,
+      person,
+      story: playerStoryForName(name)!,
+    }
+  }).filter((entry): entry is NonNullable<typeof entry> => entry !== null)
   const chapter = chapterId ? historyChapters.find((item) => item.id === chapterId) : undefined
   const roleList = section === 'captain' || section === 'coach' ? sourceRoleLists[section] : null
   const sectionIcon = sectionInfo ? ICONS[sectionInfo.id] : BookOpen
@@ -477,6 +501,15 @@ export function HistoryArchivePage() {
             <Icon size={21}/><strong>{category.title}</strong><small>{category.description}</small><ChevronRight className="ha-category-arrow" size={16}/>
           </button>
         })}</div>
+        <div className="ha-section-title"><span className="ha-kicker">MENNESKENE BAK KLUBBEN</span><h2>Spillerne og historiene deres</h2><p>Fra de første pionerene til moderne gullhelter. Les om karrierene, øyeblikkene og menneskene bak tallene.</p></div>
+        <div className="ha-story-feature-grid">{featuredProfiles.map(({kind,person,story})=>{
+          const photo = imageFor(kind, person)
+          return <button className="ha-story-feature" key={person.id} onClick={()=>openItem(kind,person.id)}>
+            {photo ? <span className="ha-story-feature-image"><img src={photo.src} alt={photo.alt} loading="lazy"/></span> : <span className="ha-story-feature-symbol"><UserRound size={25}/></span>}
+            <span className="ha-story-feature-text"><strong>{story.name}</strong><small>{story.lead}</small><span>Les historien <ChevronRight size={14}/></span></span>
+          </button>
+        })}</div>
+        <button className="ha-load-more" onClick={()=>goSection('player')}>Se alle spillere og flere biografier ({playerStories.length}) <ChevronRight size={17}/></button>
         <div className="ha-section-title"><span className="ha-kicker">HISTORIEN BAK RESULTATENE</span><h2>Epokene som formet klubben</h2></div>
         <div className="ha-chapter-list">{historyChapters.map((part)=>{
           const media = part.imageJerseyId ? archiveItem('jersey',part.imageJerseyId)?.media[0] : undefined
@@ -500,7 +533,8 @@ export function HistoryArchivePage() {
       <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
       <div className="ha-section-heading">{(() => { const Icon=sectionIcon;return <Icon size={24}/> })()}<div><span className="ha-kicker">STORHAMAR · ARKIVET</span><h1>{sectionInfo?.title}</h1><p>{sectionInfo?.description}</p></div></div>
       {section === 'jersey' && <div className="ha-topic-note">SIL-arkivet dokumenterer at klubbens aller første drakter var svarte og gule. Den gule og blå draktidentiteten kom senere. Her finner du også Europa-, sluttspill- og spesialdrakter med kilde og bilde der det finnes.</div>}
-      {section === 'season' && <div className="ha-topic-note">Fullstendige sesonger fra 1957/58 til 2025/26. Det som ikke kan dokumenteres – særlig eldre statistikk – er merket som ufullstendig.</div>}
+      {section === 'season' && <div className="ha-topic-note">Sesonger fra 1957/58 til 2025/26. Det som ikke kan dokumenteres – særlig eldre statistikk – er merket som ufullstendig.</div>}
+      {(section === 'player' || section === 'legend') && <div className="ha-topic-note">Mange profiler har nå egne fortellinger om oppvekst, karriere og historiske kamper. Åpne en spiller for å lese historien. Kildene står samlet nederst på profilen.</div>}
       {section === 'legend' && <div className="ha-topic-note">Legender, hedrede bannere og draktnumre. Statusen på en hedring forklares på hver profil og blandes ikke med et formelt fredet nummer.</div>}
       <label className="ha-search"><Search size={17}/><input value={query} aria-label={'Søk i ' + sectionInfo?.title} onChange={(event)=>{setQuery(event.target.value);setVisibleCount(24)}} placeholder={'Søk i ' + (sectionInfo?.title.toLowerCase() ?? 'arkivet') + '…'}/>{query && <button onClick={()=>setQuery('')} aria-label="Tøm søk"><X size={15}/></button>}</label>
       <div className="ha-filters">
