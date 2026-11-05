@@ -217,6 +217,13 @@ export default function AppV2() {
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
   const [purchases, setPurchases] = useState<GamePurchase[]>(() => loadPurchases())
+  const contentRef = useRef<HTMLElement>(null)
+
+  // The scrollable area ends above the bottom navigation, rather than
+  // letting page content slip underneath a fixed overlay.
+  useEffect(() => {
+    if (contentRef.current) contentRef.current.scrollTop = 0
+  }, [active, selectedGameId])
 
   const now = new Date()
   const today = osloDateKey(now)
@@ -306,7 +313,7 @@ export default function AppV2() {
           <button className="icon-button" aria-label="Innstillinger" onClick={() => navigate('more')}><Settings size={20} /></button>
         </header>
 
-        <main className="content">
+        <main className="content" id="app-scroll-content" ref={contentRef}>
           {selectedGame ? (
             <GameDetail
               key={selectedGame.id}
