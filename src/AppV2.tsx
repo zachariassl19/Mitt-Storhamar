@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock3,
+  Cloud,
   Database,
   History,
   Home,
@@ -885,7 +886,7 @@ function MorePage({ hubData, importMessage, importHubFile, removeImport, version
       <div className="page-heading"><span className="eyebrow">APPEN · v{version}</span><h1>Mer</h1><p>Import, innstillinger og data.</p></div>
       <article className="card version-card"><div><span className="eyebrow">VERSJON</span><strong>Mitt Storhamar v{version}</strong></div><p>Versjonsnummer følger SemVer. Små feilrettinger øker siste tall, nye funksjoner øker midterste tall.</p></article>
       <article className="card import-card"><div className="import-icon"><Upload /></div><h2>Importer Storhamar HUB</h2><p>Velg <code>storhamar-hub-data.json</code>. Fila lastes ikke opp til GitHub; dataene lagres lokalt på enheten din.</p><label className="file-button">Velg JSON-fil<input type="file" accept="application/json,.json" onChange={(event) => importHubFile(event.target.files?.[0])} /></label>{hubData && <div className="import-summary"><span>Schema v{hubData.schemaVersion}</span><span>{hubData.attendance?.length ?? 0} attendance</span><span>{hubData.trips?.length ?? 0} reiser</span></div>}{importMessage && <p className="import-message">{importMessage}</p>}{hubData && <button className="danger-text" onClick={removeImport}>Fjern importerte data</button>}</article>
-      <article className="card settings-list"><button><Settings /><div><strong>Innstillinger</strong><span>Varsler, hjemsted og standardvalg</span></div><ChevronRight /></button><button><Route /><div><strong>Reiser</strong><span>Lagrede steder, biler og ruter</span></div><ChevronRight /></button><button><Database /><div><strong>Data</strong><span>Backup og eksport</span></div><ChevronRight /></button></article>
+      <article className="card settings-list"><button><Settings /><div><strong>Innstillinger</strong><span>Varsler, hjemsted og standardvalg</span></div><ChevronRight /></button><button><Route /><div><strong>Reiser</strong><span>Lagrede steder, biler og ruter</span></div><ChevronRight /></button><button><Database /><div><strong>Data</strong><span>Backup og eksport</span></div><ChevronRight /></button><button type="button" onClick={() => window.dispatchEvent(new Event('mitt-storhamar:open-private-sync'))}><Cloud /><div><strong>Privat synk</strong><span>Frivillig sikkerhetskopi mellom mobil og PC</span></div><ChevronRight /></button></article>
     </section>
   )
 }
