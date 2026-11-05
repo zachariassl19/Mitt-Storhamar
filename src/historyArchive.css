@@ -223,3 +223,111 @@
  .ha-career-row, .ha-career-header { grid-template-columns:minmax(0,2.1fr) repeat(4,minmax(0,.6fr)); font-size:9px; }
  .ha-person-stat-grid strong { font-size:16px; }
 }
+
+
+/* Draktnummer: keep the number picker and result list together, without the
+   empty-looking gutter between them or merged player names on narrow screens. */
+.ha-number-panel {
+  overflow: hidden;
+  margin: 9px 0 16px;
+  border: 1px solid rgba(245, 209, 104, .24);
+  border-radius: 15px;
+  background: #0b2348;
+}
+.ha-number-panel .ha-number-grid {
+  margin: 0;
+  padding: 11px;
+  max-height: 260px;
+  background: #10284f;
+  border-bottom: 1px solid rgba(245, 209, 104, .19);
+  scrollbar-width: thin;
+}
+.ha-number-panel .ha-number-detail {
+  margin: 0;
+  padding: 13px 13px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.ha-number-selected-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 0 0 12px;
+}
+.ha-number-selected-heading .ha-number-large {
+  font-size: 32px;
+  margin: 3px 0 0;
+}
+.ha-number-count {
+  flex-shrink: 0;
+  color: #b8cdea;
+  background: rgba(255, 255, 255, .07);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+.ha-number-players { display: grid; gap: 6px; }
+.ha-number-player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+  background: #102d56;
+  text-align: left;
+  color: #f1f5fc;
+}
+button.ha-number-player { cursor: pointer; }
+button.ha-number-player:hover,
+button.ha-number-player:focus-visible {
+  border-color: rgba(245, 209, 104, .55);
+}
+.ha-number-player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+.ha-number-player-info strong {
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ha-number-player-info > span {
+  color: #b8cdea;
+  font-size: 10px;
+}
+.ha-number-player-info .ha-number-source-warning {
+  color: #f5c777;
+  font-size: 9px;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+.ha-number-profile-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+  font-size: 10px;
+  color: #f4d16d;
+  font-weight: 800;
+}
+.ha-number-profile-unlinked {
+  flex-shrink: 0;
+  font-size: 9px;
+  color: #92aaca;
+}
+.ha-number-no-results { padding: 12px; font-size: 11px; color: #bad0e8; }
+@media (max-width: 440px) {
+  .ha-number-panel .ha-number-grid { padding: 8px; gap: 5px; max-height: 230px; }
+  .ha-number-panel .ha-number-grid button { padding: 8px 1px; }
+  .ha-number-panel .ha-number-detail { padding: 11px 10px 13px; }
+  .ha-number-player { padding: 10px; }
+}
