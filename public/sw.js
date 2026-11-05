@@ -1,5 +1,5 @@
 const BASE = '/Mitt-Storhamar/';
-const CACHE = 'mitt-storhamar-v17-2-player-stories';
+const CACHE = 'mitt-storhamar-v17-3-pinned-navigation';
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {

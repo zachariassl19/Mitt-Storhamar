@@ -1,27 +1,3 @@
-.cloud-sync-trigger {
-  position: fixed;
-  right: 14px;
-  bottom: 76px;
-  z-index: 45;
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(6,22,48,.94);
-  color: #c5d3e8;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 9px;
-  font-weight: 900;
-  box-shadow: 0 12px 28px rgba(0,0,0,.25);
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-}
-.cloud-sync-trigger.connected { color: #9be5bc; border-color: rgba(90,205,143,.24); }
-.cloud-sync-trigger.syncing { color: #f3d77b; }
-.cloud-sync-trigger.error { color: #f3a6b2; border-color: rgba(242,119,139,.25); }
-
 .cloud-sync-backdrop {
   position: fixed;
   inset: 0;
@@ -145,7 +121,3 @@
 
 .spinning { animation: cloud-spin .9s linear infinite; }
 @keyframes cloud-spin { to { transform: rotate(360deg); } }
-
-@media (min-width: 700px) {
-  .cloud-sync-trigger { right: calc(50% - 210px); }
-}

@@ -97,6 +97,14 @@ export function CloudSyncManager() {
   const lastRemoteUpdatedAtRef = useRef<string | null>(null)
   const pushingRef = useRef(false)
 
+  // Kept mounted globally so background sync continues on every app tab,
+  // but its dialog is opened from Mer rather than a floating screen overlay.
+  useEffect(() => {
+    const openDialog = () => setOpen(true)
+    window.addEventListener('mitt-storhamar:open-private-sync', openDialog)
+    return () => window.removeEventListener('mitt-storhamar:open-private-sync', openDialog)
+  }, [])
+
   async function pushCurrent(localUser = user) {
     if (!localUser || pushingRef.current) return
     pushingRef.current = true
@@ -319,20 +327,8 @@ export function CloudSyncManager() {
     setMessage('Logget ut. Appen fungerer fortsatt lokalt på denne enheten.')
   }
 
-  const label = user
-    ? status === 'syncing' ? 'Synker…' : status === 'error' ? 'Synkfeil' : 'Privat synk'
-    : 'Privat synk'
-
   return (
     <>
-      <button
-        className={`cloud-sync-trigger ${user ? 'connected' : ''} ${status}`}
-        onClick={() => setOpen(true)}
-        aria-label="Åpne privat synk"
-      >
-        {user ? <Cloud size={16} /> : <CloudOff size={16} />}
-        <span>{label}</span>
-      </button>
 
       {open && (
         <div className="cloud-sync-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>

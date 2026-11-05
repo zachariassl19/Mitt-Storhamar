@@ -20,7 +20,9 @@
 
 * { box-sizing: border-box; }
 html { background: var(--blue-950); }
-body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(circle at top, #153d78 0, #081a37 27rem, #061226 58rem); }
+body { margin: 0; min-width: 320px; height: 100dvh; min-height: 0; overflow: hidden; background: radial-gradient(circle at top, #153d78 0, #081a37 27rem, #061226 58rem); }
+html, #root { height: 100%; overflow: hidden; }
+/* The viewport, top bar and bottom tabs stay put. Only .content scrolls. */
 button, input { font: inherit; }
 button { color: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
