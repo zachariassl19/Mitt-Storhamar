@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft, BookOpen, CalendarDays, CheckCircle2, ChevronRight, Clock3,
   ExternalLink, Globe2, ImageOff, Landmark, MapPin, Medal, Search, Shield,
@@ -370,6 +370,13 @@ export function HistoryArchivePage() {
   const [jerseyType, setJerseyType] = useState('all')
   const [sort, setSort] = useState<SortOrder>('newest')
   const [visibleCount, setVisibleCount] = useState(24)
+
+  // History drill-downs live inside the app's own scroll region.
+  // Opening a player/season or going back must start at the top.
+  useEffect(() => {
+    const region = document.getElementById('app-scroll-content')
+    if (region) region.scrollTop = 0
+  }, [section, selection?.kind, selection?.id, chapterId])
 
   const sectionInfo = historyCategories.find((category) => category.id === section)
   const allItems = useMemo(() => section !== 'overview' && isBrowsableKind(section) ? archiveItems(section) : [], [section])
