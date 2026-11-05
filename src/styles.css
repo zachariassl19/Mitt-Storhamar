@@ -25,15 +25,15 @@ button, input { font: inherit; }
 button { color: inherit; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-.app-shell { min-height: 100vh; display: flex; justify-content: center; }
-.app-frame { width: 100%; max-width: 640px; min-height: 100vh; position: relative; padding-bottom: 92px; }
-.topbar { height: 76px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; background: rgba(6,18,38,.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.app-shell { height: 100dvh; min-height: 0; display: flex; justify-content: center; }
+.app-frame { width: 100%; max-width: 640px; height: 100dvh; min-height: 0; position: relative; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { height: 76px; flex: 0 0 76px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; position: relative; top: auto; z-index: 20; background: rgba(6,18,38,.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .brand { display: flex; gap: 11px; align-items: center; }
 .brand-mark { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; letter-spacing: -.04em; background: var(--gold); color: var(--blue-900); box-shadow: inset 0 0 0 4px var(--blue-800), 0 6px 18px rgba(0,0,0,.2); }
 .brand strong { display: block; font-size: 15px; letter-spacing: .04em; }
 .eyebrow { display: block; font-size: 9px; font-weight: 800; letter-spacing: .16em; color: #9db2d2; text-transform: uppercase; }
 .icon-button { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); display: grid; place-items: center; cursor: pointer; }
-.content { padding: 18px; }
+.content { flex: 1 1 auto; min-height: 0; width: 100%; padding: 18px; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
 
 .card { background: linear-gradient(145deg, rgba(17,46,91,.97), rgba(9,30,62,.97)); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 14px 35px rgba(0,0,0,.18); }
 .section-kicker { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #bdd0e9; font-size: 10px; font-weight: 800; letter-spacing: .14em; }
@@ -160,14 +160,14 @@ h1, h2, h3, p { margin-top: 0; }
 .settings-list strong { display: block; font-size: 12px; }
 .settings-list span { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
 
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 640px); height: calc(69px + env(safe-area-inset-bottom)); padding: 6px 10px env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(5,1fr); z-index: 30; background: rgba(5,18,39,.96); backdrop-filter: blur(18px); border-top: 1px solid var(--line); }
+.bottom-nav { position: relative; bottom: auto; left: auto; transform: none; flex: 0 0 auto; width: 100%; height: calc(69px + env(safe-area-inset-bottom)); padding: 6px 10px env(safe-area-inset-bottom); display: grid; grid-template-columns: repeat(5,1fr); z-index: 30; background: rgba(5,18,39,.96); backdrop-filter: blur(18px); border-top: 1px solid var(--line); }
 .bottom-nav button { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #7f96b8; font-size: 9px; font-weight: 700; cursor: pointer; }
 .bottom-nav button.active { color: var(--gold-soft); }
 .bottom-nav button.active svg { filter: drop-shadow(0 0 7px rgba(242,201,76,.25)); }
 
 @media (min-width: 760px) {
   body { padding: 22px 0; }
-  .app-frame { min-height: calc(100vh - 44px); border: 1px solid rgba(255,255,255,.11); border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.35); background: rgba(6,18,38,.82); }
-  .topbar { position: relative; }
-  .bottom-nav { width: 638px; bottom: 22px; border-radius: 0 0 27px 27px; }
+  .app-shell { height: calc(100dvh - 44px); }
+  .app-frame { height: calc(100dvh - 44px); min-height: 0; border: 1px solid rgba(255,255,255,.11); border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.35); background: rgba(6,18,38,.82); }
+  .bottom-nav { width: 100%; bottom: auto; border-radius: 0 0 27px 27px; }
 }
