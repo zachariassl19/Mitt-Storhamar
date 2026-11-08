@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { filteredSSUHighlights, highlightCategories, ssuHighlights, ssuHighlight } from './ssuHighlights'
 import {
   ssuChapters, ssuFoundationDate, ssuPhotos, ssuSource,
   ssuSources, ssuTimeline,
@@ -44,7 +45,7 @@ describe('SSU as its own Storhamar history chapter', () => {
   })
 
   it('has documented SSU away-trip photos with attribution and CC licensing', () => {
-    expect(ssuPhotos).toHaveLength(2)
+    expect(ssuPhotos).toHaveLength(4)
     for (const photo of ssuPhotos) {
       expect(photo.src).toMatch(/^https:\/\/thumb\.wikimedia\.org\//)
       expect(photo.credit).toContain('Repstad')
@@ -52,5 +53,37 @@ describe('SSU as its own Storhamar history chapter', () => {
       expect(photo.licenseUrl).toContain('creativecommons.org/licenses/by-sa/4.0')
       expect(photo.alt.length).toBeGreaterThan(20)
     }
+  })
+
+  it('highlights 13 independently sourced episodes in five purposeful themes', () => {
+    expect(ssuHighlights).toHaveLength(13)
+    expect(highlightCategories).toHaveLength(5)
+    expect(new Set(ssuHighlights.map((item)=>item.id)).size).toBe(ssuHighlights.length)
+    for(const item of ssuHighlights) {
+      expect(item.teaser.length, item.id).toBeGreaterThan(30)
+      expect(item.paragraphs.length, item.id).toBeGreaterThanOrEqual(2)
+      expect(item.sourceIds.length, item.id).toBeGreaterThan(0)
+      for(const id of item.sourceIds) expect(ssuSource(id), item.id+' → '+id).toBeDefined()
+      if(item.photoId) expect(ssuPhotos.find((photo)=>photo.id===item.photoId)).toBeDefined()
+    }
+    const filtered = filteredSSUHighlights('travel')
+    expect(filtered.length).toBeGreaterThan(2)
+    expect(filtered.every((item)=>item.category==='travel')).toBe(true)
+    expect(filteredSSUHighlights('all')).toHaveLength(ssuHighlights.length)
+  })
+
+  it('does not misattribute older supporter culture or club victories to SSU', () => {
+    expect(ssuHighlight('1982-first-supporters')?.beforeSSU).toBe(true)
+    expect(ssuHighlight('1991-kollebladet')?.beforeSSU).toBe(true)
+    expect(ssuHighlight('2001-founding')?.date).toBe('2001-10-25')
+    expect(ssuHighlight('2023-six-buses')?.keyFact).toContain('6 busser')
+    expect(ssuHighlight('2024-final-tickets')?.sourceIds).toContain('vif-final-2024')
+    expect(ssuHighlight('2025-fanzine-booknight')?.sourceIds).toContain('history-night-2025')
+  })
+
+  it('keeps difficult history separate from celebratory featured highlights', () => {
+    expect(ssuTimeline.find((event)=>event.id==='2002-apology')?.sourceIds).toContain('utrop-2002')
+    expect(ssuHighlights.some((item)=>item.title.includes('hets'))).toBe(false)
+    expect(ssuTimeline.find((event)=>event.id==='2017-marathon')?.date).toBe('2017-03-12')
   })
 })
