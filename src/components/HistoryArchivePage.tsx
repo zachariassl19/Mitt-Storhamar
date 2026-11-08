@@ -14,6 +14,8 @@ import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
 import { numberIndex } from '../history/numberIndex'
 import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
+import { SSUHistoryPage } from './SSUHistoryPage'
+import { ssuPhotos } from '../history/ssuHistory'
 import {
   archiveItem, archiveItems, archiveRelationships, entryYear, historyChapters,
   isBrowsableKind, matchesArchiveSearch, sourceRoleLists,
@@ -25,7 +27,7 @@ import type {
   ArchiveTimelineEvent, ArchiveArena, ArchiveLegend,
 } from '../history/types'
 
-type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | 'stories' | ArchiveEntityKind
+type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | 'stories' | 'ssu' | ArchiveEntityKind
 type Selection = { kind: BrowsableKind; id: string }
 type ImageTarget = { media: ArchiveMedia; caption: string } | null
 type SortOrder = 'newest' | 'oldest' | 'alpha'
@@ -479,6 +481,15 @@ export function HistoryArchivePage() {
         <div><strong>10</strong><span>NM-gull</span></div>
         <div><strong>11</strong><span>Seriemesterskap</span></div>
       </div>
+      <button type="button" className="ha-ssu-entry" onClick={()=>goSection('ssu')}>
+        <span className="ha-ssu-entry-copy">
+          <span className="ha-kicker">EGET HISTORIEARKIV · 2001–2026</span>
+          <strong>SSU · Supporternes historie</strong>
+          <small>Fra den gamle supporterforeningen og Køllebladet til 25 år med Storhamar Supporter Union.</small>
+          <span className="ha-ssu-entry-action">Utforsk SSUs historie <ChevronRight size={15}/></span>
+        </span>
+        <img src={ssuPhotos[0].src} alt="Storhamar-supportere i gult og blått på bortetur" loading="lazy"/>
+      </button>
       <div className="ha-extra-actions">
         <button onClick={()=>goSection('stories')}><BookOpen size={17}/><span><strong>Spillerhistorier</strong><small>25 fortellinger fra forskjellige epoker</small></span><ChevronRight size={16}/></button>
         <button onClick={()=>goSection('audit')}><Shield size={17}/><span><strong>Kildekontroll</strong><small>Hva mangler i de 69 sesongene?</small></span><ChevronRight size={16}/></button>
@@ -524,6 +535,7 @@ export function HistoryArchivePage() {
         <div className="ha-research-note">Historiearkivet bygger på kilder, ikke antakelser. Enkelte eldre sesonger og spillerstaller er ufullstendige. Databasen går til og med sesongen 2025/26; pågående sesong registreres først som ferdig historie etter sesongslutt.</div>
       </>}
     </section>
+    : section === 'ssu' ? <SSUHistoryPage onBack={()=>goSection('overview')}/>
     : section === 'audit' ? <HistoryAuditPage back={()=>goSection('overview')} openSeason={(id)=>openItem('season',id)}/>
     : section === 'numbers' ? <HistoryNumberPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
     : section === 'career-stats' ? <CareerTotalsPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
@@ -598,8 +610,8 @@ export function HistoryArchivePage() {
       <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
       <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">TRIBUNENE · SUPPORTERNE</span><h1>Supporterkultur</h1></div></div>
       <p className="ha-lead">Storhamar er mer enn resultater. Den organiserte supporterkulturen er også en del av klubbhistorien.</p>
-      <div className="ha-prose"><p><strong>25. oktober 2001:</strong> Storhamar Supporterunion ble stiftet. Stiftelsesdato og formål om å støtte Storhamar Hockey er dokumentert i Brønnøysundregistrene.</p><p>SSU og tribunelivet er viktig for historien om hockeyen på Hamar. Vi har foreløpig ikke importert en komplett kronologi over tifoer, borteturer og supportersanger. Slikt skal bare føres inn når hendelsene kan kildebelegges.</p></div>
-      <button className="ha-load-more" onClick={()=>openItem('timeline','timeline-2001-ssu-founded')}>Les om SSUs stiftelse <ChevronRight size={17}/></button>
+      <div className="ha-prose"><p><strong>25. oktober 2001:</strong> Storhamar Supporter Union ble stiftet. Men den organiserte supporterhistorien strekker seg enda lenger tilbake til blant annet Storhamar supporterforening og Køllebladet.</p><p>Les hele historien i SSUs egen del med kapitler, viktige årstall og bilder fra borteturene.</p></div>
+      <button className="ha-load-more" onClick={()=>goSection('ssu')}>Utforsk hele SSUs historie <ChevronRight size={17}/></button>
       <a className="ha-source-link" href="https://virksomhet.brreg.no/nb/oppslag/enheter/994331981" target="_blank" rel="noopener noreferrer">Kilde: Brønnøysundregistrene <ExternalLink size={15}/></a>
       <div className="ha-link-list">
         {['arena-hamar-ol-amfi','arena-storhamar-ishall'].map((id)=>{
