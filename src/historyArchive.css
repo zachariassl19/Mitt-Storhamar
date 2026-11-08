@@ -472,3 +472,38 @@ button.ha-number-player:focus-visible {
   .ssu-timeline-event { grid-template-columns:61px minmax(0,1fr); gap:7px; }
   .ssu-story-chapter { gap:8px; padding:13px 10px; }
 }
+
+
+/* SSU: rich, editorial highlights; separate from the full historic timeline. */
+.ssu-highlight-filters { display:flex; gap:7px; flex-wrap:nowrap; overflow-x:auto; margin:0 0 12px; padding:0 1px 10px; scrollbar-width:thin; }
+.ssu-highlight-filters button { flex:0 0 auto; font-size:10px; line-height:1.35; font-weight:850; color:#bcd1e9; padding:9px 11px; cursor:pointer; border:1px solid rgba(255,255,255,.14); border-radius:999px; background:rgba(255,255,255,.045); }
+.ssu-highlight-filters button:hover,.ssu-highlight-filters button:focus-visible { border-color:rgba(246,214,111,.5); }
+.ssu-highlight-filters button.active { background:#f1ca58; color:#0c2349; border-color:#f1ca58; }
+.ssu-highlights-list { display:grid; gap:9px; margin:0 0 29px; }
+.ssu-highlight-card { min-width:0; overflow:hidden; border:1px solid rgba(255,255,255,.13); border-radius:15px; background:linear-gradient(120deg,#102b55,#092147); }
+.ssu-highlight-card.expanded { border-color:rgba(244,206,89,.57); background:linear-gradient(125deg,#13365f,#0b274d); }
+.ssu-highlight-summary { display:flex; align-items:stretch; gap:11px; width:100%; min-height:121px; padding:11px 12px; cursor:pointer; text-align:left; color:inherit; background:transparent; border:0; }
+.ssu-highlight-summary:hover .ssu-highlight-main > strong { color:#ffe08b; }
+.ssu-highlight-thumb { flex:0 0 100px; overflow:hidden; border-radius:9px; background:#0b1e41; align-self:stretch; }
+.ssu-highlight-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.ssu-highlight-main { display:flex; flex:1 1 auto; flex-direction:column; min-width:0; gap:5px; }
+.ssu-highlight-year { color:#f7d875; font-size:10px; font-weight:900; letter-spacing:.06em; }
+.ssu-highlight-main > strong { font-size:13px; font-weight:900; line-height:1.3; }
+.ssu-highlight-main > span:not(.ssu-highlight-year) { font-size:10px; line-height:1.55; color:#c4d3e9; }
+.ssu-highlight-main small { font-size:10px; font-weight:850; color:#ffda7e; margin-top:auto; padding-top:5px; }
+.ssu-highlight-toggle { flex:0 0 23px; display:flex; justify-content:center; align-items:flex-start; font-size:20px; line-height:1.1; color:#e3d39c; }
+.ssu-highlight-detail { padding:12px 15px 16px; border-top:1px solid rgba(255,255,255,.14); }
+.ssu-highlight-detail > p { margin:0 0 12px; font-size:11px; line-height:1.85; color:#d8e4f2; }
+.ssu-highlight-references { display:flex; flex-wrap:wrap; gap:7px 13px; padding-top:12px; margin-top:10px; border-top:1px solid rgba(255,255,255,.1); }
+.ssu-highlight-references a,.ssu-highlight-open-photo { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:800; color:#f7d675; text-decoration:none; }
+.ssu-highlight-references a { max-width:100%; overflow-wrap:anywhere; }
+.ssu-highlight-open-photo { padding:8px 10px; cursor:pointer; border-radius:8px; border:1px solid rgba(250,217,127,.36); background:rgba(250,217,127,.09); }
+.ssu-highlight-open-photo:hover,.ssu-highlight-open-photo:focus-visible { background:rgba(250,217,127,.19); }
+@media (max-width:380px) {
+ .ssu-highlight-summary { padding:10px 9px; gap:8px; }
+ .ssu-highlight-thumb { flex-basis:76px; }
+ .ssu-highlight-main > strong { font-size:12px; }
+ .ssu-highlight-main > span:not(.ssu-highlight-year) { font-size:9px; }
+ .ssu-highlight-toggle { flex-basis:17px; }
+ .ssu-highlight-detail { padding:11px; }
+}
