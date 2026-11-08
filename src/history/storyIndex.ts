@@ -18,12 +18,17 @@ function normalizeQuery(input: string) {
 
 /** One findable article per written biography, not a misleading list of all player records. */
 export function indexedPlayerStories(): IndexedPlayerStory[] {
-  return playerStories.flatMap((story) => {
+  const entries: IndexedPlayerStory[] = []
+  for (const story of playerStories) {
     const legend = historyArchive.legends.find((entry) => entry.fullName === story.name)
-    if (legend) return [{ kind: 'legend' as const, person: legend, story }]
+    if (legend) {
+      entries.push({ kind: 'legend', person: legend, story })
+      continue
+    }
     const player = historyArchive.players.find((entry) => entry.fullName === story.name)
-    return player ? [{ kind: 'player' as const, person: player, story }] : []
-  }).sort((a,b) => a.story.name.localeCompare(b.story.name, 'nb-NO'))
+    if (player) entries.push({ kind: 'player', person: player, story })
+  }
+  return entries.sort((a,b) => a.story.name.localeCompare(b.story.name, 'nb-NO'))
 }
 
 export function searchPlayerStories(query: string): IndexedPlayerStory[] {
