@@ -397,3 +397,8 @@ button.ha-number-player:focus-visible {
   .ha-story-feature-image,.ha-story-feature-symbol { height: 108px; }
   .ha-story-chapter { padding: 14px; }
 }
+
+/* Dedicated biographies catalog: keep summaries readable on small phones. */
+.ha-stories-catalog { margin: 10px 0 15px; }
+.ha-stories-catalog .ha-story-feature-text small { -webkit-line-clamp: 4; }
+.ha-stories-catalog .ha-story-feature { min-height: 225px; }
