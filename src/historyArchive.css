@@ -402,3 +402,73 @@ button.ha-number-player:focus-visible {
 .ha-stories-catalog { margin: 10px 0 15px; }
 .ha-stories-catalog .ha-story-feature-text small { -webkit-line-clamp: 4; }
 .ha-stories-catalog .ha-story-feature { min-height: 225px; }
+
+
+/* SSU: a distinct supporter archive within Storhamar history. */
+.ha-ssu-entry { display:flex; align-items:stretch; width:100%; min-height:160px; margin:0 0 12px; padding:0; overflow:hidden; background:linear-gradient(115deg,#0e3164,#092248); border:1px solid #e9bf46; border-radius:19px; text-align:left; cursor:pointer; color:#eef5ff; }
+.ha-ssu-entry:hover,.ha-ssu-entry:focus-visible { border-color:#ffe07b; box-shadow:0 0 0 1px rgba(245,207,103,.28); }
+.ha-ssu-entry-copy { display:flex; flex:1 1 66%; flex-direction:column; align-items:flex-start; min-width:0; gap:8px; padding:19px 15px; position:relative; z-index:2; }
+.ha-ssu-entry-copy strong { font-size:19px; line-height:1.16; font-weight:900; }
+.ha-ssu-entry-copy small { font-size:10px; line-height:1.5; color:#c3d4eb; }
+.ha-ssu-entry-action { color:#ffda69; font-size:11px; font-weight:900; display:inline-flex; align-items:center; gap:6px; margin-top:auto; }
+.ha-ssu-entry > img { width:35%; max-width:176px; min-width:105px; object-fit:cover; object-position:center; }
+.ssu-history-page { padding-bottom:28px; }
+.ssu-history-hero { position:relative; display:flex; min-height:285px; overflow:hidden; flex-direction:column; justify-content:flex-end; border:1px solid rgba(244,209,97,.5); border-radius:21px; background:#0a2349; }
+.ssu-hero-photo { position:absolute; inset:0; }
+.ssu-hero-photo img { display:block; width:100%; height:100%; object-fit:cover; object-position:center 45%; opacity:.48; }
+.ssu-hero-photo::after { content:""; position:absolute; inset:0; background:linear-gradient(0deg,#061830 4%,rgba(6,24,48,.9) 33%,rgba(6,24,48,.26) 100%); }
+.ssu-hero-content { position:relative; z-index:1; padding:27px 22px 19px; }
+.ssu-hero-content h1 { font-size:clamp(27px,6vw,39px); max-width:440px; margin:10px 0 13px; }
+.ssu-hero-content p { max-width:430px; margin:0 0 16px; color:#d4e1f3; font-size:12px; line-height:1.7; }
+.ssu-hero-facts { display:flex; flex-wrap:wrap; gap:7px; }
+.ssu-hero-facts span { display:flex; align-items:center; gap:5px; padding:7px 8px; background:rgba(7,23,46,.75); border:1px solid rgba(255,255,255,.14); border-radius:8px; color:#f6df9b; font-size:10px; font-weight:800; }
+.ssu-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:10px 0 25px; }
+.ssu-stats > div { padding:14px 8px; border-radius:13px; border:1px solid rgba(255,255,255,.10); background:#102b53; text-align:center; }
+.ssu-stats strong { display:block; font-size:20px; color:#f6d573; font-weight:900; }
+.ssu-stats span { display:block; margin-top:4px; font-size:9px; color:#b9cde7; line-height:1.4; }
+.ssu-introduction { padding:3px 3px 11px; }
+.ssu-introduction h2 { font-size:24px; line-height:1.2; margin:9px 0 15px; }
+.ssu-introduction p { font-size:12px; color:#cbd9ee; line-height:1.85; margin:0 0 11px; }
+.ssu-chapter-list { display:grid; gap:10px; }
+.ssu-story-chapter { display:flex; gap:12px; padding:16px 14px; background:linear-gradient(145deg,#12335d,#0a2447); border:1px solid rgba(255,255,255,.1); border-radius:15px; }
+.ssu-chapter-index { flex:0 0 26px; color:#f6d574; font-size:12px; font-weight:900; padding-top:3px; }
+.ssu-chapter-content { min-width:0; }
+.ssu-chapter-content h3 { font-size:17px; line-height:1.25; margin:8px 0 12px; }
+.ssu-chapter-content p { color:#cbdaf0; font-size:11px; line-height:1.85; margin:0 0 11px; }
+.ssu-chapter-content p:last-child { margin-bottom:0; }
+.ssu-older-context { display:flex; flex-direction:column; gap:6px; padding:11px; border-left:3px solid #d2a746; border-radius:0 10px 10px 0; background:rgba(245,207,96,.075); }
+.ssu-older-context strong { font-size:10px; color:#ffe098; }
+.ssu-older-context span { font-size:10px; line-height:1.65; color:#c9daec; }
+.ssu-photo-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-bottom:21px; }
+.ssu-photo { overflow:hidden; padding:0; margin:0; background:#102b50; border:1px solid rgba(255,255,255,.12); border-radius:14px; }
+.ssu-photo > button { width:100%; display:block; padding:0; border:0; background:#0a2040; cursor:zoom-in; }
+.ssu-photo > button img { width:100%; aspect-ratio:4/3; display:block; object-fit:cover; }
+.ssu-photo figcaption { display:flex; flex-direction:column; gap:5px; padding:11px 10px; }
+.ssu-photo figcaption strong { font-size:11px; }
+.ssu-photo figcaption span { font-size:9px; line-height:1.4; color:#a8bfdc; }
+.ssu-photo figcaption a { display:flex; align-items:center; gap:3px; font-size:9px; color:#f7d576; text-decoration:none; font-weight:800; }
+.ssu-photo-missing { min-height:110px; display:grid; place-content:center; justify-items:center; gap:6px; color:#9bb4d1; font-size:9px; }
+.ssu-timeline-layout { display:grid; gap:18px; }
+.ssu-timeline-group h3 { font-size:15px; color:#f5d478; margin:0 0 10px; }
+.ssu-timeline-items { display:grid; gap:7px; }
+.ssu-timeline-event { display:grid; grid-template-columns:74px minmax(0,1fr); gap:10px; padding:12px 11px; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:#0e284f; }
+.ssu-timeline-date { align-self:start; font-weight:900; color:#f4d277; font-size:13px; }
+.ssu-timeline-copy h4 { font-size:12px; margin:0 0 5px; line-height:1.45; }
+.ssu-timeline-copy p { color:#c1d0e6; font-size:10px; line-height:1.6; margin:0; }
+.ssu-timeline-copy > small { display:block; color:#f0ce89; font-size:9px; line-height:1.5; margin-top:6px; }
+.ssu-event-sources { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+.ssu-event-sources a { display:inline-flex; align-items:center; gap:3px; font-size:9px; color:#eacc75; text-decoration:none; font-weight:700; }
+.ssu-today { display:flex; gap:12px; margin:25px 0; padding:17px; border-radius:15px; border:1px solid rgba(244,210,97,.33); background:linear-gradient(120deg,#133860,#102b50); }
+.ssu-today > svg { color:#f2d16d; flex:0 0 auto; }
+.ssu-today h2 { font-size:17px; margin:0 0 8px; }
+.ssu-today p { color:#d0dfef; font-size:11px; line-height:1.7; margin:0; }
+.ssu-source-list a { overflow-wrap:anywhere; }
+@media (max-width:380px) {
+  .ha-ssu-entry-copy { padding:13px; gap:6px; }
+  .ha-ssu-entry-copy strong { font-size:16px; }
+  .ssu-history-hero { min-height:300px; }
+  .ssu-hero-content { padding:21px 15px 16px; }
+  .ssu-photo-grid { grid-template-columns:1fr; }
+  .ssu-timeline-event { grid-template-columns:61px minmax(0,1fr); gap:7px; }
+  .ssu-story-chapter { gap:8px; padding:13px 10px; }
+}
