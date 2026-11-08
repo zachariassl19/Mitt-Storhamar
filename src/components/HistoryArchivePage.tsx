@@ -7,6 +7,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { historyArchive, historyCategories } from '../history/catalog'
 import { featuredPlayerStoryNames, playerStories, playerStoryForName } from '../history/playerStories'
+import { indexedPlayerStories, searchPlayerStories } from '../history/storyIndex'
 import { leadersForSeason, coachChronologySource, captainChronologySource } from '../history/leadershipChronology'
 import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageAudit'
 import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
@@ -24,7 +25,7 @@ import type {
   ArchiveTimelineEvent, ArchiveArena, ArchiveLegend,
 } from '../history/types'
 
-type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | ArchiveEntityKind
+type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | 'stories' | ArchiveEntityKind
 type Selection = { kind: BrowsableKind; id: string }
 type ImageTarget = { media: ArchiveMedia; caption: string } | null
 type SortOrder = 'newest' | 'oldest' | 'alpha'
@@ -207,7 +208,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
     const officialNumbers = numberIndex.flatMap((row) => row.holders.filter((holder) => holder.name === person.fullName).map((holder)=>({number:row.number,period:holder.period})))
     return <>
       {careerTotal && <section className="ha-person-stats">
-        <span className="ha-kicker">KARRIERETALL · SIL-ARKIVET</span>
+        <span className="ha-kicker">KARRIEREN I TALL</span>
         <div className="ha-person-stat-grid">
           <div><strong>{careerTotal.games}</strong><span>Kamper</span></div>
           <div><strong>{careerTotal.goals}</strong><span>Mål</span></div>
@@ -337,13 +338,15 @@ function ArchiveCard({ kind, item, onClick, openPhoto }: {
   const year = entryYear(kind, item)
   const media = imageFor(kind, item)
   const Icon = ICONS[kind]
+  const isPlayer = kind === 'player' || kind === 'legend'
+  const playerStory = isPlayer ? playerStoryForName((item as ArchivePerson).fullName) : undefined
   return <article className={'ha-entry-card ' + (kind === 'jersey' ? 'jersey' : '')}>
     {media ? <div className="ha-card-art"><HistoryPicture key={media.id} media={media} compact onOpen={openPhoto}/></div> : <div className="ha-card-symbol"><Icon size={27}/></div>}
     <button type="button" className="ha-card-content" onClick={onClick}>
       <span className="ha-card-meta">{KIND_LABELS[kind]} {year ? '· ' + year : ''}</span>
       <strong>{item.title}</strong>
-      {item.summary && <p>{item.summary}</p>}
-      <span className="ha-card-bottom"><small>{completenessLabel(item)}</small><ChevronRight size={16}/></span>
+      {(playerStory?.lead || item.summary) && <p>{playerStory?.lead || item.summary}</p>}
+      <span className="ha-card-bottom"><small>{isPlayer ? (playerStory ? 'Les spillerhistorien' : 'Spillerprofil') : completenessLabel(item)}</small><ChevronRight size={16}/></span>
     </button>
   </article>
 }
@@ -443,16 +446,10 @@ export function HistoryArchivePage() {
   }
 
   const featuredJersey = archiveItem('jersey','jersey-1957-67')?.media[0]
-  const featuredProfiles = featuredPlayerStoryNames.map((name) => {
-    const person = historyArchive.legends.find((entry) => entry.fullName === name)
-      ?? historyArchive.players.find((entry) => entry.fullName === name)
-    if (!person) return null
-    return {
-      kind: historyArchive.legends.some((entry) => entry.id === person.id) ? 'legend' as const : 'player' as const,
-      person,
-      story: playerStoryForName(name)!,
-    }
-  }).filter((entry): entry is NonNullable<typeof entry> => entry !== null)
+  const storyMatches = useMemo(() => section === 'stories' ? searchPlayerStories(query) : [], [section, query])
+  const featuredProfiles = indexedPlayerStories().filter((entry) =>
+    featuredPlayerStoryNames.some((name) => name === entry.story.name)
+  )
   const chapter = chapterId ? historyChapters.find((item) => item.id === chapterId) : undefined
   const roleList = section === 'captain' || section === 'coach' ? sourceRoleLists[section] : null
   const sectionIcon = sectionInfo ? ICONS[sectionInfo.id] : BookOpen
@@ -483,6 +480,7 @@ export function HistoryArchivePage() {
         <div><strong>11</strong><span>Seriemesterskap</span></div>
       </div>
       <div className="ha-extra-actions">
+        <button onClick={()=>goSection('stories')}><BookOpen size={17}/><span><strong>Spillerhistorier</strong><small>25 fortellinger fra forskjellige epoker</small></span><ChevronRight size={16}/></button>
         <button onClick={()=>goSection('audit')}><Shield size={17}/><span><strong>Kildekontroll</strong><small>Hva mangler i de 69 sesongene?</small></span><ChevronRight size={16}/></button>
         <button onClick={()=>goSection('numbers')}><Shirt size={17}/><span><strong>Draktnummer 01–98</strong><small>Søk i nummerhistorien</small></span><ChevronRight size={16}/></button>
         <button onClick={()=>goSection('career-stats')}><Trophy size={17}/><span><strong>Adelskalenderen</strong><small>Rekorder og karrieretall</small></span><ChevronRight size={16}/></button>
@@ -509,7 +507,7 @@ export function HistoryArchivePage() {
             <span className="ha-story-feature-text"><strong>{story.name}</strong><small>{story.lead}</small><span>Les historien <ChevronRight size={14}/></span></span>
           </button>
         })}</div>
-        <button className="ha-load-more" onClick={()=>goSection('player')}>Se alle spillere og flere biografier ({playerStories.length}) <ChevronRight size={17}/></button>
+        <button className="ha-load-more" onClick={()=>goSection('stories')}>Utforsk alle {playerStories.length} spillerhistoriene <ChevronRight size={17}/></button>
         <div className="ha-section-title"><span className="ha-kicker">HISTORIEN BAK RESULTATENE</span><h2>Epokene som formet klubben</h2></div>
         <div className="ha-chapter-list">{historyChapters.map((part)=>{
           const media = part.imageJerseyId ? archiveItem('jersey',part.imageJerseyId)?.media[0] : undefined
@@ -529,6 +527,28 @@ export function HistoryArchivePage() {
     : section === 'audit' ? <HistoryAuditPage back={()=>goSection('overview')} openSeason={(id)=>openItem('season',id)}/>
     : section === 'numbers' ? <HistoryNumberPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
     : section === 'career-stats' ? <CareerTotalsPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
+    : section === 'stories' ? <section className="ha-shell">
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <div className="ha-section-heading">
+        <BookOpen size={24}/>
+        <div><span className="ha-kicker">MENNESKENE BAK STORHAMAR</span><h1>Spillerhistorier</h1>
+          <p>Fra pionerene på uteisen til dagens gullhelter. Oppdag hvem spillerne var, de store kampene og hva de betydde for Storhamar.</p></div>
+      </div>
+      <label className="ha-search"><Search size={17}/>
+        <input aria-label="Søk i spillerhistorier" value={query} onChange={(event)=>setQuery(event.target.value)} placeholder="Søk etter spillere eller øyeblikk…"/>
+        {query && <button type="button" onClick={()=>setQuery('')} aria-label="Tøm søket"><X size={15}/></button>}
+      </label>
+      <p className="ha-results-count">{storyMatches.length} {storyMatches.length === 1 ? 'spillerhistorie' : 'spillerhistorier'}</p>
+      <div className="ha-story-feature-grid ha-stories-catalog">{storyMatches.map(({kind,person,story})=>{
+        const photo = imageFor(kind, person)
+        return <button className="ha-story-feature" key={kind + person.id} onClick={()=>openItem(kind,person.id)}>
+          {photo ? <span className="ha-story-feature-image"><img src={photo.src} alt={photo.alt} loading="lazy"/></span> : <span className="ha-story-feature-symbol"><UserRound size={25}/></span>}
+          <span className="ha-story-feature-text"><strong>{story.name}</strong><small>{story.lead}</small><span>Les historien <ChevronRight size={14}/></span></span>
+        </button>
+      })}</div>
+      {storyMatches.length === 0 && <div className="ha-empty">Ingen spillerhistorier passet med søket. Prøv et annet navn eller øyeblikk.</div>}
+      <button className="ha-load-more" onClick={()=>goSection('player')}>Se hele spillerarkivet <ChevronRight size={17}/></button>
+    </section>
     : isBrowsableKind(section) ? <section className="ha-shell">
       <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
       <div className="ha-section-heading">{(() => { const Icon=sectionIcon;return <Icon size={24}/> })()}<div><span className="ha-kicker">STORHAMAR · ARKIVET</span><h1>{sectionInfo?.title}</h1><p>{sectionInfo?.description}</p></div></div>
