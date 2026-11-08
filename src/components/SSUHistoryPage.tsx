@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { ArrowLeft, CalendarDays, ExternalLink, HeartHandshake, ImageOff, Users, X } from 'lucide-react'
 import { ssuChapters, ssuFoundationDate, ssuPhotos, ssuSource, ssuSources, ssuTimeline } from '../history/ssuHistory'
+import { filteredSSUHighlights, highlightCategories, ssuHighlights } from '../history/ssuHighlights'
+import type { SSUHighlight, SSUHighlightCategory } from '../history/ssuHighlights'
 import type { SSUPhoto, SSUEvent } from '../history/ssuHistory'
 
 function SupportPhoto({ photo, onOpen }: { photo: SSUPhoto; onOpen: (photo: SSUPhoto) => void }) {
@@ -15,6 +17,7 @@ function SupportPhoto({ photo, onOpen }: { photo: SSUPhoto; onOpen: (photo: SSUP
       <strong>{photo.title}</strong>
       <span>{photo.date} · {photo.credit}</span>
       <a href={photo.originalUrl} target="_blank" rel="noopener noreferrer">Se originalfoto <ExternalLink size={12}/></a>
+      <a href={photo.licenseUrl} target="_blank" rel="noopener noreferrer">Lisens: CC BY-SA 4.0 <ExternalLink size={12}/></a>
     </figcaption>
   </figure>
 }
@@ -39,8 +42,45 @@ function EventList({ events, title }: { events: SSUEvent[]; title: string }) {
   </section>
 }
 
+
+function SSUHighlightCard({ item, expanded, onToggle, onPhoto }: {
+  item: SSUHighlight
+  expanded: boolean
+  onToggle: () => void
+  onPhoto: (photo: SSUPhoto) => void
+}) {
+  const photo = item.photoId ? ssuPhotos.find((entry) => entry.id===item.photoId) : undefined
+  return <article className={'ssu-highlight-card' + (expanded ? ' expanded' : '')}>
+    <button type="button" className="ssu-highlight-summary" onClick={onToggle} aria-expanded={expanded}>
+      {photo && <span className="ssu-highlight-thumb"><img src={photo.src} alt={photo.alt} loading="lazy"/></span>}
+      <span className="ssu-highlight-main">
+        <span className="ssu-highlight-year">{item.year}{item.beforeSSU ? ' · FØR SSU' : ''}</span>
+        <strong>{item.title}</strong>
+        <span>{item.teaser}</span>
+        <small>{item.keyFact}</small>
+      </span>
+      <span className="ssu-highlight-toggle">{expanded ? '−' : '+'}</span>
+    </button>
+    {expanded && <div className="ssu-highlight-detail">
+      {item.paragraphs.map((paragraph,index)=><p key={index}>{paragraph}</p>)}
+      {photo && <button type="button" className="ssu-highlight-open-photo" onClick={()=>onPhoto(photo)}>
+        Se historisk foto i stort format <ExternalLink size={14}/>
+      </button>}
+      <div className="ssu-highlight-references">
+        {item.sourceIds.map((id)=>{
+          const source=ssuSource(id)
+          return source ? <a key={id} href={source.url} target="_blank" rel="noopener noreferrer">{source.label} <ExternalLink size={12}/></a> : null
+        })}
+      </div>
+    </div>}
+  </article>
+}
+
 export function SSUHistoryPage({ onBack }: { onBack: () => void }) {
   const [openPhoto, setOpenPhoto] = useState<SSUPhoto | null>(null)
+  const [highlightCategory, setHighlightCategory] = useState<SSUHighlightCategory | 'all'>('all')
+  const [openHighlightId, setOpenHighlightId] = useState<string | null>(null)
+  const visibleHighlights = filteredSSUHighlights(highlightCategory)
   const precursors=ssuTimeline.filter((event)=>event.beforeSSU)
   const unionHistory=ssuTimeline.filter((event)=>!event.beforeSSU)
   return <section className="ha-shell ssu-history-page">
@@ -69,6 +109,18 @@ export function SSUHistoryPage({ onBack }: { onBack: () => void }) {
       <p>Men historien begynner før SSU. Den omfatter de første hockeytilskuerne, en eldre supporterforening og Køllebladet, som ga fansen deres egen stemme lenge før sosiale medier.</p>
     </div>
 
+    <div className="ha-section-title"><span className="ha-kicker">ØYEBLIKKENE SOM FORMET FELLESSKAPET</span><h2>Historiske høydepunkter</h2><p>Store borteturer, klubbens tøffeste perioder, tribuneminner og historien bak supporterkulturen.</p></div>
+    <div className="ssu-highlight-filters" aria-label="Filtrer SSU-høydepunkter">
+      <button type="button" className={highlightCategory === 'all' ? 'active' : ''} aria-pressed={highlightCategory === 'all'} onClick={()=>{setHighlightCategory('all');setOpenHighlightId(null)}}>Alle ({ssuHighlights.length})</button>
+      {highlightCategories.map((category)=><button key={category.id} type="button" className={highlightCategory === category.id ? 'active' : ''} aria-pressed={highlightCategory === category.id} onClick={()=>{setHighlightCategory(category.id);setOpenHighlightId(null)}}>
+        {category.title} ({ssuHighlights.filter((item)=>item.category === category.id).length})
+      </button>)}
+    </div>
+    <div className="ssu-highlights-list">
+      {visibleHighlights.map((item)=><SSUHighlightCard key={item.id} item={item} expanded={openHighlightId===item.id}
+        onToggle={()=>setOpenHighlightId((id)=>id===item.id?null:item.id)} onPhoto={setOpenPhoto}/>)}
+    </div>
+
     <div className="ha-section-title"><span className="ha-kicker">FRA UTEISEN TIL TRIBUNEN</span><h2>Historien i kapitler</h2></div>
     <div className="ssu-chapter-list">
       {ssuChapters.map((chapter,index)=><article className="ssu-story-chapter" key={chapter.id}>
@@ -82,7 +134,7 @@ export function SSUHistoryPage({ onBack }: { onBack: () => void }) {
       </article>)}
     </div>
 
-    <div className="ha-section-title"><span className="ha-kicker">ØYEBLIKKENE</span><h2>SSU i bilder</h2><p>Ekte bilder fra bortetribunen – dokumentert med fotograf og lisens.</p></div>
+    <div className="ha-section-title"><span className="ha-kicker">TRIBUNENE GJENNOM TIDEN</span><h2>SSU i bilder</h2><p>{ssuPhotos.length} historiske øyeblikk fra borteturene. Hvert bilde har fotograf, årstall og original lenke.</p></div>
     <div className="ssu-photo-grid">{ssuPhotos.map((photo)=><SupportPhoto key={photo.id} photo={photo} onOpen={setOpenPhoto}/>)}</div>
 
     <div className="ha-section-title"><span className="ha-kicker">ÅR FOR ÅR</span><h2>Tidslinjen</h2><p>Fra supporterforeningen som kom før til 25-årsjubileet i 2026.</p></div>
@@ -99,7 +151,7 @@ export function SSUHistoryPage({ onBack }: { onBack: () => void }) {
       <h3>Kilder og bildedokumentasjon</h3>
       <p>Historien bygger på klubbhistorie, offentlige dokumenter, gamle supporterutgivelser og fotografier. Opplysninger om forløperen er skilt fra de dokumenterte SSU-hendelsene.</p>
       {ssuSources.map((source)=><a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer" title={source.note}>{source.label}<ExternalLink size={14}/></a>)}
-      <small>Foto: Repstad via Wikimedia Commons, CC BY-SA 4.0. Originalkilder og lisens er tilgjengelige ved hvert bilde. SSUs stiftelsesdato {ssuFoundationDate} følger Brønnøysundregistrene.</small>
+      <small>De fire fotografiene er kreditert til Repstad/Vegard Gran via Wikimedia Commons under CC BY-SA 4.0. Originalkilde og lisens ligger under hvert foto. SSU ble stiftet {ssuFoundationDate}.</small>
     </section>
 
     {openPhoto && <div className="ha-lightbox" role="dialog" aria-modal="true" aria-label={openPhoto.title}>
