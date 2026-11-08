@@ -25,8 +25,8 @@ describe('SSU as its own Storhamar history chapter', () => {
     const earlier = ssuTimeline.filter((event) => event.beforeSSU)
     const union = ssuTimeline.filter((event) => !event.beforeSSU)
     expect(earlier.length).toBeGreaterThanOrEqual(3)
-    expect(union.length).toBeGreaterThanOrEqual(6)
-    expect(ssuChapters.length).toBeGreaterThanOrEqual(6)
+    expect(union.length).toBeGreaterThanOrEqual(18)
+    expect(ssuChapters).toHaveLength(12)
     expect(new Set(ssuChapters.map((chapter) => chapter.id)).size).toBe(ssuChapters.length)
     expect(ssuChapters.some((chapter) => chapter.title.includes('Køllebladet'))).toBe(true)
   })
@@ -55,8 +55,8 @@ describe('SSU as its own Storhamar history chapter', () => {
     }
   })
 
-  it('highlights 13 independently sourced episodes in five purposeful themes', () => {
-    expect(ssuHighlights).toHaveLength(13)
+  it('highlights 17 independently sourced episodes in five purposeful themes', () => {
+    expect(ssuHighlights).toHaveLength(17)
     expect(highlightCategories).toHaveLength(5)
     expect(new Set(ssuHighlights.map((item)=>item.id)).size).toBe(ssuHighlights.length)
     for(const item of ssuHighlights) {
@@ -79,6 +79,17 @@ describe('SSU as its own Storhamar history chapter', () => {
     expect(ssuHighlight('2023-six-buses')?.keyFact).toContain('6 busser')
     expect(ssuHighlight('2024-final-tickets')?.sourceIds).toContain('vif-final-2024')
     expect(ssuHighlight('2025-fanzine-booknight')?.sourceIds).toContain('history-night-2025')
+  })
+
+  it('preserves first-party SSU membership and travel sources without inventing social media posts', () => {
+    expect(ssuSource('member-signup-2026')?.url).toContain('pameldinger.no')
+    expect(ssuSource('official-trips-2026')?.url).toContain('ssu.pameldinger.no')
+    expect(ssuSource('stolte-bonder-2023')?.url).toContain('sil.no')
+    expect(ssuTimeline.find((event)=>event.id==='2026-ringerike')?.date).toBe('2026-10-20')
+    expect(ssuTimeline.find((event)=>event.id==='2026-hockey-classic')?.date).toBe('2026-10-24')
+    expect(ssuHighlight('2023-stolte-bonder')?.paragraphs.join(' ')).toMatch(/ikke en påstand om at SSU/)
+    expect(ssuHighlight('2026-october-trips')?.sourceIds).toContain('official-trips-2026')
+    expect(ssuSources.some((source)=>/instagram.com|facebook.com/.test(source.url))).toBe(false)
   })
 
   it('keeps difficult history separate from celebratory featured highlights', () => {

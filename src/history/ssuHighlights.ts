@@ -90,6 +90,16 @@ export const ssuHighlights: SSUHighlight[] = [
     sourceIds:['marathon-2017'],
   },
   {
+    id:'2018-stockholm',year:'2018',date:'2018-09-09',category:'travel',
+    title:'Sammen i Stockholm',keyFact:'2018 · CHL-bortetur til Djurgården',
+    teaser:'En europeisk hockeyhelg med felles møteplasser for tilreisende fra Hamar.',
+    paragraphs:[
+      'Da Storhamar skulle møte Djurgården i Champions Hockey League søndag 9. september, var mange supportere på vei til Stockholm. Klubben og SSU oppfordret de reisende til å møtes i området ved St. Eriksplan og Rörstrandsgatan på lørdagen.',
+      'På kampdagen var det foreslått en ny samling rundt Hovet. Storhamar-supporterne fikk plass på borteseksjonen A27. Den gamle klubbmeldingen viser hvordan borteturer også til Europa handlet om å møtes før kampen og oppleve hockey sammen.',
+    ],
+    sourceIds:['stockholm'],
+  },
+  {
     id:'2019-kickoff',year:'2019',date:'2019-08-03',category:'community',
     title:'Supporterne som en del av klubbfamilien',keyFact:'2019 · SSU med egen stand',
     teaser:'På kickoff før den nye sesongen var SSU synlig sammen med klubbens yngre avdeling.',
@@ -130,6 +140,16 @@ export const ssuHighlights: SSUHighlight[] = [
     photoId:'jordal',sourceIds:['commons-jordal'],
   },
   {
+    id:'2023-stolte-bonder',year:'2023',date:'2023-09-27',category:'culture',
+    title:'«Stolte bønder» blir vår egen identitet',keyFact:'2023 · Flagga, sangene og introfilmen',
+    teaser:'Supporterne tok eierskap til et kallenavn og gjorde det til noe å være stolt av.',
+    paragraphs:[
+      'Ord som er ment som erting kan få ny mening. Storhamar-supporterne tok etter hvert «bønder» og gjorde det til sitt eget uttrykk for identitet og fellesskap. Klubben fortalte i september 2023 at dette var synlig både på flagg og i sanger.',
+      'Den nye introfilmen brukte den samme stoltheten som tema. Spillerne ble filmet på Jønsberg med traktorer, fjøs og gårdsliv. Dette er en historie om hele Storhamars supporterkultur, ikke en påstand om at SSU alene laget uttrykket.',
+    ],
+    sourceIds:['stolte-bonder-2023'],
+  },
+  {
     id:'2024-final-tickets',year:'2024',date:'2024-04-14',category:'travel',
     title:'SSU organiserer bortefeltet i NM-finalen',keyFact:'Finale 2024 · Felt 215 og 216',
     teaser:'Finalene mot Vålerenga var utsolgte høydepunkter. SSU fikk en konkret rolle for bortesupporterne.',
@@ -140,6 +160,16 @@ export const ssuHighlights: SSUHighlight[] = [
     sourceIds:['vif-final-2024'],
   },
   {
+    id:'2024-membership',year:'2024',category:'community',
+    title:'Medlemskapet blir mer tilgjengelig',keyFact:'2024-vedtak · Ordning fra 2025',
+    teaser:'Årsmøtet vedtar nye kontingenter. En digital påmelding gjør SSU enklere å drive.',
+    paragraphs:[
+      'På årsmøtet i 2024 ble medlemskontingentene som gjaldt fra 2025 vedtatt. I SSUs egen informasjon for sesongen 2026/27 er barn under 16 år gratis medlemmer, ungdom 16–20 år har en egen pris og voksne over 20 år en annen.',
+      'Supporterunionen beskriver også hvordan digital innmelding gir rask bekreftelse og gjør det lettere å informere medlemmene. Bussrabatter, medlemsarrangementer og fordeler på billetter er en del av tilbudet. Det er slike praktiske ordninger som hjelper supporterkulturen videre til nye generasjoner.',
+    ],
+    sourceIds:['member-signup-2026'],
+  },
+  {
     id:'2025-fanzine-booknight',year:'2025',date:'2025-10-08',category:'culture',
     title:'Køllebladet får plass på historiekvelden',keyFact:'8. oktober 2025 · Forza Hamar',
     teaser:'Det gamle fanzinet ble igjen knyttet til Storhamars historie og identitet.',
@@ -148,6 +178,16 @@ export const ssuHighlights: SSUHighlight[] = [
       'At et gammelt supporterblad fikk en plass i programmet flere tiår etter starten viser at supporterne ikke bare lager stemning. De er også med på å bevare historien. Arrangementet er dokumentert gjennom programomtalen.',
     ],
     sourceIds:['history-night-2025'],
+  },
+  {
+    id:'2026-october-trips',year:'2026',date:'2026-10-24',category:'travel',
+    title:'To borteturer like før 25-årsdagen',keyFact:'20. og 24. oktober 2026',
+    teaser:'SSU satte opp supporterbusser både til Ringerike og til Hockey Classic på Lillehammer.',
+    paragraphs:[
+      'I oktober 2026 viser SSUs egen påmeldingsoversikt at det var satt opp bussturer til Ringerike 20. oktober og Hockey Classic mellom Lillehammer og Storhamar 24. oktober.',
+      'Hockey Classic-turen falt dagen før det var 25 år siden stiftelsen i 2001. Det gjør disse turene til et lite bilde på hva supporterunionen fortsatt driver med: å få folk fram til kampene sammen. Det finnes ikke grunnlag her for å omtale turen som et offisielt jubileumsarrangement.',
+    ],
+    sourceIds:['official-trips-2026','registry'],
   },
   {
     id:'2026-anniversary',year:'2026',date:'2026-10-25',category:'community',
