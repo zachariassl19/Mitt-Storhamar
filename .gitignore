@@ -31,3 +31,11 @@ Thumbs.db
 # local caches
 .cache/
 coverage/
+
+# Android build artifacts are created in GitHub Actions using 'cap add android'.
+# Native source will be committed separately once signing and device testing are stable.
+android/
+*.apk
+*.aab
+*.keystore
+*.jks
