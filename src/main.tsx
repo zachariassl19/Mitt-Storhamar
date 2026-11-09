@@ -4,6 +4,8 @@ import App from './AppV2'
 import { Capacitor } from '@capacitor/core'
 import { CalendarSettingsPortal } from './components/CalendarSettings'
 import { CloudSyncManager } from './components/CloudSyncManager'
+import { SmartTravelManager } from './components/SmartTravelManager'
+import { NativeNotificationManager } from './components/NativeNotificationManager'
 import { DynamicMatchdayHome } from './components/DynamicMatchdayHome'
 import { NotificationManager, NotificationSettingsPortal } from './components/NotificationCenter'
 import { SmartGameDayManager, SmartGameDaySettingsPortal } from './components/SmartGameDayGlobal'
@@ -23,6 +25,7 @@ import './purchases.css'
 import './cloudSync.css'
 import './gameCards.css'
 import './minStorhamar.css'
+import './smartTravel.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -31,6 +34,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <SmartGameDayManager />
     <SmartGameDaySettingsPortal />
     <NotificationManager />
+    <NativeNotificationManager />
+    <SmartTravelManager />
     <NotificationSettingsPortal />
     <CalendarSettingsPortal />
     <CloudSyncManager />
