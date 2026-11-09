@@ -1,20 +1,27 @@
 {
   "name": "mitt-storhamar",
   "private": true,
-  "version": "0.20.0",
+  "version": "0.21.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vitest run && tsc --noEmit && vite build",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:android": "vitest run && tsc --noEmit && vite build --mode android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "latest",
     "@supabase/supabase-js": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "lucide-react": "latest"
+    "lucide-react": "latest",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/android": "8.6.0",
+    "@capacitor/local-notifications": "8.6.0",
+    "@capacitor-community/background-geolocation": "1.2.27"
   },
   "devDependencies": {
     "@types/react": "latest",
@@ -22,6 +29,7 @@
     "@vitejs/plugin-react": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "@capacitor/cli": "8.6.0"
   }
 }
