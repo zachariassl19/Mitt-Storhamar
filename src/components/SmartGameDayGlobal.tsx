@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown, LocateFixed } from 'lucide-react'
+import { supportsNativeBackgroundTracking } from '../lib/nativeTravelLocation'
 import { arenaForGame } from '../data/arenas'
 import { games } from '../data/games'
 import { isGameDay } from '../lib/gameTime'
@@ -56,6 +57,9 @@ export function SmartGameDayManager() {
     }
 
     function startWatch() {
+      // Native GPS is managed by the explicit travel session. Never start a
+      // competing WebView GPS watcher in Android without travel consent.
+      if (supportsNativeBackgroundTracking()) return
       if (disposed || document.hidden || !settings.enabled || !settings.autoStartOnGameDay) return
       if (!window.isSecureContext || !('geolocation' in navigator)) return
 
@@ -245,7 +249,9 @@ export function SmartGameDaySettingsPortal() {
       {open && (
         <div className="settings-entry-panel smart-settings-panel">
           <div className="settings-panel-toggle-row">
-            <div><strong>Smart Kampdag</strong><span>Bruk arenaens GPS automatisk på kampdager.</span></div>
+            <div><strong>Smart Kampdag</strong><span>{supportsNativeBackgroundTracking()
+              ? 'På Android bruker du Smart reisemodus ovenfor for GPS i bakgrunnen.'
+              : 'Bruk arenaens GPS automatisk på kampdager når nettsiden er åpen.'}</span></div>
             <button
               type="button"
               className={`smart-toggle ${settings.enabled ? 'on' : ''}`}
@@ -275,7 +281,7 @@ export function SmartGameDaySettingsPortal() {
             {testing ? 'Henter posisjon…' : 'Test posisjon'}
           </button>
           {testMessage && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{testMessage}</p>}
-          <p className="settings-panel-note">Lagrer bare kampdagssignaler, ikke et kontinuerlig GPS-spor.</p>
+          <p className="settings-panel-note">Bare kampdagssignaler lagres, ikke et kontinuerlig GPS-spor. {supportsNativeBackgroundTracking()?'Start GPS med Smart reisemodus på Android.':''}</p>
         </div>
       )}
     </div>,

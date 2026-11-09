@@ -1,5 +1,5 @@
 const BASE = '/Mitt-Storhamar/';
-const CACHE = 'mitt-storhamar-v20-clean-ssu-storytabs';
+const CACHE = 'mitt-storhamar-v21-native-android-foundation';
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {

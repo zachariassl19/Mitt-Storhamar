@@ -214,6 +214,14 @@ export default function AppV2() {
   const [hubData, setHubData] = useState<HubExport | null>(() => loadHubExport())
   const [records, setRecords] = useState<Record<string, GameDayRecord>>(() => loadGameDayRecords())
   const [smartEvents, setSmartEvents] = useState<SmartGameDayEvent[]>(() => loadSmartGameDayEvents())
+
+  // Native travel and foreground Smart Kampdag run outside the game-details
+  // component. Keep event hints live without ever auto-confirming attendance.
+  useEffect(() => {
+    const sync = () => setSmartEvents(loadSmartGameDayEvents())
+    window.addEventListener('mitt-storhamar:smart-gameday-event', sync)
+    return () => window.removeEventListener('mitt-storhamar:smart-gameday-event', sync)
+  }, [])
   const [importMessage, setImportMessage] = useState('')
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
@@ -883,7 +891,7 @@ function CareerPage({ hubData, trips, records, purchases }: { hubData: HubExport
 function MorePage({ hubData, importMessage, importHubFile, removeImport, version }: { hubData: HubExport | null; importMessage: string; importHubFile: (file: File | undefined) => void; removeImport: () => void; version: string }) {
   return (
     <section className="page-section">
-      <div className="page-heading"><span className="eyebrow">APPEN · v{version}</span><h1>Mer</h1><p>Import, innstillinger og data.</p></div>
+      <div className="page-heading"><span className="eyebrow">APPEN · v{version}</span><h1>Mer</h1><p>Varsler, smart reisemodus og private data.</p></div>
       <article className="card version-card"><div><span className="eyebrow">VERSJON</span><strong>Mitt Storhamar v{version}</strong></div><p>Versjonsnummer følger SemVer. Små feilrettinger øker siste tall, nye funksjoner øker midterste tall.</p></article>
       <article className="card import-card"><div className="import-icon"><Upload /></div><h2>Importer Storhamar HUB</h2><p>Velg <code>storhamar-hub-data.json</code>. Fila lastes ikke opp til GitHub; dataene lagres lokalt på enheten din.</p><label className="file-button">Velg JSON-fil<input type="file" accept="application/json,.json" onChange={(event) => importHubFile(event.target.files?.[0])} /></label>{hubData && <div className="import-summary"><span>Schema v{hubData.schemaVersion}</span><span>{hubData.attendance?.length ?? 0} attendance</span><span>{hubData.trips?.length ?? 0} reiser</span></div>}{importMessage && <p className="import-message">{importMessage}</p>}{hubData && <button className="danger-text" onClick={removeImport}>Fjern importerte data</button>}</article>
       <article className="card settings-list"><button><Settings /><div><strong>Innstillinger</strong><span>Varsler, hjemsted og standardvalg</span></div><ChevronRight /></button><button><Route /><div><strong>Reiser</strong><span>Lagrede steder, biler og ruter</span></div><ChevronRight /></button><button><Database /><div><strong>Data</strong><span>Backup og eksport</span></div><ChevronRight /></button><button type="button" onClick={() => window.dispatchEvent(new Event('mitt-storhamar:open-private-sync'))}><Cloud /><div><strong>Privat synk</strong><span>Frivillig sikkerhetskopi mellom mobil og PC</span></div><ChevronRight /></button></article>

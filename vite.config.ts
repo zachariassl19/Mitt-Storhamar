@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-export default defineConfig({
+// Same source runs on GitHub Pages and in the bundled, offline Android WebView.
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: "/Mitt-Storhamar/",
-});
+  base: mode === 'android' ? './' : '/Mitt-Storhamar/',
+}))

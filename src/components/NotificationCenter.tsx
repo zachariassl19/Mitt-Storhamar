@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Bell, BellRing, ChevronDown } from 'lucide-react'
+import { isNativeAndroid, nativeNotificationPermission, requestNativeNotificationPermission, sendNativeTestNotification } from '../lib/nativeNotifications'
 import { games } from '../data/games'
 import { notificationCandidates } from '../lib/notificationLogic'
 import {
@@ -152,6 +153,7 @@ function useSettingsPortalTarget() {
 }
 
 function permissionState(): PermissionState {
+  if (isNativeAndroid()) return 'default'
   if (!('Notification' in window)) return 'unsupported'
   return Notification.permission
 }
@@ -170,6 +172,15 @@ export function NotificationSettingsPortal() {
   const [permission, setPermission] = useState<PermissionState>(() => permissionState())
   const [message, setMessage] = useState('')
 
+  useEffect(() => {
+    if (!isNativeAndroid()) return
+    let mounted=true
+    void nativeNotificationPermission().then((permission)=>{
+      if(mounted) setPermission(permission==='prompt'?'default':permission==='unsupported'?'unsupported':permission)
+    })
+    return ()=>{mounted=false}
+  },[target])
+
   useEffect(() => subscribeNotificationSettings(setSettings), [])
 
   function persist(next: NotificationSettings) {
@@ -181,6 +192,17 @@ export function NotificationSettingsPortal() {
     setMessage('')
     if (settings.enabled) {
       persist({ ...settings, enabled: false })
+      return
+    }
+    if (isNativeAndroid()) {
+      const allowed=await requestNativeNotificationPermission()
+      setPermission(allowed?'granted':'denied')
+      if (allowed) {
+        persist({...settings,enabled:true})
+        setMessage('Android-varsler er aktivert. Kamp og avreise planlegges på mobilen.')
+      } else {
+        setMessage('Tillat varsler for Mitt Storhamar i Android-innstillingene.')
+      }
       return
     }
     if (!('Notification' in window)) {
@@ -205,6 +227,12 @@ export function NotificationSettingsPortal() {
 
   async function testNotification() {
     setMessage('')
+    if (isNativeAndroid()) {
+      const scheduled=await sendNativeTestNotification()
+      setPermission(scheduled?'granted':'denied')
+      setMessage(scheduled?'Testvarsel planlagt på Android.':'Tillat varsler først i Android-innstillinger.')
+      return
+    }
     if (!('Notification' in window)) {
       setPermission('unsupported')
       setMessage('Systemvarsler støttes ikke her.')
@@ -279,7 +307,9 @@ export function NotificationSettingsPortal() {
             <Bell size={16} /> Send testvarsel
           </button>
           {message && <p className={permission === 'denied' ? 'save-warning' : 'save-success'}>{message}</p>}
-          <p className="settings-panel-note">DRA krever lagret reisetid. PWA-varsler sjekkes når appen er aktiv eller åpnes.</p>
+          <p className="settings-panel-note">{isNativeAndroid()
+            ? 'På Android planlegges kamp-, avreise- og kampdagsvarsler på telefonen. DRA krever lagret reisetid. Systemets batterisparing kan forskyve varsler.'
+            : 'DRA krever lagret reisetid. PWA-varsler sjekkes når appen er aktiv eller åpnes.'}</p>
         </div>
       )}
     </div>,
