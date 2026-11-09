@@ -214,6 +214,14 @@ export default function AppV2() {
   const [hubData, setHubData] = useState<HubExport | null>(() => loadHubExport())
   const [records, setRecords] = useState<Record<string, GameDayRecord>>(() => loadGameDayRecords())
   const [smartEvents, setSmartEvents] = useState<SmartGameDayEvent[]>(() => loadSmartGameDayEvents())
+
+  // Native travel and foreground Smart Kampdag run outside the game-details
+  // component. Keep event hints live without ever auto-confirming attendance.
+  useEffect(() => {
+    const sync = () => setSmartEvents(loadSmartGameDayEvents())
+    window.addEventListener('mitt-storhamar:smart-gameday-event', sync)
+    return () => window.removeEventListener('mitt-storhamar:smart-gameday-event', sync)
+  }, [])
   const [importMessage, setImportMessage] = useState('')
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
