@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './AppV2'
+import { Capacitor } from '@capacitor/core'
 import { CalendarSettingsPortal } from './components/CalendarSettings'
 import { CloudSyncManager } from './components/CloudSyncManager'
 import { DynamicMatchdayHome } from './components/DynamicMatchdayHome'
@@ -36,7 +37,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 )
 
-if ('serviceWorker' in navigator) {
+// Capacitor packages the local assets itself. Never register the GitHub Pages SW
+// inside the native WebView, where its /Mitt-Storhamar scope is not valid.
+if (!Capacitor.isNativePlatform() && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined)
   })
