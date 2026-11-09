@@ -180,14 +180,15 @@ export function SmartTravelManager() {
 
   useEffect(()=>{
     if (!session) return
+    const activeSession = session
     // A previously started, still-valid trip may resume when the app is opened.
-    if (!document.hidden) void startWatcher(session)
+    if (!document.hidden) void startWatcher(activeSession)
     function onVisible() {
-      if (!document.hidden && !watchStopRef.current) void startWatcher(session)
+      if (!document.hidden && !watchStopRef.current) void startWatcher(activeSession)
     }
     document.addEventListener('visibilitychange',onVisible)
     const tick = window.setInterval(()=>{
-      if (!isSmartTripActive(session)) void end()
+      if (!isSmartTripActive(activeSession)) void end()
     }, 60_000)
     return ()=>{
       document.removeEventListener('visibilitychange',onVisible)
