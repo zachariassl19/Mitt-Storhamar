@@ -40,3 +40,49 @@ describe('cloud storage merge', () => {
     expect(merged['mitt-storhamar:local:v1']).toBeDefined()
   })
 })
+
+describe('safe sync after offline edits', () => {
+  it('keeps the last explicitly updated attendance choice', () => {
+    const key = 'mitt-storhamar:attendance-plan:v1'
+    const stamps = 'mitt-storhamar:attendance-plan-updated:v1'
+    const merged = mergeCloudStorage({
+      [key]: JSON.stringify({g1:'yes'}),
+      [stamps]: JSON.stringify({g1:{updatedAt:'2026-11-08T12:00:00.000Z'}}),
+    }, {
+      [key]: JSON.stringify({g1:'no'}),
+      [stamps]: JSON.stringify({g1:{updatedAt:'2026-11-10T12:00:00.000Z'}}),
+    })
+    expect(JSON.parse(merged[key])).toEqual({g1:'no'})
+  })
+
+  it('does not resurrect a trip deleted while another device was offline', () => {
+    const key='mitt-storhamar:trips:v1'
+    const marker='mitt-storhamar:deleted-trips:v1'
+    const merged=mergeCloudStorage({
+      [key]:JSON.stringify([{id:'trip:one',gameId:'g1',updatedAt:'2026-11-08T12:00:00Z'}]),
+    },{
+      [key]:'[]',
+      [marker]:JSON.stringify({'trip:one':{deleted:true,updatedAt:'2026-11-10T12:00:00Z'}}),
+    })
+    expect(JSON.parse(merged[key])).toEqual([])
+  })
+
+  it('prevents resurrection of deleted purchases and respects later re-additions',()=>{
+    const key='mitt-storhamar:purchases:v1'
+    const marker='mitt-storhamar:deleted-purchases:v1'
+    const old={id:'p1',gameId:'g1',updatedAt:'2026-11-08T12:00:00Z'}
+    const newPurchase={...old,updatedAt:'2026-11-12T12:00:00Z'}
+    const deleted=JSON.stringify({p1:{deleted:true,updatedAt:'2026-11-10T12:00:00Z'}})
+    expect(JSON.parse(mergeCloudStorage({[key]:JSON.stringify([old])},{[key]:'[]',[marker]:deleted})[key])).toEqual([])
+    expect(JSON.parse(mergeCloudStorage({[key]:JSON.stringify([newPurchase])},{[key]:'[]',[marker]:deleted})[key])).toEqual([newPurchase])
+  })
+
+  it('keeps a later explicit undo-save instead of an older deletion marker',()=>{
+    const key='mitt-storhamar:trips:v1'
+    const marker='mitt-storhamar:deleted-trips:v1'
+    const cloud={[key]:'[]',[marker]:JSON.stringify({t1:{deleted:true,updatedAt:'2026-11-10T09:00:00Z'}})}
+    const local={[key]:JSON.stringify([{id:'t1',updatedAt:'2026-11-10T10:00:00Z'}]),
+      [marker]:JSON.stringify({t1:{deleted:false,updatedAt:'2026-11-10T10:00:00Z'}})}
+    expect(JSON.parse(mergeCloudStorage(cloud,local)[key])).toHaveLength(1)
+  })
+})
