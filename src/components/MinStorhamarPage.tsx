@@ -49,7 +49,7 @@ export function MinStorhamarPage({ hubData, trips, records, purchases, onOpenGam
 }) {
   const [tab, setTab] = useState<MinStorhamarTab>('overview')
   const [showAllTrips, setShowAllTrips] = useState(false)
-  const journeyRows = useMemo(() => travelHistoryRows(trips, games), [trips])
+  const journeyRows = travelHistoryRows(trips, games)
 
   const stats = useMemo(() => {
     const local = confirmedLocalCareerStats(records, trips)
