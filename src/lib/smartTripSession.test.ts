@@ -5,8 +5,9 @@ import type { Game } from '../types'
 const game: Game = { id:'g1',season:'2026/27',startsAt:'2026-11-14T16:00:00+01:00',competition:'EHL',homeTeam:'Vålerenga',awayTeam:'Storhamar',arena:'Jordal Amfi' }
 const kickOff=Date.parse(game.startsAt)
 describe('private, bounded smart travel mode',()=>{
- it('can start from 12 hours before the game and expires five hours afterwards',()=>{
-  expect(canStartSmartTrip(game,kickOff-13*60*60_000)).toBe(false)
+ it('can start from 72 hours before the game and expires five hours afterwards',()=>{
+  expect(canStartSmartTrip(game,kickOff-73*60*60_000)).toBe(false)
+  expect(canStartSmartTrip(game,kickOff-48*60*60_000)).toBe(true)
   expect(canStartSmartTrip(game,kickOff-3*60*60_000)).toBe(true)
   const session=makeSmartTripSession(game,kickOff-3*60*60_000)!
   expect(session.gameId).toBe('g1')
@@ -15,7 +16,7 @@ describe('private, bounded smart travel mode',()=>{
   expect(canStartSmartTrip(game,kickOff+5*60*60_000)).toBe(false)
  })
  it('does not start for a game weeks away or a completed past game',()=>{
-  expect(makeSmartTripSession(game,kickOff-2*24*60*60_000)).toBeNull()
+  expect(makeSmartTripSession(game,kickOff-4*24*60*60_000)).toBeNull()
   expect(makeSmartTripSession(game,kickOff+9*60*60_000)).toBeNull()
  })
  it('selects near-future matches in chronological order',()=>{
