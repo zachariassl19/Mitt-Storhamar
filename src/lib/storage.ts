@@ -4,6 +4,7 @@ const ATTENDANCE_KEY = 'mitt-storhamar:attendance-plan:v1'
 export const ATTENDANCE_CHANGED_EVENT = 'mitt-storhamar:attendance-plan-changed'
 const HUB_EXPORT_KEY = 'mitt-storhamar:hub-export:v1'
 const GAME_DAY_RECORDS_KEY = 'mitt-storhamar:game-day-records:v1'
+export const GAME_DAY_RECORDS_CHANGED_EVENT = 'mitt-storhamar:game-day-records-changed'
 const SMART_GAME_DAY_EVENTS_KEY = 'mitt-storhamar:smart-game-day-events:v1'
 
 export function loadAttendancePlans(): Record<string, AttendancePlan> {
@@ -54,6 +55,7 @@ export function saveGameDayRecord(record: GameDayRecord): Record<string, GameDay
   const current = loadGameDayRecords()
   const next = { ...current, [record.gameId]: record }
   localStorage.setItem(GAME_DAY_RECORDS_KEY, JSON.stringify(next))
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(GAME_DAY_RECORDS_CHANGED_EVENT))
   return next
 }
 
