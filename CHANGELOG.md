@@ -2,6 +2,26 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.22.0] – 2026-11-10
+
+### Pålitelig kamp og avreise
+- Rettet bekreftede kampendringer for Vålerenga og Frisk Asker i terminlisten. Bevarer eksisterende kampidentifikatorer.
+- Kampdag bruker samme DRA som planlegger og Android-varsler også når du selv velger avreisetid.
+- Reise valideres før oppmøte lagres for å redusere halvveis fullførte kampdager.
+- Avreisevarsel og fullføringsvarsel sendes ikke for kamper med «Nei».
+
+### Enklere supporterhverdag
+- Forsiden viser oppmøteplan, reise og avreise i stedet for en oppdiktet klar-prosent.
+- Reise- og sjekklisteknapper hopper direkte til relevante seksjoner.
+- En tom framtidig terminliste gir en nøktern beskjed i stedet for å utrope siste kamp til neste kamp.
+- Tilbakeknappen viser om du kom fra Hjem eller Kamper.
+- Min Storhamar-fanene sitter øverst mens innholdet rulles og har større tekst.
+- Fjernet tre knapper i Mer som ikke utførte noen handling.
+- Privat lokal sikkerhetskopi med nedlasting og kontrollert gjenoppretting.
+- Reisefølge kan planlegges før kampen. Sletting av kostnader/reise krever bekreftelse.
+- Økt lesbarhet og mindre teknisk tekst. PWA-en mellomlagrer kun egne statiske ressurser.
+
+
 ## [0.8.0] – 2026-09-23
 
 ### Bedre kampoversikt
