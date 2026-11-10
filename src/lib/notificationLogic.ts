@@ -136,7 +136,7 @@ export function notificationCandidates({
       }
     }
 
-    if (settings.departure) {
+    if (settings.departure && plans[game.id] !== 'no') {
       const trip = trips.find((item) => item.gameId === game.id)
       const departure = departureTimeForTrip(game, trip)
       if (departure) {

@@ -568,13 +568,18 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
   const [saveFeedback, setSaveFeedback] = useState<{ success: boolean; message: string } | null>(null)
 
   function saveAllFromBottom() {
-    // A finished game saves attendance, ticket and the travel form in one action.
+    // Validate before either write so an invalid route never leaves half a saved matchday.
+    const check = travelPlannerRef.current?.validate()
+    if (!check || !check.success) {
+      setSaveFeedback({ success: false, message: check?.message ?? 'Reiseskjemaet er ikke klart.' })
+      return
+    }
     const attendance = completionRef.current?.save()
     const result = travelPlannerRef.current?.save(attendance ? attendance.attendanceActual === 'attended' : undefined)
     if (!result) return
     setSaveFeedback(result.success
       ? { success: true, message: attendance ? 'Hele kampdagen er lagret. Oppmøte, billett og reise er oppdatert.' : result.message }
-      : { success: false, message: attendance ? `Oppmøte og billett er lagret, men reisen mangler: ${result.message}` : result.message })
+      : { success: false, message: result.message })
   }
 
   return (

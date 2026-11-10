@@ -25,6 +25,12 @@ describe('Android reminder plan',()=>{
   expect(plan[0].at.toISOString()).toBe('2026-11-13T07:15:00.000Z')
  })
 
+ it('respects declined games for departure and finish reminders',()=>{
+   const plan = nativeReminderPlan({games:[game],trips:[trip],plans:{[game.id]:'no'},now:start-2*24*60*60_000,
+     enabled:true,gameTomorrow:true,gameDay:true,departure:true,finishGameDay:true})
+   expect(plan.some(item=>item.kind==='departure'||item.kind==='finish')).toBe(false)
+   expect(plan.some(item=>item.kind==='gameDay')).toBe(true)
+ })
  it('does not invent a departure reminder without durations',()=>{
   const plan=nativeReminderPlan({games:[game],trips:[],now:start-2*24*60*60_000,
     enabled:true,gameTomorrow:false,gameDay:false,departure:true,finishGameDay:false})

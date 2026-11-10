@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { CheckCircle2, Clock3, MapPin, Navigation, Route } from 'lucide-react'
 import { games } from '../data/games'
 import { getGameTemporalState, isGameDay } from '../lib/gameTime'
+import { departureTimeForTrip } from '../lib/notificationLogic'
 import {
   loadSmartGameDaySettings,
   subscribeSmartGameDaySettings,
@@ -81,11 +82,14 @@ function formatClock(date: Date) {
   }).format(date)
 }
 
-function outboundMinutes(trip?: Trip) {
-  if (!trip) return null
-  const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
-  if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
-  return outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
+function formatDeparture(date: Date) {
+  return new Intl.DateTimeFormat('nb-NO', {
+    timeZone: 'Europe/Oslo',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date)
 }
 
 function phaseCopy(game: Game, recordCompleted: boolean, now: Date) {
@@ -122,13 +126,9 @@ export function DynamicMatchdayHome() {
   const record = game ? loadGameDayRecords()[game.id] : undefined
   const plan = game ? plans[game.id] ?? 'unset' : 'unset'
   const phase = game ? phaseCopy(game, Boolean(record?.completed), now) : null
-  const travelMinutes = outboundMinutes(trip)
   const desiredMinutesBefore = trip?.desiredArrivalMinutesBefore ?? 30
   const startDate = game ? new Date(game.startsAt) : null
-  const arrivalDate = startDate ? new Date(startDate.getTime() - desiredMinutesBefore * 60_000) : null
-  const departureDate = arrivalDate != null && travelMinutes != null
-    ? new Date(arrivalDate.getTime() - travelMinutes * 60_000)
-    : null
+  const departureDate = game ? departureTimeForTrip(game, trip) : null
   const arrivalValue = startDate ? clockValue(osloClockMinutes(startDate) - desiredMinutesBefore) : ''
 
   useEffect(() => {
@@ -192,7 +192,7 @@ export function DynamicMatchdayHome() {
               <span>JEG VIL VÆRE DER KL.</span>
               <input type="time" value={arrivalValue} onChange={(event) => setArrival(event.target.value)} />
             </label>
-            <div><span>DRA</span><strong>{departureDate ? formatClock(departureDate) : '—'}</strong><small>{departureDate ? 'fra lagret reise' : 'beregn reisetid først'}</small></div>
+            <div><span>DRA</span><strong>{departureDate ? formatDeparture(departureDate) : '—'}</strong><small>{trip?.plannedDepartureAt ? 'din valgte avreisetid' : departureDate ? 'beregnet fra reisen' : 'velg avreise eller beregn reisetid'}</small></div>
           </div>
 
           <div className="dynamic-matchday-status">
