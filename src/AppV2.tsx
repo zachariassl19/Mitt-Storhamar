@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { forwardRef, lazy, Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft,
   CalendarDays,
@@ -28,7 +28,6 @@ import {
 import appPackage from '../package.json'
 import PreDepartureChecklist from './PreDepartureChecklist'
 import { GamePurchases } from './components/GamePurchases'
-import { HistoryArchivePage } from './components/HistoryArchivePage'
 import { MinStorhamarPage } from './components/MinStorhamarPage'
 import { LocalBackupManager } from './components/LocalBackupManager'
 import { TravelPlanner, type TravelPlannerHandle } from './components/TravelPlanner'
@@ -74,6 +73,11 @@ import type {
 } from './types'
 
 const APP_VERSION = appPackage.version
+
+// The archival dataset is large and never needed just to check tonight's game.
+const HistoryArchivePage = lazy(async () => ({
+  default: (await import('./components/HistoryArchivePage')).HistoryArchivePage,
+}))
 
 const navItems: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: 'home', label: 'Hjem', icon: Home },
@@ -382,7 +386,7 @@ export default function AppV2() {
               )}
               {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} trips={trips} onSaveTrip={persistTrip} />}
               {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
-              {active === 'history' && <HistoryArchivePage />}
+              {active === 'history' && <Suspense fallback={<section className="page-section"><div className="card history-loading">Åpner Storhamar-arkivet…</div></section>}><HistoryArchivePage /></Suspense>}
               {active === 'more' && (
                 <MorePage
                   hubData={hubData}
