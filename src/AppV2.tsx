@@ -37,6 +37,7 @@ import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
 import { confirmedHistoricalAttendance } from './lib/historicalAttendance'
+import { departureTimeForTrip } from './lib/notificationLogic'
 import { gameFeatureClassNames, gameFeatures, gameStatusClass, travelRegistrationStatus } from './lib/gamePresentation'
 import { deletePurchase, loadPurchases, purchasesForGame, savePurchase, summarizePurchases } from './lib/purchases'
 import {
@@ -226,19 +227,40 @@ export default function AppV2() {
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null)
   const [trips, setTrips] = useState<Trip[]>(() => loadTrips())
   const [purchases, setPurchases] = useState<GamePurchase[]>(() => loadPurchases())
+  const [detailFocus, setDetailFocus] = useState<'top' | 'travel' | 'checklist'>('top')
+  const [now, setNow] = useState(() => new Date())
   const contentRef = useRef<HTMLElement>(null)
 
-  // The scrollable area ends above the bottom navigation, rather than
-  // letting page content slip underneath a fixed overlay.
   useEffect(() => {
-    if (contentRef.current) contentRef.current.scrollTop = 0
-  }, [active, selectedGameId])
+    const refresh = () => setNow(new Date())
+    const timer = window.setInterval(refresh, 60_000)
+    window.addEventListener('focus', refresh)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener('focus', refresh)
+    }
+  }, [])
 
-  const now = new Date()
+  // Scroll only the app content. Direct shortcuts land on the actual section.
+  useEffect(() => {
+    const container = contentRef.current
+    if (!container) return
+    container.scrollTop = 0
+    if (!selectedGameId || detailFocus === 'top') return
+    const frame = window.requestAnimationFrame(() => {
+      const selector = detailFocus === 'travel' ? '.travel-planner-card' : '.pre-departure-card'
+      const target = container.querySelector<HTMLElement>(selector)
+      if (target) {
+        container.scrollTop += target.getBoundingClientRect().top - container.getBoundingClientRect().top - 12
+      }
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [active, selectedGameId, detailFocus])
+
   const today = osloDateKey(now)
   const todayGame = games.find((game) => gameDateKey(game) === today)
   const nextFutureGame = games.find((game) => new Date(game.startsAt).getTime() > now.getTime())
-  const nextGame = todayGame ?? nextFutureGame ?? games[games.length - 1]
+  const nextGame = todayGame ?? nextFutureGame ?? null
   const matchday = Boolean(todayGame)
   const selectedGame = selectedGameId ? games.find((game) => game.id === selectedGameId) ?? null : null
 
@@ -264,7 +286,8 @@ export default function AppV2() {
     setActive(key)
   }
 
-  function openGame(game: Game) {
+  function openGame(game: Game, focus: 'top' | 'travel' | 'checklist' = 'top') {
+    setDetailFocus(focus)
     setSelectedGameId(game.id)
   }
 
@@ -334,6 +357,7 @@ export default function AppV2() {
               purchases={purchasesForGame(purchases, selectedGame.id)}
               smartEvents={smartEvents.filter((event) => event.gameId === selectedGame.id)}
               onBack={() => setSelectedGameId(null)}
+              backLabel={active === 'home' ? 'Tilbake til oversikten' : 'Tilbake til kamper'}
               onSaveTrip={persistTrip}
               onDeleteTrip={removeTrip}
               onSaveRecord={persistRecord}
@@ -346,6 +370,7 @@ export default function AppV2() {
               {active === 'home' && (
                 <HomePage
                   nextGame={nextGame}
+                  trip={nextGame ? tripForGame(trips, nextGame.id) : undefined}
                   matchday={matchday}
                   currentPlan={currentPlan}
                   updatePlan={updatePlan}
@@ -383,75 +408,100 @@ export default function AppV2() {
   )
 }
 
-function HomePage({ nextGame, matchday, currentPlan, updatePlan, openGames, openHistory, openGame }: {
-  nextGame: Game
+function HomePage({ nextGame, trip, matchday, currentPlan, updatePlan, openGames, openHistory, openGame }: {
+  nextGame: Game | null
+  trip?: Trip
   matchday: boolean
   currentPlan: (id: string) => AttendancePlan
   updatePlan: (id: string, plan: AttendancePlan) => void
   openGames: () => void
   openHistory: () => void
-  openGame: (game: Game) => void
+  openGame: (game: Game, focus?: 'top' | 'travel' | 'checklist') => void
 }) {
-  const plan = currentPlan(nextGame.id)
-  const ready = plan === 'yes' ? 50 : plan === 'maybe' ? 25 : 0
+  const plan = nextGame ? currentPlan(nextGame.id) : 'unset'
   const upcoming = games.filter((game) => new Date(game.startsAt).getTime() > Date.now()).slice(0, 4)
   const ehlCount = games.filter((game) => game.competition === 'EHL').length
   const chlCount = games.filter((game) => game.competition === 'CHL').length
-  const features = gameFeatures(nextGame)
+  const features = nextGame ? gameFeatures(nextGame) : []
+  const departure = nextGame ? departureTimeForTrip(nextGame, trip) : null
+  const departureLabel = departure ? new Intl.DateTimeFormat('nb-NO', {
+    timeZone: 'Europe/Oslo', weekday: 'short', day: 'numeric', month: 'short',
+    hour: '2-digit', minute: '2-digit',
+  }).format(departure) : null
+  const planTitle = plan === 'yes' ? 'Du skal på kampen'
+    : plan === 'maybe' ? 'Du vurderer å dra'
+    : plan === 'no' ? 'Du skal ikke på kampen'
+    : 'Har du planer om å dra?'
 
   return (
     <>
-      {matchday && (
+      {matchday && nextGame && (
         <section className="matchday-banner">
           <span>KAMPDAG</span><strong>I DAG GJELDER DET</strong>
           <p>{nextGame.homeTeam} – {nextGame.awayTeam} · {timeText(nextGame)} · {nextGame.arena}</p>
         </section>
       )}
 
-      <section className={`hero-card ${nextGame.competition === 'CHL' ? 'chl' : ''} ${gameFeatureClassNames(nextGame)} ${matchday ? 'is-matchday' : ''}`}>
-        <div className="section-kicker"><span>{matchday ? 'KAMPDAG' : 'NESTE KAMP'}</span><span className="competition-pill">{nextGame.competition}</span></div>
-        {features.length > 0 && <div className="hero-feature-row">{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}</div>}
-        <div className="hero-teams">
-          <TeamMark name={nextGame.homeTeam} primary={nextGame.homeTeam === 'Storhamar'} />
-          <div className="hero-center"><span>{dateText(nextGame)}</span><strong>{isFinished(nextGame) ? `${nextGame.homeScore}–${nextGame.awayScore}` : timeText(nextGame)}</strong><small>{isHome(nextGame) ? 'HJEMME' : 'BORTE'}</small></div>
-          <TeamMark name={nextGame.awayTeam} primary={nextGame.awayTeam === 'Storhamar'} />
-        </div>
-        <div className="arena-line"><MapPin size={15} /> {nextGame.arena}</div>
-        <button className="open-game" onClick={() => openGame(nextGame)}>Åpne kampen <ChevronRight size={18} /></button>
-      </section>
+      {nextGame ? (
+        <>
+          <section className={['hero-card', nextGame.competition === 'CHL' ? 'chl' : '', gameFeatureClassNames(nextGame), matchday ? 'is-matchday' : ''].filter(Boolean).join(' ')}>
+            <div className="section-kicker"><span>{matchday ? 'KAMPDAG' : 'NESTE KAMP'}</span><span className="competition-pill">{nextGame.competition}</span></div>
+            {features.length > 0 && <div className="hero-feature-row">{features.map((feature) => <span className={'game-feature-tag ' + feature.key} key={feature.key}>{feature.label}</span>)}</div>}
+            <div className="hero-teams">
+              <TeamMark name={nextGame.homeTeam} primary={nextGame.homeTeam === 'Storhamar'} />
+              <div className="hero-center"><span>{dateText(nextGame)}</span><strong>{isFinished(nextGame) ? String(nextGame.homeScore) + '–' + String(nextGame.awayScore) : timeText(nextGame)}</strong><small>{isHome(nextGame) ? 'HJEMME' : 'BORTE'}</small></div>
+              <TeamMark name={nextGame.awayTeam} primary={nextGame.awayTeam === 'Storhamar'} />
+            </div>
+            <div className="arena-line"><MapPin size={15} /> {nextGame.arena}</div>
+            <button className="open-game" onClick={() => openGame(nextGame)}>Åpne kampen <ChevronRight size={18} /></button>
+          </section>
 
-      {!isFinished(nextGame) && (
-        <section className="card attendance-card">
-          <div className="card-heading"><div><span className="eyebrow">PLAN</span><h2>Skal du dit?</h2></div><span className="plan-status">{planLabel(plan)}</span></div>
-          <AttendanceButtons value={plan} onChange={(value) => updatePlan(nextGame.id, value)} />
+          {!isFinished(nextGame) && (
+            <section className="card attendance-card">
+              <div className="card-heading"><div><span className="eyebrow">PLAN</span><h2>Skal du dit?</h2></div><span className="plan-status">{planLabel(plan)}</span></div>
+              <AttendanceButtons value={plan} onChange={(value) => updatePlan(nextGame.id, value)} />
+            </section>
+          )}
+
+          <section className="card matchday-hub">
+            <div className="card-heading"><div><span className="eyebrow">DIN KAMPPLAN</span><h2>{planTitle}</h2></div></div>
+            <div className="home-plan-status">
+              <div><CheckCircle2 size={16} /><span>Skal du dit?</span><strong>{planLabel(plan)}</strong></div>
+              <div><Route size={16} /><span>Reise</span><strong>{trip ? 'Lagret' : 'Ikke planlagt'}</strong></div>
+              <div><Clock3 size={16} /><span>Avreise</span><strong>{departureLabel ?? 'Ikke valgt'}</strong></div>
+            </div>
+            <p>{plan === 'no'
+              ? 'Du får ikke avreisevarsel for denne kampen. Du kan endre svaret ditt når som helst.'
+              : 'Reiseplanen er din. Du kan velge avreisetid selv eller bruke beregningen.'}</p>
+            {plan !== 'no' && <div className="quick-actions home-quick-actions">
+              <button onClick={() => openGame(nextGame, 'travel')}><Route size={19}/><span>{trip ? 'Endre reisen' : 'Planlegg reisen'}</span></button>
+              {(plan === 'yes' || plan === 'maybe') && <button onClick={() => openGame(nextGame, 'checklist')}><CheckCircle2 size={19}/><span>Sjekkliste</span></button>}
+            </div>}
+          </section>
+        </>
+      ) : (
+        <section className="card season-ended-card">
+          <span className="eyebrow">KAMPKALENDER</span>
+          <h1>Ingen flere kamper registrert</h1>
+          <p>Det kan fortsatt komme sluttspill eller endringer i terminlisten. Sjekk kampoversikten før du planlegger neste tur.</p>
+          <button className="open-game" onClick={openGames}>Se alle registrerte kamper <ChevronRight size={18}/></button>
         </section>
       )}
 
-      <section className="card matchday-hub">
-        <div className="card-heading"><div><span className="eyebrow">KAMPDAG</span><h2>{ready}% klar</h2></div><div className="progress-ring"><span>{ready}</span></div></div>
-        <div className="progress-track"><div style={{ width: `${ready}%` }} /></div>
-        <p>{plan === 'yes' ? 'Du planlegger å dra. Kampen teller først etter at faktisk oppmøte er bekreftet.' : 'Svar på om du planlegger å dra.'}</p>
-        <div className="quick-actions">
-          <button onClick={() => openGame(nextGame)}><Route size={18} /><span>Reise</span></button>
-          <button onClick={() => openGame(nextGame)}><WalletCards size={18} /><span>Utgifter</span></button>
-          <button onClick={() => openGame(nextGame)}><Clock3 size={18} /><span>DRA</span></button>
-        </div>
-      </section>
-
       <section className="section-block">
         <div className="section-title-row"><div><span className="eyebrow">KALENDER</span><h2>Kommende kamper</h2></div><button className="text-button" onClick={openGames}>Alle kamper</button></div>
-        <div className="game-list">{upcoming.map((game) => <GameRow key={game.id} game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} />)}</div>
+        {upcoming.length ? <div className="game-list">{upcoming.map((game) => <GameRow key={game.id} game={game} plan={currentPlan(game.id)} onOpen={() => openGame(game)} />)}</div> : <p className="home-calendar-empty">Ingen kommende kamper i appens terminliste akkurat nå.</p>}
       </section>
 
       <section className="card season-card">
-        <div className="section-kicker"><span>2026/27 · CURRENT</span></div>
+        <div className="section-kicker"><span>2026/27 · SESONGOVERSIKT</span></div>
         <h2>Storhamars sesong</h2>
-        <div className="stat-grid"><div><strong>{ehlCount}</strong><span>EHL-kamper</span></div><div><strong>{chlCount}</strong><span>CHL-kamper</span></div><div><strong>{games.length}</strong><span>Kamper totalt</span></div></div>
-        <p>Hele 2026/27-kalenderen, inkludert treningskamper og allerede spilte kamper.</p>
+        <div className="stat-grid"><div><strong>{ehlCount}</strong><span>EHL-kamper</span></div><div><strong>{chlCount}</strong><span>CHL-kamper</span></div><div><strong>{games.length}</strong><span>Registrerte kamper</span></div></div>
+        <p>Registrerte kamper fra 2026/27. Terminlisten kan få endringer og flere sluttspillkamper.</p>
       </section>
 
       <section className="merit-grid"><article className="card merit-card"><Trophy /><span>NM-GULL</span><strong>10</strong></article><article className="card merit-card"><Shield /><span>SERIEGULL</span><strong>11</strong></article></section>
-      <section className="history-hero"><span>1957</span><h2>Storhamar-historien</h2><p>Fra uteisen til dagens Storhamar.</p><button onClick={openHistory}>Utforsk historien <ChevronRight size={18} /></button></section>
+      <section className="history-hero"><span>1957</span><h2>Storhamar-historien</h2><p>Fra uteisen til dagens Storhamar.</p><button onClick={openHistory}>Utforsk historien <ChevronRight size={18}/></button></section>
     </>
   )
 }
@@ -544,7 +594,7 @@ function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord, t
   )
 }
 
-function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEvents, onBack, onSaveTrip, onDeleteTrip, onSaveRecord, onSavePurchase, onDeletePurchase, onSmartEvent }: {
+function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEvents, onBack, backLabel, onSaveTrip, onDeleteTrip, onSaveRecord, onSavePurchase, onDeletePurchase, onSmartEvent }: {
   game: Game
   plan: AttendancePlan
   updatePlan: (plan: AttendancePlan) => void
@@ -553,6 +603,7 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
   purchases: GamePurchase[]
   smartEvents: SmartGameDayEvent[]
   onBack: () => void
+  backLabel: string
   onSaveTrip: (trip: Trip) => void
   onDeleteTrip: (tripId: string) => void
   onSaveRecord: (record: GameDayRecord) => void
@@ -584,7 +635,7 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
 
   return (
     <section className="game-detail-page">
-      <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Tilbake til kamper</button>
+      <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> {backLabel}</button>
       <article className={`game-detail-hero ${game.competition === 'CHL' ? 'chl' : ''} ${gameFeatureClassNames(game)}`}>
         <div className="section-kicker"><span>{game.competition} · {game.season}</span><span>{isHome(game) ? 'HJEMME' : 'BORTE'}</span></div>
         {features.length > 0 && <div className="hero-feature-row">{features.map((feature) => <span className={`game-feature-tag ${feature.key}`} key={feature.key}>{feature.label}</span>)}</div>}
@@ -627,7 +678,7 @@ function GameDetail({ game, plan, updatePlan, trip, record, purchases, smartEven
         </button>
         {saveFeedback?.success && (
           <button className="secondary-action full-width game-final-back" onClick={onBack}>
-            <ArrowLeft size={17} /> Tilbake til kamper
+            <ArrowLeft size={17} /> {backLabel}
           </button>
         )}
       </article>
@@ -899,7 +950,7 @@ function MorePage({ hubData, importMessage, importHubFile, removeImport, version
       <div className="page-heading"><span className="eyebrow">APPEN · v{version}</span><h1>Mer</h1><p>Varsler, smart reisemodus og private data.</p></div>
       <article className="card version-card"><div><span className="eyebrow">VERSJON</span><strong>Mitt Storhamar v{version}</strong></div><p>Versjonsnummer følger SemVer. Små feilrettinger øker siste tall, nye funksjoner øker midterste tall.</p></article>
       <article className="card import-card"><div className="import-icon"><Upload /></div><h2>Importer Storhamar HUB</h2><p>Velg <code>storhamar-hub-data.json</code>. Fila lastes ikke opp til GitHub; dataene lagres lokalt på enheten din.</p><label className="file-button">Velg JSON-fil<input type="file" accept="application/json,.json" onChange={(event) => importHubFile(event.target.files?.[0])} /></label>{hubData && <div className="import-summary"><span>Schema v{hubData.schemaVersion}</span><span>{hubData.attendance?.length ?? 0} attendance</span><span>{hubData.trips?.length ?? 0} reiser</span></div>}{importMessage && <p className="import-message">{importMessage}</p>}{hubData && <button className="danger-text" onClick={removeImport}>Fjern importerte data</button>}</article>
-      <article className="card settings-list"><button><Settings /><div><strong>Innstillinger</strong><span>Varsler, hjemsted og standardvalg</span></div><ChevronRight /></button><button><Route /><div><strong>Reiser</strong><span>Lagrede steder, biler og ruter</span></div><ChevronRight /></button><button><Database /><div><strong>Data</strong><span>Backup og eksport</span></div><ChevronRight /></button><button type="button" onClick={() => window.dispatchEvent(new Event('mitt-storhamar:open-private-sync'))}><Cloud /><div><strong>Privat synk</strong><span>Frivillig sikkerhetskopi mellom mobil og PC</span></div><ChevronRight /></button></article>
+      <article className="card settings-list"><button type="button" onClick={() => window.dispatchEvent(new Event('mitt-storhamar:open-private-sync'))}><Cloud /><div><strong>Privat synk</strong><span>Frivillig sikkerhetskopi mellom mobil og PC</span></div><ChevronRight /></button></article>
     </section>
   )
 }
