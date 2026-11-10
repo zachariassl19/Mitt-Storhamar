@@ -268,9 +268,16 @@ export function MinStorhamarPage({ hubData, trips, records, purchases, onOpenGam
                 <div className="min-travel-history-list">
                   {journeyRows.slice(0, showAllTrips ? undefined : 4).map(row => {
                     const match = row.game
-                    const date = new Intl.DateTimeFormat('nb-NO', {timeZone:'Europe/Oslo',day:'numeric',month:'short',year:'numeric'}).format(row.date)
+                    const date = row.matchDate
+                      ? new Intl.DateTimeFormat('nb-NO', {timeZone:'Europe/Oslo',day:'numeric',month:'short',year:'numeric'}).format(row.matchDate)
+                      : 'Kampdato ukjent'
                     const title = match ? `${match.homeTeam} – ${match.awayTeam}` : 'Kamp uten terminlistedetaljer'
-                    const body = <><span className="min-travel-history-copy"><strong>{title}</strong><small>{date} · {row.trip.status === 'completed' ? 'Gjennomført' : 'Planlagt'}</small><small>{row.km == null ? 'Km ikke registrert' : `${Math.round(row.km)} km`} · {row.cost == null ? 'Kostnad ikke registrert' : `${money(row.cost)}${row.hasEstimatedCost ? ' (delvis beregnet)' : ''}`}</small></span>{match && <ChevronRight size={18}/>}</>
+                    const kmLabel = row.km == null ? 'Km ikke registrert' : `${Math.round(row.km)} km${row.hasUnknownKm ? ' (ufullstendig)' : ''}`
+                    const costNote = row.hasEstimatedCost && row.hasUnknownCost
+                      ? ' (delvis beregnet og ufullstendig)'
+                      : row.hasUnknownCost ? ' (ufullstendig)' : row.hasEstimatedCost ? ' (delvis beregnet)' : ''
+                    const costLabel = row.cost == null ? 'Kostnad ikke registrert' : `${money(row.cost)}${costNote}`
+                    const body = <><span className="min-travel-history-copy"><strong>{title}</strong><small>{date} · {row.trip.status === 'completed' ? 'Gjennomført' : 'Planlagt'}</small><small>{kmLabel} · {costLabel}</small></span>{match && <ChevronRight size={18}/>}</>
                     return match
                       ? <button key={row.trip.id} type="button" className="min-travel-history-row" onClick={() => onOpenGame(match)} aria-label={`Åpne reisen for ${title}`}>{body}</button>
                       : <div key={row.trip.id} className="min-travel-history-row" aria-label="Historisk reise uten kampdetaljer">{body}</div>
