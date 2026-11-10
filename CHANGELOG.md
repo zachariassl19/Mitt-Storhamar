@@ -2,6 +2,21 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.22.1] – 2026-11-10
+
+### Synk og datatrygghet
+- Endringer i Ja/Kanskje/Nei får tidsstempel per kamp så en eldre skyverdi ikke automatisk overskriver et nyere lokalt valg.
+- Slettede reiser og kjøp har tidsstemplede markører som forhindrer at gamle kopier dukker opp igjen etter frakoblet synk.
+- Tester for konflikter, sletting og gjenoppretting i privat synk.
+- Android-varsler oppdateres når oppmøteplan og fullføringsstatus endres. Et «Nei» fjerner gamle avreise-/fullføringspåminnelser.
+- Påminnelse om fullført kampdag beholdes når appen åpnes mens kampen pågår, og fjernes når kampdagen er fullført.
+- «Registrert økonomi» opplyser hvor mye av reiseutgiftene som fortsatt er anslag.
+
+### Historie og ytelse
+- Historiearkivet og stilene lastes først når du åpner Historie. Resten av appen trenger ikke historiedatabasen ved oppstart.
+- Større lesetekst på utvalgte historiekort og arkivsider.
+
+
 ## [0.22.0] – 2026-11-10
 
 ### Pålitelig kamp og avreise
