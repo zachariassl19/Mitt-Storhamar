@@ -34,6 +34,7 @@ import { LocalBackupManager } from './components/LocalBackupManager'
 import { TravelPlanner, type TravelPlannerHandle } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
+import { GAME_OVERRIDES_CHANGED_EVENT } from './data/gameOverrides'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
@@ -236,9 +237,11 @@ export default function AppV2() {
     const refresh = () => setNow(new Date())
     const timer = window.setInterval(refresh, 60_000)
     window.addEventListener('focus', refresh)
+    window.addEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
     return () => {
       window.clearInterval(timer)
       window.removeEventListener('focus', refresh)
+      window.removeEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
     }
   }, [])
 
