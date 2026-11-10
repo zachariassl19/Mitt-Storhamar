@@ -125,7 +125,10 @@ function countMissingTravelFields(
 }
 
 export type TravelPlannerSaveResult = { success: boolean; message: string }
-export type TravelPlannerHandle = { save: (attendedOverride?: boolean) => TravelPlannerSaveResult }
+export type TravelPlannerHandle = {
+  validate: () => TravelPlannerSaveResult
+  save: (attendedOverride?: boolean) => TravelPlannerSaveResult
+}
 
 type TravelPlannerProps = {
   game: Game
@@ -390,16 +393,21 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     setRoutingMessage(`Beregnet ${completedParts}. ${trainCount ? 'Togkilometer er jernbaneavstand mellom stasjonene. Togtid må fylles inn manuelt. ' : ''}${warnings.length ? `Kunne ikke beregne: ${warnings.join(' ')} ` : ''}Husk å lagre hele reisen nederst.`)
   }
 
-  function save(attendedOverride?: boolean): TravelPlannerSaveResult {
+  function validate(): TravelPlannerSaveResult {
     if (departureMode === 'manual' && (!draft.plannedDepartureAt || !departureTimeForTrip(game, draft))) {
-      const warning = 'Velg en gyldig avreisedato og et klokkeslett før kampstart.'
-      setMessage(warning)
-      return { success: false, message: warning }
+      return { success: false, message: 'Velg en gyldig avreisedato og et klokkeslett før kampstart.' }
     }
     if (invalidRoute) {
-      const warning = 'Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.'
-      setMessage(warning)
-      return { success: false, message: warning }
+      return { success: false, message: 'Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.' }
+    }
+    return { success: true, message: '' }
+  }
+
+  function save(attendedOverride?: boolean): TravelPlannerSaveResult {
+    const check = validate()
+    if (!check.success) {
+      setMessage(check.message)
+      return check
     }
 
     const now = new Date().toISOString()
@@ -427,7 +435,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     return { success: true, message: successMessage }
   }
 
-  useImperativeHandle(ref, () => ({ save }))
+  useImperativeHandle(ref, () => ({ save, validate }))
 
   function removeSavedTrip() {
     if (!trip) return
