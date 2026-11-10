@@ -1,5 +1,5 @@
 const BASE = '/Mitt-Storhamar/';
-const CACHE = 'mitt-storhamar-v24-travel-history';
+const CACHE = 'mitt-storhamar-v24-1-travel-history-accuracy';
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {
