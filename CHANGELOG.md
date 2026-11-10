@@ -2,6 +2,20 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.23.0] – 2026-11-10
+
+### Sikrere personlige data
+- Hver Ja/Kanskje/Nei-beslutning lagres med tidspunkt og synkroniseres per kamp slik at nyere valg får forrang.
+- Slettede reiser og kjøp får lokale og synkroniserte slettemarkører for å hindre at eldre kopier gjenoppretter dem.
+- Privat synk leser og slår sammen skydata før enheten skriver tilbake.
+- Android-varsler planlegges på nytt når du endrer oppmøte eller fullfører en kamp. Ferdige kampdager skal ikke få nye fullføringspåminnelser.
+- Økonomisiden skiller tydeligere mellom registrerte og beregnede reisekostnader.
+- Nye regresjonstester for konflikt, sletting og Android-varsling.
+
+### Gjenstående kvalitetsarbeid
+- Fullstendige sesongoverganger, redaksjonell videreutvikling av historiearkivet og fysisk test av Android GPS/varsler er egne arbeidsområder.
+- Samtidige nettsky-skrivinger fra to åpne enheter kan fortsatt kreve en serverstyrt transaksjonsmodell for absolutt konfliktgaranti.
+
 ## [0.22.0] – 2026-11-10
 
 ### Pålitelig kamp og avreise
