@@ -37,7 +37,7 @@ import { games } from './data/games'
 import { GAME_OVERRIDES_CHANGED_EVENT } from './data/gameOverrides'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
-import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
+import { canConfirmAttendance, getGameTemporalState, groupGamesForAttendance, isGameDay } from './lib/gameTime'
 import { confirmedHistoricalAttendance } from './lib/historicalAttendance'
 import { departureTimeForTrip } from './lib/notificationLogic'
 import { gameFeatureClassNames, gameFeatures, gameStatusClass, travelRegistrationStatus } from './lib/gamePresentation'
@@ -548,10 +548,11 @@ function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord, t
 }) {
   const [filter, setFilter] = useState<'all' | 'past' | 'future'>('all')
   const now = Date.now()
-  const past = games.filter((game) => new Date(game.startsAt).getTime() < now)
-  const future = games.filter((game) => new Date(game.startsAt).getTime() >= now)
+  const { future, live, past } = groupGamesForAttendance(games, new Date(now))
 
   function markHistoricalAttendance(game: Game, actual: 'attended' | 'not_attended') {
+    // Never count an ongoing match as attended via a quick action.
+    if (!canConfirmAttendance(game)) return
     onSaveRecord(confirmedHistoricalAttendance(game.id, actual, records[game.id]))
     const existingTrip = tripForGame(trips, game.id)
     if (existingTrip && existingTrip.status !== (actual === 'attended' ? 'completed' : 'planned')) {
@@ -566,9 +567,19 @@ function GamesPage({ currentPlan, updatePlan, openGame, records, onSaveRecord, t
       <div className="game-filter-bar" role="group" aria-label="Filtrer kamper">
         <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>Alle <strong>{games.length}</strong></button>
         <button className={filter === 'past' ? 'active' : ''} onClick={() => setFilter('past')}>Gamle <strong>{past.length}</strong></button>
-        <button className={filter === 'future' ? 'active' : ''} onClick={() => setFilter('future')}>Kommende <strong>{future.length}</strong></button>
+        <button className={filter === 'future' ? 'active' : ''} onClick={() => setFilter('future')}>Aktuelle <strong>{future.length + live.length}</strong></button>
       </div>
 
+      {filter !== 'past' && live.length > 0 && <>
+        <div className="games-subheading"><span>PÅGÅR NÅ</span><strong>{live.length}</strong></div>
+        <div className="game-card-list">{live.map((game) => {
+          const plan = currentPlan(game.id)
+          return <article className={`card full-game-card ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, records[game.id], now)}`} key={game.id}>
+            <GameRow game={game} plan={plan} onOpen={() => openGame(game)} />
+            <p className="travel-footnote">Kampen pågår. Du kan bekrefte oppmøte når den er ferdig.</p>
+          </article>
+        })}</div>
+      </>}
       {filter !== 'past' && future.length > 0 && <><div className="games-subheading"><span>KOMMENDE</span><strong>{future.length}</strong></div><div className="game-card-list">{future.map((game) => {
         const plan = currentPlan(game.id)
         return <article className={`card full-game-card ${gameFeatureClassNames(game)} ${gameStatusClass(game, plan, records[game.id], now)}`} key={game.id}><GameRow game={game} plan={plan} onOpen={() => openGame(game)} /><AttendanceButtons value={plan} onChange={(value) => updatePlan(game.id, value)} /></article>
