@@ -15,7 +15,7 @@ export interface SmartTripSession {
 }
 
 const HOUR = 60 * 60 * 1000
-const MAX_BEFORE = 12 * HOUR
+const MAX_BEFORE = 72 * HOUR
 const AFTER = 5 * HOUR
 
 export function canStartSmartTrip(game: Game, now = Date.now()) {

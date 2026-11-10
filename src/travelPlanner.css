@@ -306,3 +306,19 @@
   .route-provider-heading { grid-template-columns: 1fr; }
   .route-provider-heading button { width: 100%; }
 }
+
+/* Personal departure override, without hiding automatic recommendations. */
+.departure-choice { display:grid; gap:11px; margin:14px 0; padding:14px; background:linear-gradient(140deg,#102f57,#0b2448); border:1px solid rgba(244,205,91,.28); border-radius:14px; }
+.departure-choice-heading { display:grid; gap:4px; }
+.departure-choice-heading strong { color:#f5d471; font-size:13px; }
+.departure-choice-heading span { font-size:10px; color:#c4d4e8; line-height:1.5; }
+.departure-choice-modes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+.departure-choice-modes button { min-width:0; padding:10px 7px; border-radius:10px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.05); color:#cad9ed; font-size:11px; font-weight:800; cursor:pointer; }
+.departure-choice-modes button.selected { color:#10264b; border-color:#f1d377; background:#f2cd64; }
+.departure-choice-input { display:grid; gap:7px; }
+.departure-choice-input span { font-size:10px; font-weight:800; color:#e4edf9; }
+.departure-choice-input input { box-sizing:border-box; width:100%; min-width:0; min-height:45px; padding:10px 11px; background:#081e3e; border:1px solid rgba(255,255,255,.2); border-radius:10px; color:#fff; color-scheme:dark; font-size:12px; }
+.departure-choice p { margin:0; color:#b6c9e1; font-size:10px; line-height:1.65; }
+.departure-choice .departure-choice-warning { color:#f5c773; font-weight:800; }
+.departure-choice .departure-choice-note { border-top:1px solid rgba(255,255,255,.1); padding-top:9px; }
+@media (max-width:360px) { .departure-choice { padding:11px; } .departure-choice-modes button { font-size:10px; } }

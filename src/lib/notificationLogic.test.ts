@@ -55,6 +55,26 @@ describe('notification timing', () => {
     expect(departure?.toISOString()).toBe('2026-09-24T14:00:00.000Z')
   })
 
+  it('uses the supporter-chosen date and time instead of the DRA calculation', () => {
+    const chosen = '2026-09-23T08:15:00+02:00'
+    const changed = {...trip, plannedDepartureAt:chosen}
+    expect(departureTimeForTrip(game,changed)?.toISOString()).toBe('2026-09-23T06:15:00.000Z')
+    expect(departureTimeForTrip(game,{...changed,legs:[]})?.toISOString()).toBe('2026-09-23T06:15:00.000Z')
+    expect(departureTimeForTrip(game,{...changed,plannedDepartureAt:null})?.toISOString()).toBe('2026-09-24T14:00:00.000Z')
+    expect(departureTimeForTrip(game,{...changed,plannedDepartureAt:'not-a-date'})).toBeNull()
+    expect(departureTimeForTrip(game,{...changed,plannedDepartureAt:game.startsAt})).toBeNull()
+  })
+
+  it('offers manually selected DRA even without a calculated route', () => {
+    const chosen = {...trip, plannedDepartureAt:'2026-09-23T09:30:00+02:00', legs:[]}
+    const due = notificationCandidates({
+      now:new Date('2026-09-23T09:31:00+02:00'),games:[game],trips:[chosen],records:{},
+      settings:{...defaultNotificationSettings,enabled:true},smartGameDayEnabled:false,
+    })
+    const message=due.find(item=>item.id===`departure:${game.id}`)
+    expect(message?.body).toContain('09:30')
+  })
+
   it('offers a tomorrow reminder after 18:00 the evening before', () => {
     const settings = { ...defaultNotificationSettings, enabled: true }
     const due = notificationCandidates({

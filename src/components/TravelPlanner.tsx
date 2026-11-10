@@ -3,6 +3,7 @@ import { Car, ChevronDown, MapPin, Navigation, Plus, Trash2 } from 'lucide-react
 import { GameCompanions } from './GameCompanions'
 import { companionSelectionForGame, saveGameCompanionSelection, type GameCompanionSelection } from '../lib/companions'
 import { canConfirmAttendance } from '../lib/gameTime'
+import { departureTimeForTrip } from '../lib/notificationLogic'
 import { calculateTrainRailDistance, isNamedTrainStation } from '../lib/enturRail'
 import { calculateGoogleRoute, canAutoRoute, hasGoogleRoutesKey } from '../lib/googleRoutes'
 import { loadSavedLocations, saveSavedLocations, type SavedLocations } from '../lib/savedLocations'
@@ -39,6 +40,15 @@ const energyOptions: { value: CarEnergy; label: string }[] = [
 ]
 
 type RoutingState = 'idle' | 'calculating' | 'ready' | 'error'
+
+function timeInputValue(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const date = new Date(iso)
+  if (!Number.isFinite(date.getTime())) return ''
+  const pad = (value: number) => String(value).padStart(2, '0')
+  // datetime-local is in the device's time zone, and the saved value is ISO.
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
 
 function cloneTrip(trip: Trip): Trip {
   return { ...trip, legs: trip.legs.map((leg) => ({ ...leg })) }
@@ -130,6 +140,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
   ref,
 ) {
   const [draft, setDraft] = useState<Trip>(() => cloneTrip(trip ?? createTripForGame(game)))
+  const [departureMode, setDepartureMode] = useState<'automatic' | 'manual'>(()=>trip?.plannedDepartureAt ? 'manual' : 'automatic')
   const [carSettings, setCarSettings] = useState<CarSettings>(() => loadCarSettings())
   const [savedLocations, setSavedLocations] = useState<SavedLocations>(() => loadSavedLocations())
   const [companionSelection, setCompanionSelection] = useState<GameCompanionSelection>(() => companionSelectionForGame(game.id))
@@ -161,9 +172,14 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
   const outbound = legs.filter((leg) => leg.direction === 'outbound')
   const outboundReady = outbound.length > 0 && outbound.every((leg) => leg.durationMinutes != null)
   const outboundMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
-  const draDate = outboundReady
+  const calculatedDeparture = outboundReady
     ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000)
     : null
+  const draDate = departureMode === 'manual'
+    ? (draft.plannedDepartureAt ? departureTimeForTrip(game, draft) : null)
+    : calculatedDeparture
+  const chosenIsLater = departureMode === 'manual' && draDate && calculatedDeparture
+    && draDate.getTime() > calculatedDeparture.getTime()
 
   function resetRoutingState() {
     setRoutingState('idle')
@@ -375,6 +391,11 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
   }
 
   function save(attendedOverride?: boolean): TravelPlannerSaveResult {
+    if (departureMode === 'manual' && (!draft.plannedDepartureAt || !departureTimeForTrip(game, draft))) {
+      const warning = 'Velg en gyldig avreisedato og et klokkeslett før kampstart.'
+      setMessage(warning)
+      return { success: false, message: warning }
+    }
     if (invalidRoute) {
       const warning = 'Reisen kan ikke lagres før tomme stopp har fått et navn eller er fjernet.'
       setMessage(warning)
@@ -384,6 +405,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     const now = new Date().toISOString()
     const next: Trip = {
       ...draft,
+      plannedDepartureAt: departureMode === 'manual' ? draft.plannedDepartureAt : null,
       status: attendedOverride === undefined ? (confirmedAttendance ? 'completed' : draft.status) : (attendedOverride ? 'completed' : 'planned'),
       legs: normalizeDirections(legs.map((leg) => withCalculatedCost(leg, carSettings))),
       updatedAt: now,
@@ -411,6 +433,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     if (!trip) return
     onDeleteTrip(trip.id)
     setDraft(createTripForGame(game))
+    setDepartureMode('automatic')
     resetRoutingState()
     setMessage('Den lagrede reiseruten er slettet. Reisefølge og globale bilinnstillinger er beholdt.')
   }
@@ -431,7 +454,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
         <div><span>KM</span><strong>{totalKm > 0 ? Math.round(totalKm) : '—'}</strong></div>
         <div><span>TID</span><strong>{totalMinutes > 0 ? `${totalMinutes}m` : '—'}</strong></div>
         <div><span>KOSTNAD</span><strong>{totalCost > 0 ? formatMoney(totalCost) : totalCost === 0 && legs.length ? '0 kr' : '—'}</strong></div>
-        <div><span>DRA</span><strong>{draDate ? new Intl.DateTimeFormat('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' }).format(draDate) : '—'}</strong></div>
+        <div><span>DRA</span><strong>{draDate ? new Intl.DateTimeFormat('nb-NO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' }).format(draDate) : '—'}</strong></div>
       </div>
 
       <label className="arrival-setting">
@@ -444,6 +467,42 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
           <option value={90}>90 min før</option>
         </select>
       </label>
+
+      <section className="departure-choice" aria-label="Velg avreisetid">
+        <div className="departure-choice-heading">
+          <strong>Når vil du reise?</strong>
+          <span>Du bestemmer selv. DRA-varselet bruker tiden du lagrer.</span>
+        </div>
+        <div className="departure-choice-modes" role="group" aria-label="Hvordan velge avreisetid">
+          <button type="button" className={departureMode==='automatic'?'selected':''}
+            aria-pressed={departureMode==='automatic'}
+            onClick={()=>{setDepartureMode('automatic');setDraft(current=>({...current,plannedDepartureAt:null}));setMessage('')}}>
+            Beregn automatisk
+          </button>
+          <button type="button" className={departureMode==='manual'?'selected':''}
+            aria-pressed={departureMode==='manual'}
+            onClick={()=>{setDepartureMode('manual');setMessage('')}}>
+            Jeg bestemmer selv
+          </button>
+        </div>
+        {departureMode === 'manual' ? <>
+          <label className="departure-choice-input">
+            <span>Dato og klokkeslett for avreise</span>
+            <input type="datetime-local" value={timeInputValue(draft.plannedDepartureAt)}
+              onChange={(event)=>{
+                const value=event.target.value
+                const parsed=value ? new Date(value) : null
+                setDraft(current=>({...current,plannedDepartureAt:parsed && Number.isFinite(parsed.getTime())?parsed.toISOString():null}))
+                setMessage('')
+              }}/>
+          </label>
+          {chosenIsLater && <p className="departure-choice-warning">Du har valgt en senere avreise enn ruteberegningen foreslår. Du kan komme senere til arenaen.</p>}
+          <p>Du kan reise dagen før kampen. Tidspunktet lagres sammen med reisen, og endrer seg ikke om reisetiden blir beregnet på nytt.</p>
+        </> : <>
+          <p>{calculatedDeparture ? 'Forslaget følger reisetiden og ønsket ankomst ved arena.' : 'Fyll inn reisetid for et automatisk forslag, eller velg tiden selv.'}</p>
+        </>}
+        <p className="departure-choice-note">Klokkeslettet du velger er lokal tid på enheten. DRA-varselet følger lagret avreisetid. GPS-reisemodus starter først når du trykker «Start».</p>
+      </section>
 
       {usesHome && (
         <div className="home-location-card">
@@ -538,12 +597,12 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
       )}
 
       {invalidRoute && <p className="save-warning">Et tomt eller ugyldig stopp må rettes før reisen kan lagres. Andre ubesvarte felt er helt greit.</p>}
-      {!outboundReady && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid.</p>}
+      {!outboundReady && departureMode === 'automatic' && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid. Du kan også velge avreisetiden selv.</p>}
       {trip?.status !== 'completed' && !confirmedAttendance && <p className="travel-footnote">Planlagte km teller ikke i Min Storhamar før kampdagen er bekreftet som gjennomført.</p>}
 
       {trip && <button className="travel-delete-route" onClick={removeSavedTrip}><Trash2 size={15} /> Slett lagret reiserute</button>}
 
-      {message && <p className={`${invalidRoute ? 'save-warning' : 'save-success'} unified-travel-message`}>{message}</p>}
+      {message && <p className={`${invalidRoute || (departureMode==='manual' && !draDate) ? 'save-warning' : 'save-success'} unified-travel-message`}>{message}</p>}
       <p className="unified-travel-help">Reiserute, transportkostnader, bil/drivstoff og reisefølge lagres samlet med «Lagre hele reisen» nederst på kampsiden. Ubesvarte felt kan fylles inn senere.</p>
     </article>
   )

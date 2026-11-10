@@ -5,6 +5,9 @@ import { arenaForGame } from '../data/arenas'
 import { games } from '../data/games'
 import { isGameDay } from '../lib/gameTime'
 import { saveSmartGameDayEvent } from '../lib/storage'
+import { departureTimeForTrip } from '../lib/notificationLogic'
+import { loadTrips, subscribeTrips } from '../lib/trips'
+import type { Trip } from '../types'
 import { classifyArenaProximity, distanceMeters, eventFromPosition } from '../lib/smartGameDay'
 import { requestNativeNotificationPermission } from '../lib/nativeNotifications'
 import { startTravelLocation, supportsNativeBackgroundTracking } from '../lib/nativeTravelLocation'
@@ -61,12 +64,14 @@ export function SmartTravelManager() {
   const [open,setOpen] = useState(false)
   const [session,setSession] = useState<SmartTripSession | null>(()=>readSmartTripSession())
   const [selectedGameId,setSelectedGameId] = useState(()=>smartTripCandidates(games)[0]?.id ?? '')
+  const [savedTrips,setSavedTrips] = useState<Trip[]>(()=>loadTrips())
   const [status,setStatus] = useState<TrackerStatus>('inactive')
   const [message,setMessage] = useState('')
   const [distance,setDistance] = useState<number | null>(null)
   const [accuracy,setAccuracy] = useState<number | null>(null)
   const [lastFixTime,setLastFixTime] = useState<number | null>(null)
   const watchStopRef = useRef<(() => Promise<void>) | null>(null)
+  useEffect(()=>subscribeTrips(setSavedTrips),[])
   const watchStartingRef = useRef(false)
   const previousProximity = useRef<ArenaProximity>('outside')
   const currentSessionRef = useRef(session)
@@ -147,7 +152,7 @@ export function SmartTravelManager() {
     if (!game) {setMessage('Velg en kamp først.'); return}
     const candidate = makeSmartTripSession(game)
     if (!candidate) {
-      setMessage('Reisemodus kan startes inntil 12 timer før kamp og avsluttes senest fem timer etter kampstart.')
+      setMessage('GPS kan startes manuelt fra 72 timer før kamp og avsluttes senest fem timer etter kampstart.')
       return
     }
     setMessage('')
@@ -210,6 +215,8 @@ export function SmartTravelManager() {
   const activeGame=session?games.find((game)=>game.id===session.gameId):null
   const selected=games.find((game)=>game.id===selectedGameId)
   const canStart=Boolean(selected && canStartSmartTrip(selected))
+  const chosenTrip = savedTrips.find((trip)=>trip.gameId===selectedGameId)
+  const selectedDeparture = selected ? departureTimeForTrip(selected, chosenTrip) : null
   if (!portal) return null
 
   return createPortal(<div className={`settings-expandable smart-settings-entry ${open?'open':''}`}>
@@ -240,7 +247,9 @@ export function SmartTravelManager() {
         <select id="smart-trip-game" value={selectedGameId} onChange={(event)=>setSelectedGameId(event.target.value)}>
           {options.map((game)=><option value={game.id} key={game.id}>{gameText(game)}</option>)}
         </select>
-        {selected && !canStart && <p className="settings-panel-note">Reisemodus kan aktiveres fra 12 timer før denne kampen. Varsler kan minne deg på avreise i forkant.</p>}
+        {selectedDeparture && <p className="settings-panel-note">Din avreise: <strong>{new Intl.DateTimeFormat('nb-NO',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Oslo'}).format(selectedDeparture)}</strong>{chosenTrip?.plannedDepartureAt?' · valgt av deg':' · beregnet ut fra reiseruten'}. Du kan endre tiden under kampen → Reise.</p>}
+        {selected && !selectedDeparture && <p className="settings-panel-note">Velg tidspunkt under kampen → Reise. Du kan angi avreise selv uten ferdig ruteberegning.</p>}
+        {selected && !canStart && <p className="settings-panel-note">GPS kan startes manuelt fra 72 timer før kamp. Tidligere kan du fortsatt planlegge avreisetid og få DRA-varsel.</p>}
         <button type="button" className="primary-action smart-trip-start" disabled={!canStart || status==='starting'} onClick={()=>void begin()}>
           <Navigation2 size={16}/> {status==='starting'?'Starter…':'Start smart reisemodus'}
         </button>

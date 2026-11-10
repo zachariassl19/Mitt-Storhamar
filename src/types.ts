@@ -65,6 +65,8 @@ export interface Trip {
   gameId: string
   status: 'planned' | 'completed'
   desiredArrivalMinutesBefore: number
+  /** Optional personal departure time overrides automatically calculated DRA. ISO-8601. */
+  plannedDepartureAt?: string | null
   legs: TripLeg[]
   createdAt: string
   updatedAt: string

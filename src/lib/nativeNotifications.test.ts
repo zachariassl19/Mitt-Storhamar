@@ -17,6 +17,14 @@ describe('Android reminder plan',()=>{
   expect(plan.find(x=>x.kind==='tomorrow')?.at.getTime()).toBe(start-24*60*60_000)
   expect(new Set(plan.map(x=>x.id)).size).toBe(4)
  })
+ it('schedules a self-chosen departure on the previous day instead of the calculated time',()=>{
+  const manual={...trip, plannedDepartureAt:'2026-11-13T08:15:00+01:00',legs:[]}
+  const plan=nativeReminderPlan({games:[game],trips:[manual],now:start-2*24*60*60_000,
+    enabled:true,gameTomorrow:false,gameDay:false,departure:true,finishGameDay:false})
+  expect(plan).toHaveLength(1)
+  expect(plan[0].at.toISOString()).toBe('2026-11-13T07:15:00.000Z')
+ })
+
  it('does not invent a departure reminder without durations',()=>{
   const plan=nativeReminderPlan({games:[game],trips:[],now:start-2*24*60*60_000,
     enabled:true,gameTomorrow:false,gameDay:false,departure:true,finishGameDay:false})
