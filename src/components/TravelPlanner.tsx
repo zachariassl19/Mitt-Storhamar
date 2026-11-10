@@ -176,7 +176,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     ? new Date(new Date(game.startsAt).getTime() - (draft.desiredArrivalMinutesBefore + outboundMinutes) * 60_000)
     : null
   const draDate = departureMode === 'manual'
-    ? departureTimeForTrip(game, draft)
+    ? (draft.plannedDepartureAt ? departureTimeForTrip(game, draft) : null)
     : calculatedDeparture
   const chosenIsLater = departureMode === 'manual' && draDate && calculatedDeparture
     && draDate.getTime() > calculatedDeparture.getTime()
