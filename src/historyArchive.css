@@ -620,3 +620,31 @@ button.ha-number-player:focus-visible {
 @media (prefers-reduced-motion:reduce) {
   .ssu-chapter-disclosure > summary svg, .ssu-sources-disclosure > summary svg { transition:none; }
 }
+
+/* The archive is meant for actual reading, not tiny source labels. */
+.ha-shell .ha-hero p,
+.ha-shell .ha-category small,
+.ha-shell .ha-chapter-content > span,
+.ha-shell .ha-card-content p,
+.ha-shell .ha-topic-note,
+.ha-shell .ha-research-note,
+.ha-shell .ha-caption,
+.ha-shell .ha-section-heading p,
+.ha-shell .ha-results-count,
+.ha-shell .ha-fact-list span,
+.ha-shell .ha-fact-list strong,
+.ha-shell .ha-story-feature-text small,
+.ha-shell .ssu-timeline-copy p,
+.ha-shell .ssu-highlight-main > span,
+.ha-shell .ssu-highlight-detail p { font-size:12px; line-height:1.6; }
+.ha-shell .ha-hero a,
+.ha-shell .ha-card-bottom small,
+.ha-shell .ha-chapter-content small,
+.ha-shell .ha-filters label,
+.ha-shell .ha-filters select,
+.ha-shell .ha-pill-filters button,
+.ha-shell .ha-search-results p { font-size:12px; }
+.ha-shell .ha-search input { font-size:14px; }
+.ha-shell .ha-number-player-info strong { overflow-wrap:anywhere; }
+.ha-shell .ha-number-player-info > span { font-size:12px; }
+.ha-shell .ha-back { font-size:13px; min-height:44px; }
