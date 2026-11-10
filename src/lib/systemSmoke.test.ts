@@ -67,6 +67,15 @@ describe('2026/27 game data', () => {
     expect(timestamps).toEqual([...timestamps].sort((a, b) => a - b))
   })
 
+  it('keeps game IDs stable and corrects official schedule changes', () => {
+    expect(games.find(x => x.id === 'game:2026-11-14-valerenga-storhamar')?.startsAt).toBe('2026-11-14T20:30:00+01:00')
+    expect(games.find(x => x.id === 'game:2026-12-30-storhamar-valerenga')?.startsAt).toBe('2026-12-30T19:00:00+01:00')
+    const fixture = games.find(x => x.id === 'game:2027-02-27-frisk-asker-storhamar')!
+    expect(fixture.homeTeam).toBe('Storhamar')
+    expect(fixture.arena).toBe('CC Amfi')
+    expect(fixture.startsAt).toBe('2027-02-27T16:00:00+01:00')
+  })
+
   it('contains both already played and upcoming games around 22 September 2026', () => {
     const reference = new Date('2026-09-22T12:00:00+02:00').getTime()
     const past = games.filter((game) => new Date(game.startsAt).getTime() < reference)
