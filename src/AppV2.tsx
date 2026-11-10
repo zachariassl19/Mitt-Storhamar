@@ -516,7 +516,10 @@ function AttendanceButtons({ value, onChange }: { value: AttendancePlan; onChang
     { value: 'maybe', label: 'Kanskje', icon: UserRound },
     { value: 'no', label: 'Nei', icon: X },
   ]
-  return <div className="attendance-buttons">{choices.map(({ value: option, label, icon: Icon }) => <button key={option} className={value === option ? `selected ${option}` : ''} onClick={() => onChange(option)}><Icon size={18} /> {label}</button>)}</div>
+  return <div className="attendance-choice-control">
+    <div className="attendance-buttons">{choices.map(({ value: option, label, icon: Icon }) => <button type="button" key={option} aria-pressed={value === option} className={value === option ? `selected ${option}` : ''} onClick={() => onChange(option)}><Icon size={18} /> {label}</button>)}</div>
+    {value !== 'unset' && <button type="button" className="attendance-clear" onClick={() => onChange('unset')}>Angre valget</button>}
+  </div>
 }
 
 function HistoricalAttendanceButtons({ record, onYes, onNo }: {
