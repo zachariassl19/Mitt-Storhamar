@@ -322,3 +322,19 @@
 .departure-choice .departure-choice-warning { color:#f5c773; font-weight:800; }
 .departure-choice .departure-choice-note { border-top:1px solid rgba(255,255,255,.1); padding-top:9px; }
 @media (max-width:360px) { .departure-choice { padding:11px; } .departure-choice-modes button { font-size:10px; } }
+
+/* Critical route instructions and chosen times must not be microtext. */
+.travel-planner-card .travel-planner-intro,
+.travel-planner-card .home-location-card span,
+.travel-planner-card .car-settings-heading span,
+.travel-planner-card .route-provider-note span,
+.travel-planner-card .route-provider-note p,
+.travel-planner-card .departure-choice p,
+.travel-planner-card .departure-choice-heading span,
+.travel-planner-card .departure-choice-input span,
+.travel-planner-card .route-segment-meta,
+.travel-planner-card .segment-help { font-size:12px; line-height:1.55; }
+.travel-planner-card .route-provider-note strong,
+.travel-planner-card .home-location-card strong,
+.travel-planner-card .car-settings-heading strong {font-size:13px;}
+.travel-planner-card .departure-choice-modes button {font-size:12px;min-height:44px;}
