@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { CalendarDays, ChevronDown, Link2, RefreshCw, Upload } from 'lucide-react'
 import { games } from '../data/games'
+import { saveGameOverride } from '../data/gameOverrides'
+import { arenaForGame } from '../data/arenas'
 import { compareCalendarToGames, parseCalendarIcs, type CalendarSuggestion } from '../lib/calendarSync'
 
 const REVIEW_KEY = 'mitt-storhamar:calendar-reviewed:v1'
@@ -245,6 +247,28 @@ export function CalendarSettingsPortal() {
   }
 
   function review(id: string, value: 'approved' | 'ignored') {
+    if (value === 'approved') {
+      const suggestion = suggestions.find((entry) => entry.id === id)
+      const original = suggestion ? games.find((entry) => entry.id === suggestion.gameId) : null
+      if (!suggestion || !original) { setMessage('Kampen finnes ikke lenger. Sjekk kalenderen på nytt.'); return }
+      if (suggestion.changes.includes('arena') && suggestion.proposedArena &&
+          !arenaForGame({ ...original, arena: suggestion.proposedArena })) {
+        setMessage('Arenaen er ikke kjent i appens GPS-register. Kampen er ikke oppdatert. Kontroller arenaen før den godkjennes.')
+        return
+      }
+      const patch = {
+        ...(suggestion.changes.includes('time') && suggestion.proposedStartsAt ? { startsAt: suggestion.proposedStartsAt } : {}),
+        ...(suggestion.changes.includes('arena') && suggestion.proposedArena ? { arena: suggestion.proposedArena } : {}),
+      }
+      if (!Object.keys(patch).length) { setMessage('Forslaget mangler dato og arena.'); return }
+      try {
+        saveGameOverride(games, original.id, patch)
+        setMessage('Godkjent og oppdatert i appen. Reise, oppmøte og varsler beholder samme kamp-ID.')
+      } catch {
+        setMessage('Kunne ikke lagre kampendringen. Prøv igjen.')
+        return
+      }
+    }
     const next = { ...reviews, [id]: value }
     setReviews(next)
     saveReviews(next)
@@ -317,7 +341,7 @@ export function CalendarSettingsPortal() {
           {suggestions.length > 0 && <div className="calendar-suggestion-list">{suggestions.map((suggestion) => <SuggestionCard key={suggestion.id} suggestion={suggestion} state={reviews[suggestion.id]} onReview={(value) => review(suggestion.id, value)} />)}</div>}
 
           {source && <button type="button" className="danger-text calendar-disconnect" onClick={disconnectSource}>Koble fra kalender</button>}
-          <p className="settings-panel-note">Kalenderen brukes bare som kontrollkilde. Ingen kamp, reise, oppmøte eller kostnad endres automatisk.</p>
+          <p className="settings-panel-note">Kalenderen varsler om mulige endringer. Bare forslag du godkjenner oppdaterer kampdato eller arena. Lagrede reiser og oppmøter beholdes.</p>
         </div>
       )}
     </div>,
