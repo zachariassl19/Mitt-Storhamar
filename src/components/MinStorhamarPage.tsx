@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
-import { BarChart3, MapPin, Route, ShoppingBag, Ticket, WalletCards } from 'lucide-react'
+import { BarChart3, ChevronRight, MapPin, Route, ShoppingBag, Ticket, WalletCards } from 'lucide-react'
 import { games } from '../data/games'
 import { confirmedLocalCareerStats } from '../lib/careerStats'
+import { travelHistoryRows } from '../lib/travelHistory'
 import { confirmedLegacyCareerStats } from '../lib/legacyStats'
 import { summarizePurchases, unitPrice } from '../lib/purchases'
-import type { GamePurchase, GameDayRecord, HubExport, Trip } from '../types'
+import type { Game, GamePurchase, GameDayRecord, HubExport, Trip } from '../types'
 import { CompanionStatsPanel } from './CompanionStatsPanel'
 
 type MinStorhamarTab = 'overview' | 'economy' | 'arenas' | 'companions'
@@ -39,13 +40,16 @@ function sumKind(purchases: GamePurchase[], kind: GamePurchase['kind']) {
     .reduce((sum, purchase) => sum + purchase.totalPrice, 0)
 }
 
-export function MinStorhamarPage({ hubData, trips, records, purchases }: {
+export function MinStorhamarPage({ hubData, trips, records, purchases, onOpenGame }: {
   hubData: HubExport | null
   trips: Trip[]
   records: Record<string, GameDayRecord>
   purchases: GamePurchase[]
+  onOpenGame: (game: Game) => void
 }) {
   const [tab, setTab] = useState<MinStorhamarTab>('overview')
+  const [showAllTrips, setShowAllTrips] = useState(false)
+  const journeyRows = travelHistoryRows(trips, games)
 
   const stats = useMemo(() => {
     const local = confirmedLocalCareerStats(records, trips)
@@ -255,6 +259,26 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
               <div><span>Mest penger på</span><strong>{stats.biggestCategory.value > 0 ? stats.biggestCategory.label : 'Ikke nok data'}</strong><small>{stats.biggestCategory.value > 0 ? money(stats.biggestCategory.value) : '—'}</small></div>
               <div><span>Mest brukt på arena</span><strong>{topArena?.spentAtArena ? topArena.arena : 'Ikke nok data'}</strong><small>{topArena?.spentAtArena ? money(topArena.spentAtArena) : '—'}</small></div>
             </div>
+          </article>
+          <article className="card min-travel-history">
+            <div className="min-card-title"><Route size={20}/><div><span className="eyebrow">REISENE DINE</span><h2>Planlagte og tidligere reiser</h2></div></div>
+            {journeyRows.length === 0
+              ? <p className="min-footnote">Ingen reiser lagret ennå. Åpne en kamp og lag en reiseplan.</p>
+              : <>
+                <div className="min-travel-history-list">
+                  {journeyRows.slice(0, showAllTrips ? undefined : 4).map(row => {
+                    const match = row.game
+                    const date = new Intl.DateTimeFormat('nb-NO', {timeZone:'Europe/Oslo',day:'numeric',month:'short',year:'numeric'}).format(row.date)
+                    const title = match ? `${match.homeTeam} – ${match.awayTeam}` : 'Kamp uten terminlistedetaljer'
+                    const body = <><span className="min-travel-history-copy"><strong>{title}</strong><small>{date} · {row.trip.status === 'completed' ? 'Gjennomført' : 'Planlagt'}</small><small>{row.km == null ? 'Km ikke registrert' : `${Math.round(row.km)} km`} · {row.cost == null ? 'Kostnad ikke registrert' : `${money(row.cost)}${row.hasEstimatedCost ? ' (delvis beregnet)' : ''}`}</small></span>{match && <ChevronRight size={18}/>}</>
+                    return match
+                      ? <button key={row.trip.id} type="button" className="min-travel-history-row" onClick={() => onOpenGame(match)} aria-label={`Åpne reisen for ${title}`}>{body}</button>
+                      : <div key={row.trip.id} className="min-travel-history-row" aria-label="Historisk reise uten kampdetaljer">{body}</div>
+                  })}
+                </div>
+                {journeyRows.length > 4 && <button type="button" className="min-travel-show-more" onClick={() => setShowAllTrips(value => !value)}>{showAllTrips ? 'Vis færre reiser' : `Vis alle ${journeyRows.length} reiser`}</button>}
+                {journeyRows.some(row => !row.game) && <p className="min-footnote">Reiser som mangler tilhørende kamp i terminlisten vises her men kan ikke åpnes fra oversikten ennå.</p>}
+              </>}
           </article>
         </>
       )}

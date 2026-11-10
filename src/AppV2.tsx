@@ -384,7 +384,7 @@ export default function AppV2() {
                 />
               )}
               {active === 'games' && <GamesPage currentPlan={currentPlan} updatePlan={updatePlan} openGame={openGame} records={records} onSaveRecord={persistRecord} trips={trips} onSaveTrip={persistTrip} />}
-              {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} />}
+              {active === 'career' && <MinStorhamarPage hubData={hubData} trips={trips} records={records} purchases={purchases} onOpenGame={openGame} />}
               {active === 'history' && <HistoryArchivePage />}
               {active === 'more' && (
                 <MorePage
