@@ -2,6 +2,14 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.2] – 2026-11-10
+
+### Riktig oppmøte når en kamp pågår
+- Kamper som har startet, men ikke er ferdige, vises i en egen «Pågår nå»-gruppe.
+- Hurtigknappene «Ja» og «Nei» for tidligere kamper kan ikke bekrefte en kamp mens den pågår.
+- Filteret «Aktuelle» samler kommende og pågående kamper, med separate overskrifter.
+- Nye tester sjekker overgangen fra kommende til pågående og ferdig kamp.
+
 ## [0.24.1] – 2026-11-10
 
 ### Mer presis reisehistorikk
