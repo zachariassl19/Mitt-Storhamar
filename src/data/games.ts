@@ -53,7 +53,7 @@ const rows: GameRow[] = [
   ['2026-10-29T19:00:00+01:00', 'EHL', 'Storhamar', 'Nidaros', 'CC Amfi', 'Hamar'],
   ['2026-10-31T16:00:00+01:00', 'EHL', 'Stjernen', 'Storhamar', 'Stjernehallen', 'Fredrikstad'],
   ['2026-11-12T18:30:00+01:00', 'EHL', 'Storhamar', 'Narvik', 'CC Amfi', 'Hamar'],
-  ['2026-11-14T16:00:00+01:00', 'EHL', 'Vålerenga', 'Storhamar', 'Jordal Amfi', 'Oslo'],
+  ['2026-11-14T20:30:00+01:00', 'EHL', 'Vålerenga', 'Storhamar', 'Jordal Amfi', 'Oslo'],
   ['2026-11-20T19:00:00+01:00', 'EHL', 'Frisk Asker', 'Storhamar', 'Varner Arena', 'Asker'],
   ['2026-11-22T17:00:00+01:00', 'EHL', 'Storhamar', 'Lillehammer', 'CC Amfi', 'Hamar'],
   ['2026-11-24T18:30:00+01:00', 'EHL', 'Stavanger Oilers', 'Storhamar', 'DNB Arena', 'Stavanger'],
@@ -62,7 +62,7 @@ const rows: GameRow[] = [
   ['2026-12-05T16:00:00+01:00', 'EHL', 'Storhamar', 'Stjernen', 'CC Amfi', 'Hamar'],
   ['2026-12-19T16:00:00+01:00', 'EHL', 'Storhamar', 'Narvik', 'CC Amfi', 'Hamar'],
   ['2026-12-28T18:30:00+01:00', 'EHL', 'Frisk Asker', 'Storhamar', 'Varner Arena', 'Asker'],
-  ['2026-12-30T18:30:00+01:00', 'EHL', 'Storhamar', 'Vålerenga', 'CC Amfi', 'Hamar'],
+  ['2026-12-30T19:00:00+01:00', 'EHL', 'Storhamar', 'Vålerenga', 'CC Amfi', 'Hamar'],
   ['2027-01-07T18:30:00+01:00', 'EHL', 'Nidaros', 'Storhamar', 'Leangen Arena', 'Trondheim'],
   ['2027-01-09T16:00:00+01:00', 'EHL', 'Ringerike', 'Storhamar', 'Schjongshallen', 'Hønefoss'],
   ['2027-01-14T18:30:00+01:00', 'EHL', 'Storhamar', 'Narvik', 'CC Amfi', 'Hamar'],
@@ -76,7 +76,7 @@ const rows: GameRow[] = [
   ['2027-02-18T18:30:00+01:00', 'EHL', 'Storhamar', 'Lillehammer', 'CC Amfi', 'Hamar'],
   ['2027-02-20T16:00:00+01:00', 'EHL', 'Stjernen', 'Storhamar', 'Stjernehallen', 'Fredrikstad'],
   ['2027-02-25T18:30:00+01:00', 'EHL', 'Storhamar', 'Nidaros', 'CC Amfi', 'Hamar'],
-  ['2027-02-27T18:00:00+01:00', 'EHL', 'Frisk Asker', 'Storhamar', 'Varner Arena', 'Asker'],
+  ['2027-02-27T16:00:00+01:00', 'EHL', 'Storhamar', 'Frisk Asker', 'CC Amfi', 'Hamar',
   ['2027-03-05T18:30:00+01:00', 'EHL', 'Storhamar', 'Ringerike', 'CC Amfi', 'Hamar'],
   ['2027-03-07T17:00:00+01:00', 'EHL', 'Narvik', 'Storhamar', 'Nordkraft Arena', 'Narvik'],
   ['2027-03-11T18:30:00+01:00', 'EHL', 'Vålerenga', 'Storhamar', 'Jordal Amfi', 'Oslo'],
@@ -84,7 +84,10 @@ const rows: GameRow[] = [
 
 export const games: Game[] = rows
   .map(([startsAt, competition, homeTeam, awayTeam, arena, city, homeScore, awayScore, decisionType, special]) => ({
-    id: `game:${startsAt.slice(0, 10)}-${slug(homeTeam)}-${slug(awayTeam)}`,
+    // Keep the old identifier for 27 February to protect saved personal data.
+    id: startsAt.slice(0, 10) === '2027-02-27'
+      ? 'game:2027-02-27-frisk-asker-storhamar'
+      : `game:${startsAt.slice(0, 10)}-${slug(homeTeam)}-${slug(awayTeam)}`,
     season: '2026/27',
     startsAt,
     competition,
