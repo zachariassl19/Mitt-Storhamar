@@ -29,9 +29,39 @@ describe('travel history summaries',()=>{
    expect(row.cost).toBe(400)
    expect(row.hasEstimatedCost).toBe(true)
  })
+ it('marks partial distance and cost instead of presenting them as complete totals',()=>{
+   const planned=make('partial','a','planned')
+   planned.legs=[
+     {id:'out',order:0,direction:'outbound',fromName:'Hjem',toName:'Arena',transport:'train',km:150,estimatedCost:90},
+     {id:'back',order:1,direction:'return',fromName:'Arena',toName:'Hjem',transport:'train',km:null,estimatedCost:null},
+   ]
+   const [row]=travelHistoryRows([planned],[a])
+   expect(row.km).toBe(150)
+   expect(row.cost).toBe(90)
+   expect(row.hasUnknownKm).toBe(true)
+   expect(row.hasUnknownCost).toBe(true)
+   expect(row.hasEstimatedCost).toBe(true)
+ })
+ it('accepts a recorded zero cost and distance but rejects invalid negative values',()=>{
+   const trip=make('zero','a','completed')
+   trip.legs=[{id:'free',order:0,direction:'outbound',fromName:'A',toName:'B',transport:'walk',km:0,actualCost:0}]
+   const [valid]=travelHistoryRows([trip],[a])
+   expect(valid.km).toBe(0)
+   expect(valid.cost).toBe(0)
+   expect(valid.hasUnknownCost).toBe(false)
+   expect(valid.hasUnknownKm).toBe(false)
+   trip.legs[0].km=-5
+   trip.legs[0].actualCost=-100
+   const [invalid]=travelHistoryRows([trip],[a])
+   expect(invalid.km).toBeNull()
+   expect(invalid.cost).toBeNull()
+   expect(invalid.hasUnknownCost).toBe(true)
+   expect(invalid.hasUnknownKm).toBe(true)
+ })
  it('preserves older trips without a matching current-season game',()=>{
    const [row]=travelHistoryRows([make('historic','old-season','completed')],[a])
    expect(row.game).toBeNull()
+   expect(row.matchDate).toBeNull()
    expect(row.trip.id).toBe('historic')
  })
 })
