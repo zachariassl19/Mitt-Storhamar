@@ -40,3 +40,39 @@ describe('cloud storage merge', () => {
     expect(merged['mitt-storhamar:local:v1']).toBeDefined()
   })
 })
+
+describe('deleted entities stay deleted across device merges', () => {
+  const deletedKey = 'mitt-storhamar:deleted-entities:v1'
+  const tripKey = 'mitt-storhamar:trips:v1'
+  const purchaseKey = 'mitt-storhamar:purchases:v1'
+
+  it('does not restore a deleted trip from an older remote copy', () => {
+    const merged = mergeCloudStorage({
+      [tripKey]:JSON.stringify([{id:'trip:1',gameId:'g1',updatedAt:'2026-11-01T10:00:00Z'}]),
+    },{
+      [tripKey]:'[]',
+      [deletedKey]:JSON.stringify({'trip:trip:1':'2026-11-02T10:00:00Z'}),
+    })
+    expect(JSON.parse(merged[tripKey])).toEqual([])
+  })
+
+  it('retains delete markers from both devices and removes old purchases', () => {
+    const merged = mergeCloudStorage({
+      [purchaseKey]:JSON.stringify([{id:'purchase:1',updatedAt:'2026-11-01T10:00:00Z'}]),
+      [deletedKey]:JSON.stringify({'purchase:purchase:1':'2026-11-02T12:00:00Z'}),
+    },{
+      [purchaseKey]:'[]',
+      [deletedKey]:JSON.stringify({'trip:trip:2':'2026-11-02T15:00:00Z'}),
+    })
+    expect(JSON.parse(merged[purchaseKey])).toEqual([])
+    expect(Object.keys(JSON.parse(merged[deletedKey]))).toHaveLength(2)
+  })
+
+  it('accepts a deliberate later restoration of an old id', () => {
+    const merged = mergeCloudStorage({
+      [tripKey]:JSON.stringify([{id:'trip:1',updatedAt:'2026-11-03T10:00:00Z'}]),
+      [deletedKey]:JSON.stringify({'trip:trip:1':'2026-11-02T10:00:00Z'}),
+    },{[tripKey]:'[]'})
+    expect(JSON.parse(merged[tripKey])).toHaveLength(1)
+  })
+})
