@@ -4,6 +4,8 @@ import { games } from '../data/games'
 import { departureTimeForTrip } from './notificationLogic'
 import { loadNotificationSettings } from './notificationSettings'
 import { loadTrips } from './trips'
+import { loadAttendancePlans } from './storage'
+import type { AttendancePlan } from '../types'
 import type { Game, Trip } from '../types'
 
 export const isNativeAndroid = () => Capacitor.isNativePlatform() && Capacitor.getPlatform()==='android'
@@ -65,10 +67,11 @@ export function nativeReminderId(gameId: string, kind: ReminderKind) {
 }
 
 export function nativeReminderPlan({
-  games:allGames,trips,now=Date.now(),enabled,gameTomorrow,gameDay,departure,finishGameDay,
+  games:allGames,trips,plans={},now=Date.now(),enabled,gameTomorrow,gameDay,departure,finishGameDay,
 }:{
   games:Game[]
   trips:Trip[]
+  plans?:Record<string,AttendancePlan>
   now?:number
   enabled:boolean
   gameTomorrow:boolean
@@ -89,12 +92,12 @@ export function nativeReminderPlan({
     }
     if(gameTomorrow) add('tomorrow',start-24*60*60_000,'Storhamar spiller i morgen',`${label} · ${time} · ${game.arena}`)
     if(gameDay) add('gameDay',start-4*60*60_000,'Kampdag 💛💙',`${label} · ${time} · ${game.arena}`)
-    if(departure) {
+    if(departure && plans[game.id]!=='no') {
       const trip=trips.find((item)=>item.gameId===game.id)
       const depart=departureTimeForTrip(game,trip)
       if(depart) add('departure',depart.getTime(),'På tide å dra',`Avreise til ${label} på ${game.arena}. Se reisemodus i appen.`)
     }
-    if(finishGameDay) add('finish',start+3.5*60*60_000,'Fullfør kampdagen',`Registrer oppmøte og reisen for ${label}.`)
+    if(finishGameDay && plans[game.id]!=='no') add('finish',start+3.5*60*60_000,'Fullfør kampdagen',`Registrer oppmøte og reisen for ${label}.`)
   }
   // Future due dates only. Limit keeps Android notification scheduler manageable.
   return planned.sort((a,b)=>a.at.getTime()-b.at.getTime()).slice(0,64)
@@ -112,7 +115,7 @@ export async function syncNativeNotifications() {
   if(owned.length) await LocalNotifications.cancel({notifications:owned.map((entry)=>({id:entry.id}))})
   const settings=loadNotificationSettings()
   if(!settings.enabled || await nativeNotificationPermission()!=='granted')return
-  const plan=nativeReminderPlan({...settings,games,trips:loadTrips()})
+  const plan=nativeReminderPlan({...settings,games,trips:loadTrips(),plans:loadAttendancePlans()})
   if(!plan.length)return
   await LocalNotifications.schedule({notifications:plan.map((item)=>({
     id:item.id,title:item.title,body:item.body,
