@@ -2,6 +2,16 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.0] – 2026-11-10
+
+### Reisehistorikk i Min Storhamar
+- Oversikt viser både planlagte og gjennomførte reiser sortert etter hva som er mest relevant nå.
+- Hver reise viser motstander, dato, status og registrert km/kostnad uten å late som manglende tall er null.
+- Skiller mellom faktiske og delvis beregnede kostnader.
+- Åpne tilhørende kamp direkte for å endre reisen. Reiser fra eldre sesonger uten kampdetaljer beholdes og vises uten å opprette oppdiktede kamper.
+- Viser fire reiser først med mulighet til å vise alle. De fire faste fanene beholdes og mobilvisningen blir ikke trangere.
+- Egne tester for sortering, historiske reiser og beregnede utgifter.
+
 ## [0.23.0] – 2026-11-10
 
 ### Sikrere personlige data
