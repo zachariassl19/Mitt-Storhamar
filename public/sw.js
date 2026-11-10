@@ -1,5 +1,5 @@
 const BASE = '/Mitt-Storhamar/';
-const CACHE = 'mitt-storhamar-v22-ux-and-backup';
+const CACHE = 'mitt-storhamar-v22-1-sync-and-history';
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {
