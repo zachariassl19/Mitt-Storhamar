@@ -28,7 +28,7 @@ export default function PreDepartureChecklist({ game, plan }: { game: Game; plan
     localStorage.setItem('mitt-storhamar:departure:' + game.id, JSON.stringify(next))
   }
   if (plan !== 'yes' && plan !== 'maybe') return null
-  return <section className="card" style={{ display: 'grid', gap: 16 }}>
+  return <section className="card pre-departure-card" style={{ display: 'grid', gap: 16 }}>
     <div>
       <span className="eyebrow">FØR DU REISER</span>
       <h2>Har du husket dette?</h2>
