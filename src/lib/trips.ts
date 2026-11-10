@@ -1,4 +1,5 @@
 import type { Game, Trip, TripLeg, TransportMode } from '../types'
+import { recordDeletionState } from './deletionMarkers'
 
 const TRIPS_KEY = 'mitt-storhamar:trips:v1'
 export const TRIPS_CHANGED_EVENT = 'mitt-storhamar:trips-changed'
@@ -45,12 +46,14 @@ export function saveTrip(trip: Trip): Trip[] {
     ? current.map((item) => (item.id === trip.id ? trip : item))
     : [...current, trip]
   persistTrips(next)
+  recordDeletionState('trips', trip.id, false)
   return next
 }
 
 export function deleteTrip(tripId: string): Trip[] {
   const next = loadTrips().filter((trip) => trip.id !== tripId)
   persistTrips(next)
+  recordDeletionState('trips', tripId, true)
   return next
 }
 

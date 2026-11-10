@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core'
 import { isNativeAndroid, syncNativeNotifications } from '../lib/nativeNotifications'
 import { subscribeNotificationSettings } from '../lib/notificationSettings'
 import { subscribeTrips } from '../lib/trips'
+import { subscribeAttendancePlans, subscribeGameDayRecords } from '../lib/storage'
 
 /**
  * Schedule actual Android notifications in advance, so closing the WebView
@@ -25,10 +26,12 @@ export function NativeNotificationManager() {
     }
     const unsubscribeSettings=subscribeNotificationSettings(()=>void refresh())
     const unsubscribeTrips=subscribeTrips(()=>void refresh())
+    const unsubscribePlans=subscribeAttendancePlans(()=>void refresh())
+    const unsubscribeRecords=subscribeGameDayRecords(()=>void refresh())
     const onVisible=()=>{if(!document.hidden)void refresh()}
     document.addEventListener('visibilitychange',onVisible)
     void refresh()
-    return ()=>{unsubscribeSettings();unsubscribeTrips();document.removeEventListener('visibilitychange',onVisible)}
+    return ()=>{unsubscribeSettings();unsubscribeTrips();unsubscribePlans();unsubscribeRecords();document.removeEventListener('visibilitychange',onVisible)}
   },[])
   return null
 }

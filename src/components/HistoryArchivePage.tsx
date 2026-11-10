@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import '../historyArchive.css'
 import {
   ArrowLeft, BookOpen, CalendarDays, CheckCircle2, ChevronRight, Clock3,
   ExternalLink, Globe2, ImageOff, Landmark, MapPin, Medal, Search, Shield,

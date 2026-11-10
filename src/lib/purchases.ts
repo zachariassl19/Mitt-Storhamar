@@ -1,4 +1,5 @@
 import type { GamePurchase } from '../types'
+import { recordDeletionState } from './deletionMarkers'
 
 const PURCHASES_KEY = 'mitt-storhamar:purchases:v1'
 
@@ -30,12 +31,14 @@ export function savePurchase(purchase: GamePurchase): GamePurchase[] {
     ? current.map((item) => (item.id === purchase.id ? purchase : item))
     : [...current, purchase]
   persistPurchases(next)
+  recordDeletionState('purchases', purchase.id, false)
   return next
 }
 
 export function deletePurchase(purchaseId: string): GamePurchase[] {
   const next = loadPurchases().filter((purchase) => purchase.id !== purchaseId)
   persistPurchases(next)
+  recordDeletionState('purchases', purchaseId, true)
   return next
 }
 
