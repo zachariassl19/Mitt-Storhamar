@@ -39,3 +39,20 @@ export function canConfirmAttendance(game: Game, now = new Date()) {
   const state = getGameTemporalState(game, now)
   return state === 'FINISHED' || state === 'POST_GAME_PENDING'
 }
+
+
+/** Keep games in progress separate: a started match is not yet a completed match. */
+export function groupGamesForAttendance(gameList: Game[], now = new Date()) {
+  const future: Game[] = []
+  const live: Game[] = []
+  const past: Game[] = []
+
+  for (const game of gameList) {
+    const state = getGameTemporalState(game, now)
+    if (state === 'FINISHED' || state === 'POST_GAME_PENDING') past.push(game)
+    else if (state === 'IN_PROGRESS') live.push(game)
+    else future.push(game)
+  }
+
+  return { future, live, past }
+}
