@@ -361,7 +361,7 @@ export default function AppV2() {
               purchases={purchasesForGame(purchases, selectedGame.id)}
               smartEvents={smartEvents.filter((event) => event.gameId === selectedGame.id)}
               onBack={() => setSelectedGameId(null)}
-              backLabel={active === 'home' ? 'Tilbake til oversikten' : 'Tilbake til kamper'}
+              backLabel={active === 'home' ? 'Tilbake til oversikten' : active === 'career' ? 'Tilbake til Min Storhamar' : active === 'games' ? 'Tilbake til kamper' : 'Tilbake'}
               onSaveTrip={persistTrip}
               onDeleteTrip={removeTrip}
               onSaveRecord={persistRecord}
