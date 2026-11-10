@@ -78,7 +78,7 @@ h1, h2, h3, p { margin-top: 0; }
 .progress-track div { height: 100%; border-radius: inherit; background: var(--gold); transition: width .25s ease; }
 .matchday-hub > p, .season-card > p { color: var(--muted); font-size: 12px; line-height: 1.55; margin-bottom: 0; }
 .quick-actions { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 14px; }
-.quick-actions button { min-height: 65px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.04); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; font-size: 10px; font-weight: 800; cursor: pointer; }
+.quick-actions button { min-height: 65px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.04); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 800; cursor: pointer; }
 .quick-actions svg { color: var(--gold); }
 
 .section-block { margin-top: 26px; }
@@ -173,3 +173,29 @@ h1, h2, h3, p { margin-top: 0; }
   .app-frame { height: calc(100dvh - 44px); min-height: 0; border: 1px solid rgba(255,255,255,.11); border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.35); background: rgba(6,18,38,.82); }
   .bottom-nav { width: 100%; bottom: auto; border-radius: 0 0 27px 27px; }
 }
+
+/* Supporter plan is a concrete checklist, not a fictional completion percentage. */
+.home-plan-status { display:grid; gap:8px; margin-top:14px; }
+.home-plan-status > div { display:grid; grid-template-columns:20px minmax(0,1fr) auto; gap:9px; align-items:center; background:rgba(255,255,255,.045); padding:12px; border:1px solid var(--line); border-radius:12px; font-size:12px; }
+.home-plan-status svg { color:var(--gold); }
+.home-plan-status span { color:#c9d7e9; }
+.home-plan-status strong { color:#f8edb3; text-align:right; max-width:160px; }
+.home-quick-actions { grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); }
+.season-ended-card { margin-top:8px; padding:22px; }
+.season-ended-card h1 { margin:9px 0; font-size:24px; }
+.season-ended-card p, .home-calendar-empty { color:#c1d2e6; font-size:13px; line-height:1.6; }
+.home-calendar-empty { padding:16px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:14px; }
+.eyebrow, .plan-status, .stat-grid span, .date-block span, .game-row-main small { font-size:11px; }
+@media (max-width:380px) { .home-plan-status > div {grid-template-columns:20px 1fr;gap:7px;} .home-plan-status strong {grid-column:2;text-align:left;} }
+
+/* Local backup is an explicit action, unlike the old inert 'Data' menu. */
+.local-backup-card { margin-top:14px; padding:17px; }
+.local-backup-card .card-heading svg {color:var(--gold);}
+.local-backup-card > p {margin:12px 0;color:#cad8eb;font-size:13px;line-height:1.6;}
+.local-backup-card > small {display:block;margin-top:11px;color:#a9bed9;font-size:12px;line-height:1.5;}
+.local-backup-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+.local-backup-actions button, .local-backup-actions label {display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;padding:9px;border:1px solid rgba(242,201,76,.35);border-radius:12px;background:#123761;color:#f8ecc0;font-size:12px;font-weight:800;cursor:pointer;text-align:center;}
+.local-backup-actions input {position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.local-backup-actions label:focus-within {outline:2px solid var(--gold);outline-offset:2px;}
+.local-backup-card .local-backup-message {color:var(--gold-soft);font-size:12px;}
+@media(max-width:380px) {.local-backup-actions {grid-template-columns:1fr;} }

@@ -221,10 +221,10 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
       </div>
 
       <div className="min-storhamar-tabs" role="tablist" aria-label="Min Storhamar">
-        <button className={tab === 'overview' ? 'active' : ''} onClick={() => setTab('overview')}>Oversikt</button>
-        <button className={tab === 'economy' ? 'active' : ''} onClick={() => setTab('economy')}>Økonomi</button>
-        <button className={tab === 'arenas' ? 'active' : ''} onClick={() => setTab('arenas')}>Arenaer</button>
-        <button className={tab === 'companions' ? 'active' : ''} onClick={() => setTab('companions')}>Reisefølge</button>
+        <button type="button" role="tab" aria-selected={tab === 'overview'} className={tab === 'overview' ? 'active' : ''} onClick={() => setTab('overview')}>Oversikt</button>
+        <button type="button" role="tab" aria-selected={tab === 'economy'} className={tab === 'economy' ? 'active' : ''} onClick={() => setTab('economy')}>Økonomi</button>
+        <button type="button" role="tab" aria-selected={tab === 'arenas'} className={tab === 'arenas' ? 'active' : ''} onClick={() => setTab('arenas')}>Arenaer</button>
+        <button type="button" role="tab" aria-selected={tab === 'companions'} className={tab === 'companions' ? 'active' : ''} onClick={() => setTab('companions')}>Reisefølge</button>
       </div>
 
       {tab === 'overview' && (

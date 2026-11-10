@@ -179,3 +179,12 @@
   .danger-action { min-width: 100%; }
   .actual-attendance-buttons { grid-template-columns: 1fr; }
 }
+
+/* Text should remain legible on normal Android display sizes. */
+.travel-summary-grid span { font-size:11px; letter-spacing:.04em; }
+.travel-summary-grid strong { font-size:13px; white-space:normal; overflow:visible; overflow-wrap:anywhere; }
+.arrival-setting > span, .save-warning, .save-success, .travel-footnote { font-size:12px; }
+.full-width { font-size:12px; min-height:46px; }
+.actual-attendance-buttons button { font-size:12px; min-height:46px; }
+.detail-meta span, .gps-last-event, .gps-suggestion span { font-size:12px; }
+.version-card p { font-size:12px; max-width:260px; }

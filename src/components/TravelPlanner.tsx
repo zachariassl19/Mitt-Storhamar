@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import { Car, ChevronDown, MapPin, Navigation, Plus, Trash2 } from 'lucide-react'
 import { GameCompanions } from './GameCompanions'
 import { companionSelectionForGame, saveGameCompanionSelection, type GameCompanionSelection } from '../lib/companions'
-import { canConfirmAttendance } from '../lib/gameTime'
 import { departureTimeForTrip } from '../lib/notificationLogic'
 import { calculateTrainRailDistance, isNamedTrainStation } from '../lib/enturRail'
 import { calculateGoogleRoute, canAutoRoute, hasGoogleRoutesKey } from '../lib/googleRoutes'
@@ -153,7 +152,6 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
 
   const storedRecord = loadGameDayRecords()[game.id]
   const confirmedAttendance = completedAttendance || Boolean(storedRecord?.completed && storedRecord.attendanceActual === 'attended')
-  const canRegisterCompanions = canConfirmAttendance(game)
   const legs = useMemo(() => normalizeLegs(draft.legs), [draft.legs])
   const nodes = useMemo(() => routeNodes(legs), [legs])
   const arenaIndex = nodes.findIndex((node) => samePlace(node, game.arena))
@@ -422,9 +420,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
     onSaveTrip(next)
     saveCarSettings(carSettings)
     saveSavedLocations(savedLocations)
-    if (canRegisterCompanions) {
-      saveGameCompanionSelection({ ...companionSelection, gameId: game.id, updatedAt: now })
-    }
+    saveGameCompanionSelection({ ...companionSelection, gameId: game.id, updatedAt: now })
 
     setDraft(cloneTrip(next))
     const missing = countMissingTravelFields(next.legs, hasCar, carSettings, usesHome, savedLocations.homeAddress)
@@ -438,7 +434,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
   useImperativeHandle(ref, () => ({ save, validate }))
 
   function removeSavedTrip() {
-    if (!trip) return
+    if (!trip || !window.confirm('Slette reiseruten fra denne kampen? Registrerte kilometer og reisekostnader kan da forsvinne fra statistikken.')) return
     onDeleteTrip(trip.id)
     setDraft(createTripForGame(game))
     setDepartureMode('automatic')
@@ -484,7 +480,7 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
         <div className="departure-choice-modes" role="group" aria-label="Hvordan velge avreisetid">
           <button type="button" className={departureMode==='automatic'?'selected':''}
             aria-pressed={departureMode==='automatic'}
-            onClick={()=>{setDepartureMode('automatic');setDraft(current=>({...current,plannedDepartureAt:null}));setMessage('')}}>
+            onClick={()=>{setDepartureMode('automatic');setMessage('')}}>
             Beregn automatisk
           </button>
           <button type="button" className={departureMode==='manual'?'selected':''}
@@ -594,15 +590,13 @@ export const TravelPlanner = forwardRef<TravelPlannerHandle, TravelPlannerProps>
         </div>
       )}
 
-      {canRegisterCompanions && (
-        <GameCompanions
-          game={game}
-          value={companionSelection}
-          onChange={(selection) => { setCompanionSelection(selection); setMessage('') }}
-          embedded
-          autosave={false}
-        />
-      )}
+      <GameCompanions
+        game={game}
+        value={companionSelection}
+        onChange={(selection) => { setCompanionSelection(selection); setMessage('') }}
+        embedded
+        autosave={false}
+      />
 
       {invalidRoute && <p className="save-warning">Et tomt eller ugyldig stopp må rettes før reisen kan lagres. Andre ubesvarte felt er helt greit.</p>}
       {!outboundReady && departureMode === 'automatic' && <p className="travel-footnote">DRA vises når alle delene fram til arena har reisetid. Du kan også velge avreisetiden selv.</p>}

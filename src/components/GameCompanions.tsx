@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { canConfirmAttendance } from '../lib/gameTime'
 import { Check, Plus, UserRound, Users, X } from 'lucide-react'
 import {
   addCompanion,
@@ -87,7 +88,7 @@ export function GameCompanions({
   return (
     <Root className={embedded ? 'companions-card companions-card-embedded' : 'card detail-card companions-card'}>
       <div className="card-heading">
-        <div><span className="eyebrow">REISEFØLGE</span><h2>Hvem dro du med?</h2></div>
+        <div><span className="eyebrow">REISEFØLGE</span><h2>{canConfirmAttendance(game) ? 'Hvem dro du med?' : 'Hvem skal du dra med?'}</h2></div>
         <Users size={21} />
       </div>
       <p className="travel-footnote">Velg én eller flere. Du kan også velge «Alene» eller «Husker ikke».</p>

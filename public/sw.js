@@ -1,5 +1,5 @@
 const BASE = '/Mitt-Storhamar/';
-const CACHE = 'mitt-storhamar-v21-1-manual-departure';
+const CACHE = 'mitt-storhamar-v22-ux-and-backup';
 const CORE = [BASE, `${BASE}manifest.webmanifest`, `${BASE}icon.svg`];
 
 self.addEventListener('install', (event) => {
@@ -16,6 +16,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  // Do not cache cross-origin route, auth or other private API responses.
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
   event.respondWith(
     fetch(event.request)
       .then((response) => {
