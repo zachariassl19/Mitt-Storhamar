@@ -4,9 +4,9 @@ import { games } from '../data/games'
 import { departureTimeForTrip } from './notificationLogic'
 import { loadNotificationSettings } from './notificationSettings'
 import { loadTrips } from './trips'
-import { loadAttendancePlans } from './storage'
+import { loadAttendancePlans, loadGameDayRecords } from './storage'
 import type { AttendancePlan } from '../types'
-import type { Game, Trip } from '../types'
+import type { Game, GameDayRecord, Trip } from '../types'
 
 export const isNativeAndroid = () => Capacitor.isNativePlatform() && Capacitor.getPlatform()==='android'
 
@@ -67,11 +67,12 @@ export function nativeReminderId(gameId: string, kind: ReminderKind) {
 }
 
 export function nativeReminderPlan({
-  games:allGames,trips,plans={},now=Date.now(),enabled,gameTomorrow,gameDay,departure,finishGameDay,
+  games:allGames,trips,plans={},records={},now=Date.now(),enabled,gameTomorrow,gameDay,departure,finishGameDay,
 }:{
   games:Game[]
   trips:Trip[]
   plans?:Record<string,AttendancePlan>
+  records?:Record<string,GameDayRecord>
   now?:number
   enabled:boolean
   gameTomorrow:boolean
@@ -83,7 +84,8 @@ export function nativeReminderPlan({
   const planned:NativeReminder[]=[]
   for(const game of allGames) {
     const start=Date.parse(game.startsAt)
-    if (!Number.isFinite(start) || start<=now || start>now+30*24*60*60_000)continue
+    // Retain an upcoming finish reminder even if the app is reopened during a game.
+    if (!Number.isFinite(start) || start+14*60*60_000<=now || start>now+30*24*60*60_000)continue
     const label=`${game.homeTeam} – ${game.awayTeam}`
     const time=new Intl.DateTimeFormat('nb-NO',{timeZone:'Europe/Oslo',hour:'2-digit',minute:'2-digit'}).format(new Date(start))
     function add(kind:ReminderKind,atMs:number,title:string,body:string) {
@@ -97,7 +99,7 @@ export function nativeReminderPlan({
       const depart=departureTimeForTrip(game,trip)
       if(depart) add('departure',depart.getTime(),'På tide å dra',`Avreise til ${label} på ${game.arena}. Se reisemodus i appen.`)
     }
-    if(finishGameDay && plans[game.id]!=='no') add('finish',start+3.5*60*60_000,'Fullfør kampdagen',`Registrer oppmøte og reisen for ${label}.`)
+    if(finishGameDay && plans[game.id]!=='no' && !records[game.id]?.completed) add('finish',start+3.5*60*60_000,'Fullfør kampdagen',`Registrer oppmøte og reisen for ${label}.`)
   }
   // Future due dates only. Limit keeps Android notification scheduler manageable.
   return planned.sort((a,b)=>a.at.getTime()-b.at.getTime()).slice(0,64)
@@ -115,7 +117,7 @@ export async function syncNativeNotifications() {
   if(owned.length) await LocalNotifications.cancel({notifications:owned.map((entry)=>({id:entry.id}))})
   const settings=loadNotificationSettings()
   if(!settings.enabled || await nativeNotificationPermission()!=='granted')return
-  const plan=nativeReminderPlan({...settings,games,trips:loadTrips(),plans:loadAttendancePlans()})
+  const plan=nativeReminderPlan({...settings,games,trips:loadTrips(),plans:loadAttendancePlans(),records:loadGameDayRecords()})
   if(!plan.length)return
   await LocalNotifications.schedule({notifications:plan.map((item)=>({
     id:item.id,title:item.title,body:item.body,
