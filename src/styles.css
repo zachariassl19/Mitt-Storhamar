@@ -71,6 +71,9 @@ h1, h2, h3, p { margin-top: 0; }
 .attendance-buttons button.selected.yes { background: #1d744e; border-color: #46bf88; }
 .attendance-buttons button.selected.maybe { background: #72591c; border-color: #d2aa42; }
 .attendance-buttons button.selected.no { background: #74313c; border-color: #c75d6d; }
+.attendance-choice-control { display: grid; justify-items: stretch; }
+.attendance-clear { justify-self: end; margin: 7px 2px 0; border: 0; background: none; color: #e4d399; font-size: 12px; font-weight: 700; cursor: pointer; padding: 7px 5px; text-decoration: underline; text-underline-offset: 3px; }
+.attendance-clear:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
 
 .progress-ring { width: 46px; height: 46px; border-radius: 50%; border: 5px solid rgba(255,255,255,.1); border-top-color: var(--gold); display: grid; place-items: center; }
 .progress-ring span { font-weight: 900; font-size: 11px; }
