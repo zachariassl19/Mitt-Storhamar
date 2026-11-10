@@ -75,3 +75,18 @@
   .price-compare-row { grid-template-columns: 1fr 72px 72px; }
   .price-side small { max-width: 72px; }
 }
+
+/* These statistics are read often: labels must not be 8–9px. */
+.min-summary-grid span,
+.min-storhamar-page .min-footnote,
+.min-storhamar-page .home-away-grid span,
+.min-storhamar-page .home-away-grid small,
+.min-storhamar-page .min-highlight-list span,
+.min-storhamar-page .min-highlight-list small,
+.min-storhamar-page .arena-stat-main span,
+.min-storhamar-page .arena-stat-money span,
+.min-storhamar-page .economy-breakdown-grid span,
+.min-storhamar-page .price-side span,
+.min-storhamar-page .price-side small,
+.min-storhamar-page .purchase-summary-row span,
+.min-storhamar-page .min-rule-card p {font-size:12px;line-height:1.45;}
