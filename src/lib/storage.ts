@@ -2,6 +2,7 @@ import type { AttendancePlan, GameDayRecord, HubExport, SmartGameDayEvent } from
 
 const ATTENDANCE_KEY = 'mitt-storhamar:attendance-plan:v1'
 export const ATTENDANCE_CHANGED_EVENT = 'mitt-storhamar:attendance-plan-changed'
+export const ATTENDANCE_UPDATED_KEY = 'mitt-storhamar:attendance-updated:v1'
 const HUB_EXPORT_KEY = 'mitt-storhamar:hub-export:v1'
 const GAME_DAY_RECORDS_KEY = 'mitt-storhamar:game-day-records:v1'
 export const GAME_DAY_RECORDS_CHANGED_EVENT = 'mitt-storhamar:game-day-records-changed'
@@ -18,7 +19,10 @@ export function loadAttendancePlans(): Record<string, AttendancePlan> {
 export function saveAttendancePlan(gameId: string, plan: AttendancePlan) {
   const current = loadAttendancePlans()
   current[gameId] = plan
+  const timestamps = (() => { try { return JSON.parse(localStorage.getItem(ATTENDANCE_UPDATED_KEY) || '{}') as Record<string, string> } catch { return {} as Record<string, string> } })()
+  timestamps[gameId] = new Date().toISOString()
   localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(current))
+  localStorage.setItem(ATTENDANCE_UPDATED_KEY, JSON.stringify(timestamps))
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent(ATTENDANCE_CHANGED_EVENT, { detail: current }))
   }
