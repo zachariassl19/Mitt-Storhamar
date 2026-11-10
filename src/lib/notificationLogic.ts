@@ -60,6 +60,12 @@ function clockTime(date: Date) {
 
 export function departureTimeForTrip(game: Game, trip: Trip | undefined) {
   if (!trip) return null
+  // The supporter's own choice always wins, even before leg durations are known.
+  if (trip.plannedDepartureAt) {
+    const chosen = new Date(trip.plannedDepartureAt)
+    if (Number.isFinite(chosen.getTime()) && chosen.getTime() < new Date(game.startsAt).getTime()) return chosen
+    return null
+  }
   const outbound = trip.legs.filter((leg) => leg.direction === 'outbound')
   if (outbound.length === 0 || outbound.some((leg) => leg.durationMinutes == null)) return null
   const travelMinutes = outbound.reduce((sum, leg) => sum + (leg.durationMinutes ?? 0), 0)
