@@ -1,4 +1,5 @@
 import type { Game, Trip, TripLeg, TransportMode } from '../types'
+import { markDeleted, wasDeleted } from './deletedEntities'
 
 const TRIPS_KEY = 'mitt-storhamar:trips:v1'
 export const TRIPS_CHANGED_EVENT = 'mitt-storhamar:trips-changed'
@@ -6,7 +7,7 @@ export const TRIPS_CHANGED_EVENT = 'mitt-storhamar:trips-changed'
 export function loadTrips(): Trip[] {
   try {
     const raw = localStorage.getItem(TRIPS_KEY)
-    return raw ? (JSON.parse(raw) as Trip[]) : []
+    return raw ? (JSON.parse(raw) as Trip[]).filter((trip) => !wasDeleted('trip', trip.id, trip.updatedAt)) : []
   } catch {
     return []
   }
@@ -49,6 +50,7 @@ export function saveTrip(trip: Trip): Trip[] {
 }
 
 export function deleteTrip(tripId: string): Trip[] {
+  markDeleted('trip', tripId)
   const next = loadTrips().filter((trip) => trip.id !== tripId)
   persistTrips(next)
   return next
