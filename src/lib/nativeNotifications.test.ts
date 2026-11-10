@@ -39,7 +39,16 @@ describe('Android reminder plan',()=>{
  it('requires explicit user permission in settings and does not schedule past reminders',()=>{
   const base={games:[game],trips:[trip],now:start-2*24*60*60_000,gameTomorrow:true,gameDay:true,departure:true,finishGameDay:true}
   expect(nativeReminderPlan({...base,enabled:false})).toHaveLength(0)
-  expect(nativeReminderPlan({...base,enabled:true,now:start+1000})).toHaveLength(0)
+  const during = nativeReminderPlan({...base,enabled:true,now:start+1000})
+  expect(during.map(item=>item.kind)).toEqual(['finish'])
+  expect(nativeReminderPlan({...base,enabled:true,now:start+5*60*60_000})).toHaveLength(0)
+ })
+ it('stops finish reminders when actual attendance was already recorded',()=>{
+   const records={[game.id]:{gameId:game.id,completed:true,attendanceActual:'attended' as const,
+     entryType:'purchased' as const,ticketCost:0,updatedAt:'2026-11-14T16:00:00Z'}}
+   const result=nativeReminderPlan({games:[game],trips:[trip],records,
+     now:start+1000,enabled:true,gameTomorrow:true,gameDay:true,departure:true,finishGameDay:true})
+   expect(result.some(x=>x.kind==='finish')).toBe(false)
  })
  it('uses stable Android-safe notification IDs',()=>{
   expect(nativeReminderId(game.id,'gameDay')).toBe(nativeReminderId(game.id,'gameDay'))
