@@ -150,7 +150,7 @@ export function GamePurchases({ game, purchases, onSave, onDelete }: {
                   </div>
                   <div className="purchase-row-actions">
                     <button onClick={() => editPurchase(purchase)} aria-label="Rediger kjøp"><Pencil size={15} /></button>
-                    <button onClick={() => onDelete(purchase.id)} aria-label="Slett kjøp"><Trash2 size={15} /></button>
+                    <button onClick={() => { if (window.confirm('Slette dette kjøpet? Dette kan ikke angres.')) onDelete(purchase.id) }} aria-label="Slett kjøp"><Trash2 size={15} /></button>
                   </div>
                 </div>
               )
