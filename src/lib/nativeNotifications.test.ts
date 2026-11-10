@@ -31,6 +31,14 @@ describe('Android reminder plan',()=>{
    expect(plan.some(item=>item.kind==='departure'||item.kind==='finish')).toBe(false)
    expect(plan.some(item=>item.kind==='gameDay')).toBe(true)
  })
+ it('does not remind about an already completed game day',()=>{
+   const plan=nativeReminderPlan({
+     games:[game],trips:[trip],now:start-2*24*60*60_000,
+     records:{[game.id]:{gameId:game.id,attendanceActual:'attended',entryType:'unknown',ticketCost:null,completed:true,updatedAt:'2026-11-12T10:00:00.000Z'}},
+     enabled:true,gameTomorrow:false,gameDay:false,departure:false,finishGameDay:true,
+   })
+   expect(plan).toHaveLength(0)
+ })
  it('does not invent a departure reminder without durations',()=>{
   const plan=nativeReminderPlan({games:[game],trips:[],now:start-2*24*60*60_000,
     enabled:true,gameTomorrow:false,gameDay:false,departure:true,finishGameDay:false})

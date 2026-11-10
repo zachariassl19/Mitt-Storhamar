@@ -34,6 +34,7 @@ import { LocalBackupManager } from './components/LocalBackupManager'
 import { TravelPlanner, type TravelPlannerHandle } from './components/TravelPlanner'
 import { arenaForGame } from './data/arenas'
 import { games } from './data/games'
+import { GAME_OVERRIDES_CHANGED_EVENT } from './data/gameOverrides'
 import { logoForTeam } from './data/teamLogos'
 import { confirmedLocalCareerStats } from './lib/careerStats'
 import { canConfirmAttendance, getGameTemporalState, isGameDay } from './lib/gameTime'
@@ -236,9 +237,11 @@ export default function AppV2() {
     const refresh = () => setNow(new Date())
     const timer = window.setInterval(refresh, 60_000)
     window.addEventListener('focus', refresh)
+    window.addEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
     return () => {
       window.clearInterval(timer)
       window.removeEventListener('focus', refresh)
+      window.removeEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
     }
   }, [])
 
@@ -513,7 +516,10 @@ function AttendanceButtons({ value, onChange }: { value: AttendancePlan; onChang
     { value: 'maybe', label: 'Kanskje', icon: UserRound },
     { value: 'no', label: 'Nei', icon: X },
   ]
-  return <div className="attendance-buttons">{choices.map(({ value: option, label, icon: Icon }) => <button key={option} className={value === option ? `selected ${option}` : ''} onClick={() => onChange(option)}><Icon size={18} /> {label}</button>)}</div>
+  return <div className="attendance-choice-control">
+    <div className="attendance-buttons">{choices.map(({ value: option, label, icon: Icon }) => <button type="button" key={option} aria-pressed={value === option} className={value === option ? `selected ${option}` : ''} onClick={() => onChange(option)}><Icon size={18} /> {label}</button>)}</div>
+    {value !== 'unset' && <button type="button" className="attendance-clear" onClick={() => onChange('unset')}>Angre valget</button>}
+  </div>
 }
 
 function HistoricalAttendanceButtons({ record, onYes, onNo }: {

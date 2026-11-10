@@ -59,6 +59,8 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
     )
     const ticketTotal = ticketRecords.reduce((sum, record) => sum + (record.ticketCost ?? 0), 0)
     const travelTotal = local.travelCost
+    const estimatedTravelAmount = trips.filter((trip) => trip.status === 'completed' && attendedIds.has(trip.gameId))
+      .reduce((sum, trip) => sum + trip.legs.reduce((legSum, leg) => legSum + (leg.actualCost == null ? (leg.estimatedCost ?? 0) : 0), 0), 0)
     const kioskTotal = sumKind(confirmedPurchases, 'kiosk')
     const lotteryTotal = sumKind(confirmedPurchases, 'lottery')
     const supporterTotal = sumKind(confirmedPurchases, 'supporter')
@@ -191,6 +193,7 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
       confirmedPurchases,
       ticketTotal,
       travelTotal,
+      estimatedTravelAmount,
       kioskTotal,
       lotteryTotal,
       supporterTotal,
@@ -233,7 +236,7 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
             <article><span>Kamper sett</span><strong>{stats.attendedGames}</strong></article>
             <article><span>Bekreftede km</span><strong>{stats.km}</strong></article>
             <article><span>Gjennomførte reiser</span><strong>{stats.completedTrips}</strong></article>
-            <article className="money"><span>Totalt brukt</span><strong>{money(stats.totalSpent)}</strong></article>
+            <article className="money"><span>Registrerte kostnader</span><strong>{money(stats.totalSpent)}</strong></article>
           </div>
 
           <article className="card min-insight-card">
@@ -259,9 +262,9 @@ export function MinStorhamarPage({ hubData, trips, records, purchases }: {
       {tab === 'economy' && (
         <>
           <article className="card economy-total-card">
-            <span className="eyebrow">BEKREFTET ØKONOMI</span>
+            <span className="eyebrow">REGISTRERTE KOSTNADER</span>
             <strong>{money(stats.totalSpent)}</strong>
-            <p>{stats.financialGames > 0 ? `${money(stats.averagePerFinancialGame)} i snitt per kamp med registrert økonomi.` : 'Registrer kostnader på en ferdig kamp for å bygge statistikken.'}</p>
+            <p>{stats.financialGames > 0 ? `${money(stats.averagePerFinancialGame)} i snitt per kamp med registrert økonomi.` : 'Registrer kostnader på en ferdig kamp for å bygge statistikken.'} {stats.estimatedTravelAmount > 0 ? `${money(stats.estimatedTravelAmount)} av reisekostnadene er beregnet og ikke bekreftet betalt.` : ''}</p>
           </article>
 
           <div className="economy-breakdown-grid">

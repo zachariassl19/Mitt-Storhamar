@@ -110,12 +110,25 @@ export function CloudSyncManager() {
     pushingRef.current = true
     setStatus('syncing')
     try {
+      // Always pull before pushing: another device may have saved data since our last poll.
       const snapshot = snapshotFromLocal()
-      const updatedAt = await writeRemoteState(localUser.id, snapshot)
-      lastFingerprintRef.current = storageFingerprint(snapshot.storage)
+      const localFingerprint = storageFingerprint(snapshot.storage)
+      const remote = await fetchRemoteState(localUser.id)
+      const merged = remote?.state?.storage
+        ? mergeCloudStorage(remote.state.storage, snapshot.storage)
+        : snapshot.storage
+      const mergedFingerprint = storageFingerprint(merged)
+      if (mergedFingerprint !== localFingerprint) replaceAppStorage(merged)
+      const updatedAt = await writeRemoteState(localUser.id, {
+        schemaVersion: CLOUD_SCHEMA_VERSION,
+        savedAt: new Date().toISOString(),
+        storage: merged,
+      })
+      lastFingerprintRef.current = mergedFingerprint
       lastRemoteUpdatedAtRef.current = updatedAt
       setStatus('synced')
-      setMessage('Synket privat til Mitt Storhamar.')
+      setMessage(mergedFingerprint === localFingerprint ? 'Synket privat til Mitt Storhamar.' : 'Endringer fra andre enheter er slått sammen.')
+      if (mergedFingerprint !== localFingerprint) window.location.reload()
     } catch (error) {
       setStatus('error')
       setMessage(error instanceof Error ? error.message : 'Kunne ikke synkronisere.')

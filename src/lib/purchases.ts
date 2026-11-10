@@ -1,4 +1,5 @@
 import type { GamePurchase } from '../types'
+import { markDeleted, wasDeleted } from './deletedEntities'
 
 const PURCHASES_KEY = 'mitt-storhamar:purchases:v1'
 
@@ -13,7 +14,7 @@ export interface PurchaseSummary {
 export function loadPurchases(): GamePurchase[] {
   try {
     const raw = localStorage.getItem(PURCHASES_KEY)
-    return raw ? (JSON.parse(raw) as GamePurchase[]) : []
+    return raw ? (JSON.parse(raw) as GamePurchase[]).filter((purchase) => !wasDeleted('purchase', purchase.id, purchase.updatedAt)) : []
   } catch {
     return []
   }
@@ -34,6 +35,7 @@ export function savePurchase(purchase: GamePurchase): GamePurchase[] {
 }
 
 export function deletePurchase(purchaseId: string): GamePurchase[] {
+  markDeleted('purchase', purchaseId)
   const next = loadPurchases().filter((purchase) => purchase.id !== purchaseId)
   persistPurchases(next)
   return next

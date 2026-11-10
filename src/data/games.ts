@@ -1,4 +1,5 @@
 import type { Competition, DecisionType, Game } from '../types'
+import { applyGameOverrides, loadGameOverrides } from './gameOverrides'
 
 type GameRow = [
   startsAt: string,
@@ -101,3 +102,6 @@ export const games: Game[] = rows
     special,
   }))
   .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime())
+
+// Approved changes keep the original game ID, so saved trips and attendance remain linked.
+applyGameOverrides(games, loadGameOverrides())

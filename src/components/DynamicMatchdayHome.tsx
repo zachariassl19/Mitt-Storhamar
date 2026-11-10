@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { CheckCircle2, Clock3, MapPin, Navigation, Route } from 'lucide-react'
 import { games } from '../data/games'
+import { GAME_OVERRIDES_CHANGED_EVENT } from '../data/gameOverrides'
 import { getGameTemporalState, isGameDay } from '../lib/gameTime'
 import { departureTimeForTrip } from '../lib/notificationLogic'
 import {
@@ -117,8 +118,10 @@ export function DynamicMatchdayHome() {
   useEffect(() => subscribeSmartGameDaySettings(setSmartSettings), [])
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 30_000)
-    return () => window.clearInterval(timer)
+    const refresh = () => setNow(new Date())
+    const timer = window.setInterval(refresh, 30_000)
+    window.addEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
+    return () => { window.clearInterval(timer); window.removeEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh) }
   }, [])
 
   const game = useMemo(() => games.find((candidate) => isGameDay(candidate, now)), [now])

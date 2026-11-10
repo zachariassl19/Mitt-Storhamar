@@ -40,3 +40,64 @@ describe('cloud storage merge', () => {
     expect(merged['mitt-storhamar:local:v1']).toBeDefined()
   })
 })
+
+describe('deleted entities stay deleted across device merges', () => {
+  const deletedKey = 'mitt-storhamar:deleted-entities:v1'
+  const tripKey = 'mitt-storhamar:trips:v1'
+  const purchaseKey = 'mitt-storhamar:purchases:v1'
+
+  it('does not restore a deleted trip from an older remote copy', () => {
+    const merged = mergeCloudStorage({
+      [tripKey]:JSON.stringify([{id:'trip:1',gameId:'g1',updatedAt:'2026-11-01T10:00:00Z'}]),
+    },{
+      [tripKey]:'[]',
+      [deletedKey]:JSON.stringify({'trip:trip:1':'2026-11-02T10:00:00Z'}),
+    })
+    expect(JSON.parse(merged[tripKey])).toEqual([])
+  })
+
+  it('retains delete markers from both devices and removes old purchases', () => {
+    const merged = mergeCloudStorage({
+      [purchaseKey]:JSON.stringify([{id:'purchase:1',updatedAt:'2026-11-01T10:00:00Z'}]),
+      [deletedKey]:JSON.stringify({'purchase:purchase:1':'2026-11-02T12:00:00Z'}),
+    },{
+      [purchaseKey]:'[]',
+      [deletedKey]:JSON.stringify({'trip:trip:2':'2026-11-02T15:00:00Z'}),
+    })
+    expect(JSON.parse(merged[purchaseKey])).toEqual([])
+    expect(Object.keys(JSON.parse(merged[deletedKey]))).toHaveLength(2)
+  })
+
+  it('accepts a deliberate later restoration of an old id', () => {
+    const merged = mergeCloudStorage({
+      [tripKey]:JSON.stringify([{id:'trip:1',updatedAt:'2026-11-03T10:00:00Z'}]),
+      [deletedKey]:JSON.stringify({'trip:trip:1':'2026-11-02T10:00:00Z'}),
+    },{[tripKey]:'[]'})
+    expect(JSON.parse(merged[tripKey])).toHaveLength(1)
+  })
+})
+
+describe('attendance choices are synchronized per game', () => {
+  const choices = 'mitt-storhamar:attendance-plan:v1'
+  const updated = 'mitt-storhamar:attendance-updated:v1'
+  it('keeps a newer local No when the remote copy still says Yes', () => {
+    const merged = mergeCloudStorage({
+      [choices]:JSON.stringify({g1:'yes',g2:'maybe'}),
+      [updated]:JSON.stringify({g1:'2026-11-09T12:00:00Z'}),
+    },{
+      [choices]:JSON.stringify({g1:'no'}),
+      [updated]:JSON.stringify({g1:'2026-11-10T12:00:00Z'}),
+    })
+    expect(JSON.parse(merged[choices])).toEqual({g1:'no',g2:'maybe'})
+  })
+  it('takes a later cloud choice when both devices modified the same game', () => {
+    const merged = mergeCloudStorage({
+      [choices]:JSON.stringify({g1:'yes'}),
+      [updated]:JSON.stringify({g1:'2026-11-10T13:00:00Z'}),
+    },{
+      [choices]:JSON.stringify({g1:'no'}),
+      [updated]:JSON.stringify({g1:'2026-11-10T12:00:00Z'}),
+    })
+    expect(JSON.parse(merged[choices]).g1).toBe('yes')
+  })
+})
