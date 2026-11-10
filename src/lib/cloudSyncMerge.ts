@@ -1,3 +1,5 @@
+import { DELETION_MARKER_KEYS } from './deletionMarkers'
+
 type StorageState = Record<string, string>
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -92,6 +94,68 @@ function mergeRaw(remoteRaw: string, localRaw: string) {
   return remoteRaw
 }
 
+const ATTENDANCE_KEY = 'mitt-storhamar:attendance-plan:v1'
+const ATTENDANCE_UPDATED_KEY = 'mitt-storhamar:attendance-plan-updated:v1'
+
+function objectFrom(raw: string | undefined): Record<string, unknown> {
+  try {
+    const value: unknown = raw ? JSON.parse(raw) : {}
+    return isObject(value) ? value : {}
+  } catch {
+    return {}
+  }
+}
+
+function arrayFrom(raw: string | undefined): unknown[] {
+  try {
+    const value: unknown = raw ? JSON.parse(raw) : []
+    return Array.isArray(value) ? value : []
+  } catch {
+    return []
+  }
+}
+
+function reconcileAttendance(merged: StorageState, remote: StorageState, local: StorageState) {
+  if (remote[ATTENDANCE_KEY] === undefined && local[ATTENDANCE_KEY] === undefined) return
+  const remoteValues = objectFrom(remote[ATTENDANCE_KEY])
+  const localValues = objectFrom(local[ATTENDANCE_KEY])
+  const remoteEdited = objectFrom(remote[ATTENDANCE_UPDATED_KEY])
+  const localEdited = objectFrom(local[ATTENDANCE_UPDATED_KEY])
+  const result: Record<string, unknown> = {}
+  const ids = new Set([...Object.keys(remoteValues), ...Object.keys(localValues)])
+  for (const id of ids) {
+    const rv = remoteValues[id]
+    const lv = localValues[id]
+    if (rv === undefined) result[id] = lv
+    else if (lv === undefined) result[id] = rv
+    else {
+      // Existing untimestamped entries still prefer cloud; new edits have per-game timestamps.
+      result[id] = updatedAt(localEdited[id]) > updatedAt(remoteEdited[id]) ? lv : rv
+    }
+  }
+  merged[ATTENDANCE_KEY] = JSON.stringify(result)
+}
+
+function reconcileDeletions(merged: StorageState) {
+  const pairs = [
+    ['mitt-storhamar:trips:v1', DELETION_MARKER_KEYS.trips],
+    ['mitt-storhamar:purchases:v1', DELETION_MARKER_KEYS.purchases],
+  ] as const
+  for (const [dataKey, markersKey] of pairs) {
+    if (!merged[dataKey] || !merged[markersKey]) continue
+    const markers = objectFrom(merged[markersKey])
+    const entries = arrayFrom(merged[dataKey])
+    const kept = entries.filter((entity) => {
+      if (!isObject(entity) || typeof entity.id !== 'string') return true
+      const marker = markers[entity.id]
+      if (!isObject(marker) || marker.deleted !== true) return true
+      // Only a later explicit save may revive a previously deleted entry.
+      return updatedAt(entity) > updatedAt(marker)
+    })
+    merged[dataKey] = JSON.stringify(kept)
+  }
+}
+
 export function mergeCloudStorage(remote: StorageState, local: StorageState): StorageState {
   const merged: StorageState = { ...local }
 
@@ -99,6 +163,7 @@ export function mergeCloudStorage(remote: StorageState, local: StorageState): St
     const localRaw = local[key]
     merged[key] = localRaw === undefined ? remoteRaw : mergeRaw(remoteRaw, localRaw)
   }
-
+  reconcileAttendance(merged, remote, local)
+  reconcileDeletions(merged)
   return merged
 }
