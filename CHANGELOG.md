@@ -2,6 +2,14 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.1] – 2026-11-10
+
+### Mer presis reisehistorikk
+- Gamle reiser som ikke kan kobles til en kamp får teksten «Kampdato ukjent» i stedet for feilaktig kampdato fra sist redigering.
+- Reiser med kilometer eller kostnader som mangler på enkelte etapper merkes som ufullstendige.
+- Negative eller ugyldige kilometer og kostnader ignoreres i reisesammendraget, mens registrert 0 beholdes.
+- Nye regresjonstester for delvis utfylte reiser og gamle reiser uten kampdata.
+
 ## [0.24.0] – 2026-11-10
 
 ### Reisehistorikk i Min Storhamar
