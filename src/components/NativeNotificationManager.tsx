@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core'
 import { isNativeAndroid, syncNativeNotifications } from '../lib/nativeNotifications'
 import { subscribeNotificationSettings } from '../lib/notificationSettings'
 import { subscribeTrips } from '../lib/trips'
+import { GAME_OVERRIDES_CHANGED_EVENT } from '../data/gameOverrides'
 import { subscribeAttendancePlans, GAME_DAY_RECORDS_CHANGED_EVENT } from '../lib/storage'
 
 /**
@@ -28,10 +29,11 @@ export function NativeNotificationManager() {
     const unsubscribeTrips=subscribeTrips(()=>void refresh())
     const unsubscribeAttendance=subscribeAttendancePlans(()=>void refresh())
     window.addEventListener(GAME_DAY_RECORDS_CHANGED_EVENT, refresh)
+    window.addEventListener(GAME_OVERRIDES_CHANGED_EVENT, refresh)
     const onVisible=()=>{if(!document.hidden)void refresh()}
     document.addEventListener('visibilitychange',onVisible)
     void refresh()
-    return ()=>{unsubscribeSettings();unsubscribeTrips();unsubscribeAttendance();window.removeEventListener(GAME_DAY_RECORDS_CHANGED_EVENT,refresh);document.removeEventListener('visibilitychange',onVisible)}
+    return ()=>{unsubscribeSettings();unsubscribeTrips();unsubscribeAttendance();window.removeEventListener(GAME_DAY_RECORDS_CHANGED_EVENT,refresh);window.removeEventListener(GAME_OVERRIDES_CHANGED_EVENT,refresh);document.removeEventListener('visibilitychange',onVisible)}
   },[])
   return null
 }
