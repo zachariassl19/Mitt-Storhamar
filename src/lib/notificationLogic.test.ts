@@ -75,6 +75,14 @@ describe('notification timing', () => {
     expect(message?.body).toContain('09:30')
   })
 
+  it('does not send departure reminders for a declined game', () => {
+    const due = notificationCandidates({
+      now: new Date('2026-09-24T16:01:00+02:00'), games:[game], trips:[trip], records:{},
+      plans:{[game.id]:'no'}, settings:{...defaultNotificationSettings,enabled:true}, smartGameDayEnabled:false,
+    })
+    expect(due.some(item => item.id === `departure:${game.id}`)).toBe(false)
+  })
+
   it('offers a tomorrow reminder after 18:00 the evening before', () => {
     const settings = { ...defaultNotificationSettings, enabled: true }
     const due = notificationCandidates({
