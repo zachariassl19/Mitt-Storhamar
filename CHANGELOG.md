@@ -11,6 +11,8 @@ Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 - Android-varsler planlegges på nytt når du endrer oppmøte eller fullfører en kamp. Ferdige kampdager skal ikke få nye fullføringspåminnelser.
 - Økonomisiden skiller tydeligere mellom registrerte og beregnede reisekostnader.
 - Nye regresjonstester for konflikt, sletting og Android-varsling.
+- Godkjenning av kontrollerte kampendringer oppdaterer nå lokal terminliste og Android-varsler uten å endre kamp-ID. Ukjente arenaer må kontrolleres før godkjenning.
+- Testdekning for kampflytting mellom datoer og uendrede personlige kamp-ID-er.
 
 ### Gjenstående kvalitetsarbeid
 - Fullstendige sesongoverganger, redaksjonell videreutvikling av historiearkivet og fysisk test av Android GPS/varsler er egne arbeidsområder.
