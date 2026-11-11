@@ -83,11 +83,19 @@ export const historySources: ArchiveSource[] = [
   },
   {
     id: 'eliteprospects',
-    title: 'Elite Prospects',
-    url: 'https://www.eliteprospects.com/',
+    title: 'Elite Prospects – Storhamar',
+    url: 'https://www.eliteprospects.com/team/181/storhamar',
     publisher: 'Elite Prospects',
     primary: false,
-    note: 'Sekundær kontrollkilde for spiller- og lagstatistikk. Ikke scrap sidene automatisk.',
+    note: 'Supplerende Storhamar-kilde for spillerstaller, draktnummer, spillerprofiler og sesongstatistikk. Kontroller eventuelle motstridende tall mot klubbens og forbundets offisielle data. Ikke kopier eller hent innhold automatisk uten rettigheter.',
+  },
+  {
+    id: 'eliteprospects-storhamar-2026-27',
+    title: 'Elite Prospects – Storhamar 2026/27',
+    url: 'https://www.eliteprospects.com/team/181/storhamar/2026-2027',
+    publisher: 'Elite Prospects',
+    primary: false,
+    note: 'Ekstern oversikt over Storhamars spillerstall og spillerstatistikk for inneværende sesong. Ikke en erstatning for den offisielle terminlisten eller SIL-arkivets historikk.',
   },
   {
     id: 'chl',
