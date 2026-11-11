@@ -588,7 +588,7 @@ export function HistoryArchivePage() {
         <strong>Dagens spillerstall (2026/27):</strong> Det historiske spillerarkivet er adskilt fra inneværende sesong. 
         <a href={eliteProspectsThisSeason.url} target="_blank" rel="noopener noreferrer">Se Storhamars spillerstall hos Elite Prospects <ExternalLink size={13}/></a>.
         Elite Prospects brukes som tilleggskilde, ikke som automatisk import eller fasit ved kildekonflikt.
-      </div>}}
+      </div>}
       {section === 'legend' && <div className="ha-topic-note">Legender, hedrede bannere og draktnumre. Statusen på en hedring forklares på hver profil og blandes ikke med et formelt fredet nummer.</div>}
       <label className="ha-search"><Search size={17}/><input value={query} aria-label={'Søk i ' + sectionInfo?.title} onChange={(event)=>{setQuery(event.target.value);setVisibleCount(24)}} placeholder={'Søk i ' + (sectionInfo?.title.toLowerCase() ?? 'arkivet') + '…'}/>{query && <button onClick={()=>setQuery('')} aria-label="Tøm søk"><X size={15}/></button>}</label>
       <div className="ha-filters">
