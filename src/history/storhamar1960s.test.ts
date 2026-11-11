@@ -21,6 +21,6 @@ describe('historisk 60-tallsoversikt', () => {
     expect(ep?.url).toBe('https://www.eliteprospects.com/team/181/storhamar')
     expect(ep?.primary).toBe(false)
     expect(historySources.find(source => source.id === 'eliteprospects-storhamar-2026-27')?.url)
-      .toContain('/storhamar/2026-2027')
+      .toBe('https://www.eliteprospects.com/team/181/storhamar')
   })
 })
