@@ -108,7 +108,7 @@ export const historySources: ArchiveSource[] = [
   {
     id: 'eliteprospects-storhamar-2026-27',
     title: 'Elite Prospects – Storhamar 2026/27',
-    url: 'https://www.eliteprospects.com/team/181/storhamar/2026-2027',
+    url: 'https://www.eliteprospects.com/team/181/storhamar',
     publisher: 'Elite Prospects',
     primary: false,
     note: 'Ekstern oversikt over Storhamars spillerstall og spillerstatistikk for inneværende sesong. Ikke en erstatning for den offisielle terminlisten eller SIL-arkivets historikk.',
