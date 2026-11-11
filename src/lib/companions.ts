@@ -77,8 +77,14 @@ export function loadCompanions(): Companion[] {
 
 function storeCompanion(person: Companion): void {
   const current = storedCompanions()
+  const previous = current.find(entry => entry.id === person.id)
+  const previousTime = Date.parse(previous?.updatedAt ?? '')
+  // Two rapid edits can happen in the same millisecond. Ensure the later choice
+  // still wins when merging private cloud copies by updatedAt.
+  const now = Date.now()
+  const modifiedAt = Number.isFinite(previousTime) ? Math.max(now, previousTime + 1) : now
   const next = current.filter(entry => entry.id !== person.id)
-  next.push({ ...person, updatedAt: new Date().toISOString() })
+  next.push({ ...person, updatedAt: new Date(modifiedAt).toISOString() })
   localStorage.setItem(CUSTOM_COMPANIONS_KEY, JSON.stringify(next))
 }
 
