@@ -2,6 +2,15 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.4] – 2026-11-11
+
+### Elite Prospects og historie helt tilbake til 60-tallet
+- Elite Prospects er knyttet direkte til Storhamars lagprofil og 2026/27-stall som supplerende spillerkilde, uten automatisk innhenting eller overskriving av eksisterende data.
+- Spillerarkivet har en tydelig ekstern kildeinngang for denne sesongens lag.
+- Historieforsiden viser en kildebasert innføring i 1960/61–1969/70 med kamper, resultater og lenke til SIL-arkivets sesongoversikt.
+- Mangelfull 60-tallsmålscorerstatistikk fremstår ikke som fullstendig.
+- Historiearkivets egen dokumentasjon og testdekning er oppdatert. Eksisterende historisk og personlig kampdata er beholdt.
+
 ## [0.24.3] – 2026-11-11
 
 ### Rediger navn på reisefølge
