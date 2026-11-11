@@ -14,6 +14,7 @@ import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
 import { numberIndex } from '../history/numberIndex'
 import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
 import { historySources } from '../history/sources'
+import { storhamar1960s } from '../history/storhamar1960s'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import { SSUHistoryPage } from './SSUHistoryPage'
 import { ssuPhotos } from '../history/ssuHistory'
@@ -39,6 +40,8 @@ const ICONS: Record<ArchiveEntityKind, LucideIcon> = {
   timeline: History, coach: UserRound, captain: Shield,
   identity: Layers, 'supporter-culture': Users,
 }
+const eliteProspectsThisSeason = historySources.find(source => source.id === 'eliteprospects-storhamar-2026-27')
+
 const KIND_LABELS: Record<BrowsableKind, string> = {
   season: 'Sesong', honour: 'Meritt', jersey: 'Drakt',
   legend: 'I taket', player: 'Spiller', arena: 'Arena',
@@ -521,6 +524,19 @@ export function HistoryArchivePage() {
         })}</div>
         <button className="ha-load-more" onClick={()=>goSection('stories')}>Utforsk alle {playerStories.length} spillerhistoriene <ChevronRight size={17}/></button>
         <div className="ha-section-title"><span className="ha-kicker">HISTORIEN BAK RESULTATENE</span><h2>Epokene som formet klubben</h2></div>
+        <section className="ha-block ha-decade-spotlight" aria-label="Storhamar på 1960-tallet">
+          <span className="ha-kicker">DYKK NED I ARKIVET · 60-TALLET</span>
+          <h3>Fra naturis til opprykksjakt</h3>
+          <p>{storhamar1960s.introduction}</p>
+          <div className="ha-fact-list">
+            <div><span>Dokumentert periode</span><strong>{storhamar1960s.period}</strong></div>
+            <div><span>Kamper</span><strong>{storhamar1960s.games} · {storhamar1960s.wins} seire · {storhamar1960s.draws} uavgjort · {storhamar1960s.losses} tap</strong></div>
+            <div><span>Målforskjell</span><strong>{storhamar1960s.goalsFor}–{storhamar1960s.goalsAgainst}</strong></div>
+            <div><span>Flest kamper i oversikten</span><strong>{storhamar1960s.mostAppearances.name} · {storhamar1960s.mostAppearances.games}</strong></div>
+          </div>
+          <p className="ha-research-note">Tallene kommer fra SIL-arkivets 60-tallsoversikt. Oversikten over målscorere fra denne perioden er ufullstendig.</p>
+          <a className="ha-source-link" href={storhamar1960s.sourceUrl} target="_blank" rel="noopener noreferrer">Utforsk alle 60-tallssesongene i SIL-arkivet <ExternalLink size={15}/></a>
+        </section>
         <div className="ha-chapter-list">{historyChapters.map((part)=>{
           const media = part.imageJerseyId ? archiveItem('jersey',part.imageJerseyId)?.media[0] : undefined
           return <button className="ha-chapter-card" key={part.id} onClick={()=>openChapter(part.id)}>
@@ -568,6 +584,11 @@ export function HistoryArchivePage() {
       {section === 'jersey' && <div className="ha-topic-note">SIL-arkivet dokumenterer at klubbens aller første drakter var svarte og gule. Den gule og blå draktidentiteten kom senere. Her finner du også Europa-, sluttspill- og spesialdrakter med kilde og bilde der det finnes.</div>}
       {section === 'season' && <div className="ha-topic-note">Sesonger fra 1957/58 til 2025/26. Det som ikke kan dokumenteres – særlig eldre statistikk – er merket som ufullstendig.</div>}
       {(section === 'player' || section === 'legend') && <div className="ha-topic-note">Mange profiler har nå egne fortellinger om oppvekst, karriere og historiske kamper. Åpne en spiller for å lese historien. Kildene står samlet nederst på profilen.</div>}
+      {section === 'player' && eliteProspectsThisSeason && <div className="ha-topic-note">
+        <strong>Dagens spillerstall (2026/27):</strong> Det historiske spillerarkivet er adskilt fra inneværende sesong. 
+        <a href={eliteProspectsThisSeason.url} target="_blank" rel="noopener noreferrer">Se Storhamars spillerstall hos Elite Prospects <ExternalLink size={13}/></a>.
+        Elite Prospects brukes som tilleggskilde, ikke som automatisk import eller fasit ved kildekonflikt.
+      </div>}}
       {section === 'legend' && <div className="ha-topic-note">Legender, hedrede bannere og draktnumre. Statusen på en hedring forklares på hver profil og blandes ikke med et formelt fredet nummer.</div>}
       <label className="ha-search"><Search size={17}/><input value={query} aria-label={'Søk i ' + sectionInfo?.title} onChange={(event)=>{setQuery(event.target.value);setVisibleCount(24)}} placeholder={'Søk i ' + (sectionInfo?.title.toLowerCase() ?? 'arkivet') + '…'}/>{query && <button onClick={()=>setQuery('')} aria-label="Tøm søk"><X size={15}/></button>}</label>
       <div className="ha-filters">
