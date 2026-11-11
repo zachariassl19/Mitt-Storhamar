@@ -36,7 +36,7 @@ Kategoriene skal kobles sammen. En drakt skal kunne peke til sesonger, spillere 
 1. SIL-arkivet er hovedkilde for historisk Storhamar-materiale.
 2. Prosjekteier har opplyst at materiale fra SIL-arkivet kan brukes i Mitt Storhamar.
 3. Offisielle klubbkilder, CHL og andre primærkilder brukes når de kan bekrefte eller utfylle informasjon.
-4. Elite Prospects kan brukes som kontrollkilde for spiller- og lagdata, men skal ikke skrapes automatisk.
+4. Elite Prospects brukes som supplerende kontrollkilde for spiller- og lagdata. Storhamars lagprofil: https://www.eliteprospects.com/team/181/storhamar. Sesongen 2026/27 har en egen kildehenvisning (https://www.eliteprospects.com/team/181/storhamar/2026-2027). Bruk lenker og manuell kildekontroll, ikke automatisk skraping eller masseimport.
 5. Uenighet mellom kilder skal dokumenteres og ikke skjules.
 6. Ingen historiske fakta skal diktes opp for å fylle tomrom.
 7. Manglende tall skal være manglende/ukjente, aldri automatisk `0`.
