@@ -7,6 +7,22 @@ import type { ArchiveSource } from './types'
 // Ved reell kildekonflikt skal konflikten merkes i innholdet; vi skal ikke velge et tall eller en versjon uten forklaring.
 export const historySources: ArchiveSource[] = [
   {
+    id: 'sil-1960s',
+    title: 'SIL-arkivet – Sesongene på 60-tallet',
+    url: 'https://silarkivet.no/sesonger/60-tallet/',
+    publisher: 'SIL-arkivet',
+    primary: true,
+    note: 'Dokumenterer Storhamars 1960/61–1969/70-sesonger, resultatsammendrag og historisk spillerstatistikk. Kilden oppgir at oversikten over målscorere er mangelfull.',
+  },
+  {
+    id: 'sil-history-story',
+    title: 'SIL-arkivet – Historien fra oppstarten',
+    url: 'https://silarkivet.no/tidslinje/historien/',
+    publisher: 'SIL-arkivet',
+    primary: true,
+    note: 'Kronologisk klubbhistorie fra 1950-tallet, med særskilt dekning av oppturen 1961–1969.',
+  },
+  {
     id: 'sil-milepaeler',
     title: 'SIL-arkivet – Milepæler',
     url: 'https://silarkivet.no/tidslinje/milepaeler/',
@@ -83,11 +99,19 @@ export const historySources: ArchiveSource[] = [
   },
   {
     id: 'eliteprospects',
-    title: 'Elite Prospects',
-    url: 'https://www.eliteprospects.com/',
+    title: 'Elite Prospects – Storhamar',
+    url: 'https://www.eliteprospects.com/team/181/storhamar',
     publisher: 'Elite Prospects',
     primary: false,
-    note: 'Sekundær kontrollkilde for spiller- og lagstatistikk. Ikke scrap sidene automatisk.',
+    note: 'Supplerende Storhamar-kilde for spillerstaller, draktnummer, spillerprofiler og sesongstatistikk. Kontroller eventuelle motstridende tall mot klubbens og forbundets offisielle data. Ikke kopier eller hent innhold automatisk uten rettigheter.',
+  },
+  {
+    id: 'eliteprospects-storhamar-2026-27',
+    title: 'Elite Prospects – Storhamar 2026/27',
+    url: 'https://www.eliteprospects.com/team/181/storhamar/2026-2027',
+    publisher: 'Elite Prospects',
+    primary: false,
+    note: 'Ekstern oversikt over Storhamars spillerstall og spillerstatistikk for inneværende sesong. Ikke en erstatning for den offisielle terminlisten eller SIL-arkivets historikk.',
   },
   {
     id: 'chl',

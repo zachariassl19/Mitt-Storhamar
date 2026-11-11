@@ -36,8 +36,14 @@ Kategoriene skal kobles sammen. En drakt skal kunne peke til sesonger, spillere 
 1. SIL-arkivet er hovedkilde for historisk Storhamar-materiale.
 2. Prosjekteier har opplyst at materiale fra SIL-arkivet kan brukes i Mitt Storhamar.
 3. Offisielle klubbkilder, CHL og andre primærkilder brukes når de kan bekrefte eller utfylle informasjon.
-4. Elite Prospects kan brukes som kontrollkilde for spiller- og lagdata, men skal ikke skrapes automatisk.
+4. Elite Prospects brukes som supplerende kontrollkilde for spiller- og lagdata. Storhamars lagprofil: https://www.eliteprospects.com/team/181/storhamar. Sesongen 2026/27 har en egen kildehenvisning (https://www.eliteprospects.com/team/181/storhamar/2026-2027). Bruk lenker og manuell kildekontroll, ikke automatisk skraping eller masseimport.
 5. Uenighet mellom kilder skal dokumenteres og ikke skjules.
+
+### Dekning tilbake til 1960-tallet
+- Historiedelen skal fortsatt dekke klubbens utvikling fra 1950-tallet, inkludert alle 60-tallssesongene i SIL-arkivet: https://silarkivet.no/sesonger/60-tallet/.
+- 60-tallsoversikten oppgir 105 kamper, 58 seire, 5 uavgjort og 42 tap (1960/61–1969/70). Målscorerdataene er uttrykkelig merket som mangelfulle.
+- Elite Prospects brukes til kryssjekk av spiller- og lagopplysninger i sesonger der nettstedet faktisk har dokumentert dekning. Manglende gamle staller skal ikke fylles ut fra gjetning.
+- Inneværende sesong 2026/27 hører til løpende spillerstall/terminliste og skal ikke blandes inn som avsluttet historie eller personlige supporterreiser fra tidligere sesonger.
 6. Ingen historiske fakta skal diktes opp for å fylle tomrom.
 7. Manglende tall skal være manglende/ukjente, aldri automatisk `0`.
 8. Hvert arkivobjekt får `completeness`: `stub`, `partial` eller `verified`.
