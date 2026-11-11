@@ -4,6 +4,10 @@ export interface Companion {
   id: string
   name: string
   custom?: boolean
+  /** Hidden names are omitted from future choices but retained for past game history. */
+  hidden?: boolean
+  /** Used by private cloud sync to stop old name edits from overriding newer ones. */
+  updatedAt?: string
 }
 
 export interface GameCompanionSelection {
@@ -37,39 +41,112 @@ export const DEFAULT_COMPANIONS: Companion[] = [
   { id: 'fredrik', name: 'Fredrik' },
 ]
 
-export function loadCompanions(): Companion[] {
-  let custom: Companion[] = []
+function storedCompanions(): Companion[] {
   try {
-    const raw = localStorage.getItem(CUSTOM_COMPANIONS_KEY)
-    custom = raw ? (JSON.parse(raw) as Companion[]) : []
+    const parsed: unknown = JSON.parse(localStorage.getItem(CUSTOM_COMPANIONS_KEY) || '[]')
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter((value): value is Companion => (
+      value && typeof value === 'object' &&
+      typeof value.id === 'string' && value.id.trim().length > 0 &&
+      typeof value.name === 'string' && value.name.trim().length > 0
+    ))
   } catch {
-    custom = []
+    return []
   }
+}
 
-  const byId = new Map(DEFAULT_COMPANIONS.map((person) => [person.id, person]))
-  for (const person of custom) {
-    if (!person?.id || !person?.name?.trim()) continue
-    byId.set(person.id, { ...person, name: person.name.trim(), custom: true })
+/** Include hidden names for historical game statistics and existing selections. */
+export function loadAllCompanions(): Companion[] {
+  const byId = new Map(DEFAULT_COMPANIONS.map(person => [person.id, { ...person }]))
+  for (const person of storedCompanions()) {
+    const isDefault = DEFAULT_COMPANIONS.some(defaultPerson => defaultPerson.id === person.id)
+    byId.set(person.id, {
+      ...person,
+      name: person.name.trim(),
+      custom: !isDefault,
+      hidden: person.hidden === true,
+    })
   }
   return [...byId.values()]
 }
 
+/** Active names only, including any user overrides of the original defaults. */
+export function loadCompanions(): Companion[] {
+  return loadAllCompanions().filter(person => !person.hidden)
+}
+
+function storeCompanion(person: Companion): void {
+  const current = storedCompanions()
+  const previous = current.find(entry => entry.id === person.id)
+  const previousTime = Date.parse(previous?.updatedAt ?? '')
+  // Two rapid edits can happen in the same millisecond. Ensure the later choice
+  // still wins when merging private cloud copies by updatedAt.
+  const now = Date.now()
+  const modifiedAt = Number.isFinite(previousTime) ? Math.max(now, previousTime + 1) : now
+  const next = current.filter(entry => entry.id !== person.id)
+  next.push({ ...person, updatedAt: new Date(modifiedAt).toISOString() })
+  localStorage.setItem(CUSTOM_COMPANIONS_KEY, JSON.stringify(next))
+}
+
+function sameName(a: string, b: string) {
+  return a.localeCompare(b, 'nb-NO', { sensitivity: 'base' }) === 0
+}
+
+export interface CompanionEditResult {
+  success: boolean
+  message: string
+}
+
+export function renameCompanion(id: string, name: string): CompanionEditResult {
+  const clean = name.trim()
+  if (!clean) return { success: false, message: 'Skriv inn et navn.' }
+  if (clean.length > 80) return { success: false, message: 'Navnet kan ikke være lengre enn 80 tegn.' }
+  const all = loadAllCompanions()
+  const person = all.find(entry => entry.id === id)
+  if (!person) return { success: false, message: 'Fant ikke personen.' }
+  if (all.some(entry => entry.id !== id && sameName(entry.name, clean))) {
+    return { success: false, message: 'Navnet finnes allerede. Bruk den eksisterende personen.' }
+  }
+  storeCompanion({ ...person, name: clean })
+  return { success: true, message: `Navnet er endret til ${clean}. Tidligere registreringer er beholdt.` }
+}
+
+/** Archive instead of erasing: old registered games retain their person identifiers. */
+export function hideCompanion(id: string): CompanionEditResult {
+  const person = loadAllCompanions().find(entry => entry.id === id)
+  if (!person) return { success: false, message: 'Fant ikke personen.' }
+  storeCompanion({ ...person, hidden: true })
+  return { success: true, message: `${person.name} er fjernet fra listen. Tidligere kampregistreringer er beholdt.` }
+}
+
+export function restoreCompanion(id: string): CompanionEditResult {
+  const all = loadAllCompanions()
+  const person = all.find(entry => entry.id === id)
+  if (!person) return { success: false, message: 'Fant ikke personen.' }
+  if (all.some(entry => entry.id !== id && !entry.hidden && sameName(entry.name, person.name))) {
+    return { success: false, message: 'Et aktivt navn er allerede likt. Gi personen et annet navn først.' }
+  }
+  storeCompanion({ ...person, hidden: false })
+  return { success: true, message: `${person.name} kan velges igjen.` }
+}
+
 export function addCompanion(name: string): Companion[] {
   const clean = name.trim()
-  if (!clean) return loadCompanions()
+  if (!clean || clean.length > 80) return loadCompanions()
 
-  const current = loadCompanions()
-  const existing = current.find((person) => person.name.localeCompare(clean, 'nb-NO', { sensitivity: 'base' }) === 0)
-  if (existing) return current
+  const existing = loadAllCompanions().find(person => sameName(person.name, clean))
+  if (existing) {
+    if (existing.hidden) restoreCompanion(existing.id)
+    return loadCompanions()
+  }
 
   const person: Companion = {
     id: `person:${Date.now()}:${Math.random().toString(36).slice(2, 7)}`,
     name: clean,
     custom: true,
   }
-  const custom = [...current.filter((item) => item.custom), person]
-  localStorage.setItem(CUSTOM_COMPANIONS_KEY, JSON.stringify(custom))
-  return [...DEFAULT_COMPANIONS, ...custom]
+  storeCompanion(person)
+  return loadCompanions()
 }
 
 export function loadGameCompanionSelections(): Record<string, GameCompanionSelection> {
@@ -145,7 +222,9 @@ export function summarizeCompanions(
     }
   }
 
-  const people = [...statMap.values()].sort((a, b) => b.games - a.games || a.name.localeCompare(b.name, 'nb-NO'))
+  const people = [...statMap.values()]
+    .filter(person => !person.hidden || person.games > 0)
+    .sort((a, b) => b.games - a.games || a.name.localeCompare(b.name, 'nb-NO'))
   const topCompanion = people.find((person) => person.games > 0) ?? null
   const topCombination = [...combinations.values()].sort((a, b) => b.games - a.games || b.names.length - a.names.length)[0] ?? null
 

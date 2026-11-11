@@ -1,7 +1,7 @@
 import { UserRound, Users } from 'lucide-react'
 import { games } from '../data/games'
 import {
-  loadCompanions,
+  loadAllCompanions,
   loadGameCompanionSelections,
   summarizeCompanions,
 } from '../lib/companions'
@@ -9,7 +9,7 @@ import type { GameDayRecord } from '../types'
 import '../companions.css'
 
 export function CompanionStatsPanel({ records }: { records: Record<string, GameDayRecord> }) {
-  const summary = summarizeCompanions(loadCompanions(), loadGameCompanionSelections(), records, games)
+  const summary = summarizeCompanions(loadAllCompanions(), loadGameCompanionSelections(), records, games)
   const knownCompanionGames = summary.registeredGames - summary.soloGames
 
   return (
