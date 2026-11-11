@@ -13,6 +13,7 @@ import { linkedSeasonJerseys, seasonHistoryCoverage } from '../history/coverageA
 import { careerTotalForName, careerTotalsSource } from '../history/careerTotals'
 import { numberIndex } from '../history/numberIndex'
 import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
+import { historySources } from '../history/sources'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import { SSUHistoryPage } from './SSUHistoryPage'
 import { ssuPhotos } from '../history/ssuHistory'
