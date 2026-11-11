@@ -2,6 +2,16 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.5] – 2026-11-11
+
+### Sesongvelger for Elite Prospects i historiearkivet
+- På historieforsiden kan du velge Storhamar-sesonger fra 1957/58 til pågående 2026/27.
+- For avsluttede sesonger åpner du valgt år direkte i Mitt Storhamar. Samme sesong får en ekstern lenke til Elite Prospects der sesongruten er kjent.
+- Hver enkelt historiske sesongside har en tilsvarende Elite Prospects-kildeinngang.
+- For de eldste årgangene, hvor en direkte EP-sesongside ikke er bekreftet, brukes Storhamars hovedside i stedet for en mulig død lenke.
+- Ingen manglende spillerstaller blir fremstilt som bekreftet null. SIL-arkivet forblir historisk hovedkilde.
+- Den pågående 2026/27-sesongen lenkes til den kanoniske Storhamar-siden hos Elite Prospects. Ingen kamp- eller reisedata endres.
+
 ## [0.24.4] – 2026-11-11
 
 ### Elite Prospects og historie helt tilbake til 60-tallet
