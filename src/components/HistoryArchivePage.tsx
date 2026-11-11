@@ -15,6 +15,7 @@ import { numberIndex } from '../history/numberIndex'
 import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
 import { historySources } from '../history/sources'
 import { storhamar1960s } from '../history/storhamar1960s'
+import { eliteProspectsSeasonLink, seasonDisplayName } from '../history/eliteProspectsSeason'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import { SSUHistoryPage } from './SSUHistoryPage'
 import { ssuPhotos } from '../history/ssuHistory'
@@ -41,6 +42,9 @@ const ICONS: Record<ArchiveEntityKind, LucideIcon> = {
   identity: Layers, 'supporter-culture': Users,
 }
 const eliteProspectsThisSeason = historySources.find(source => source.id === 'eliteprospects-storhamar-2026-27')
+const historicSeasonOptions = [...historyArchive.seasons]
+  .sort((a,b) => b.startYear - a.startYear)
+  .map(season => ({ id: season.id, startYear: season.startYear, label: season.displayName }))
 
 const KIND_LABELS: Record<BrowsableKind, string> = {
   season: 'Sesong', honour: 'Meritt', jersey: 'Drakt',
@@ -143,6 +147,17 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
         <p>Dette er den historiske sesongindeksens tall og formuleringer, ikke en fullstendig kamp-for-kamp-statistikk. Et målmerket tall (m) må ikke forveksles med poeng (p).</p>
         <a className="ha-source-link" href={silSeason.sourceUrl || officialSeasonIndexSource} target="_blank" rel="noopener noreferrer">Åpne sesongens dokumentasjon i SIL-arkivet <ExternalLink size={15}/></a>
       </section>}
+      <section className="ha-block ha-season-external-source">
+        <h3>Samme sesong hos Elite Prospects</h3>
+        <p>Se om Elite Prospects har registrert spillere og sesongstatistikk for {season.displayName}. Dette er en tilleggskilde, og eldre sesonger kan mangle spillerstall.</p>
+        <a className="ha-source-link" href={eliteProspectsSeasonLink(season.startYear).url} target="_blank" rel="noopener noreferrer">
+          {eliteProspectsSeasonLink(season.startYear).directSeason
+            ? `Åpne Storhamar ${season.displayName} hos Elite Prospects`
+            : 'Åpne Storhamar hos Elite Prospects og velg sesong'}
+          <ExternalLink size={15}/>
+        </a>
+        {season.startYear < 1969 && <p className="ha-research-note">En direkte sesongside er ikke bekreftet hos Elite Prospects for dette året. Bruk SIL-arkivet som hovedkilde.</p>}
+      </section>
       {(leadership.coaches.length>0 || leadership.captains.length>0) && <div className="ha-role-source-note">Trener-/kapteinoversiktene følger SIL-arkivets periodeangivelser. Trenerbytter midt i en sesong kan gi flere navn. <a href={coachChronologySource} target="_blank" rel="noopener noreferrer">Trenere</a> · <a href={captainChronologySource} target="_blank" rel="noopener noreferrer">Kapteiner</a></div>}
       <section className="ha-season-audit-inline">
         <strong>Dokumentasjonsstatus</strong>
@@ -393,6 +408,7 @@ export function HistoryArchivePage() {
   const [jerseyType, setJerseyType] = useState('all')
   const [sort, setSort] = useState<SortOrder>('newest')
   const [visibleCount, setVisibleCount] = useState(24)
+  const [sourceSeasonYear, setSourceSeasonYear] = useState(2026)
 
   // History drill-downs live inside the app's own scroll region.
   // Opening a player/season or going back must start at the top.
@@ -401,6 +417,8 @@ export function HistoryArchivePage() {
     if (region) region.scrollTop = 0
   }, [section, selection?.kind, selection?.id, chapterId])
 
+  const pickedArchiveSeason = historicSeasonOptions.find(season => season.startYear === sourceSeasonYear)
+  const pickedEliteProspectsLink = eliteProspectsSeasonLink(sourceSeasonYear)
   const sectionInfo = historyCategories.find((category) => category.id === section)
   const allItems = useMemo(() => section !== 'overview' && isBrowsableKind(section) ? archiveItems(section) : [], [section])
   const matches = useMemo(() => {
@@ -485,6 +503,35 @@ export function HistoryArchivePage() {
         <div><strong>10</strong><span>NM-gull</span></div>
         <div><strong>11</strong><span>Seriemesterskap</span></div>
       </div>
+      <section className="ha-block ha-season-source-picker" aria-label="Velg sesong og kilder">
+        <span className="ha-kicker">KILDER GJENNOM TIDENE</span>
+        <h2>Velg Storhamar-sesong</h2>
+        <p>Finn sesongen i Mitt Storhamar og sammenlign spillerstall og statistikk hos Elite Prospects.</p>
+        <div className="ha-filters">
+          <label>Sesong
+            <select value={sourceSeasonYear} onChange={(event) => setSourceSeasonYear(Number(event.target.value))} aria-label="Velg sesong for historikk og Elite Prospects">
+              <option value={2026}>2026/27 · pågår</option>
+              {historicSeasonOptions.map(season => <option value={season.startYear} key={season.id}>{season.label}</option>)}
+            </select>
+          </label>
+        </div>
+        {pickedArchiveSeason ? (
+          <button type="button" className="ha-load-more" onClick={() => openItem('season', pickedArchiveSeason.id)}>
+            Vis {pickedArchiveSeason.label} i Mitt Storhamar <ChevronRight size={16}/>
+          </button>
+        ) : <p className="ha-research-note">2026/27 er pågående sesong. Personlige kamper og reiser finner du under «Kamper» og «Min Storhamar».</p>}
+        <a className="ha-source-link" href={pickedEliteProspectsLink.url} target="_blank" rel="noopener noreferrer">
+          {pickedEliteProspectsLink.directSeason
+            ? `Vis ${seasonDisplayName(sourceSeasonYear)} hos Elite Prospects`
+            : 'Åpne Storhamar hos Elite Prospects og velg sesong'}
+          <ExternalLink size={15}/>
+        </a>
+        <p className="ha-research-note">
+          {sourceSeasonYear < 1969
+            ? 'For sesonger før 1969/70 er ikke direkte sesonglenker bekreftet hos Elite Prospects. SIL-arkivet har hoveddokumentasjonen.'
+            : 'Noen eldre EP-sesonger har få eller ingen registrerte spillere. Manglende data betyr ikke at spillerne ikke deltok.'}
+        </p>
+      </section>
       <button type="button" className="ha-ssu-entry" onClick={()=>goSection('ssu')}>
         <span className="ha-ssu-entry-copy">
           <span className="ha-kicker">EGET HISTORIEARKIV · 2001–2026</span>
