@@ -2,6 +2,15 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.3] – 2026-11-11
+
+### Rediger navn på reisefølge
+- Alle personer i «Hvem skal du dra med?» kan få rettet navn, også forhåndsvalgene.
+- «Rediger eller fjern navn» åpner en egen liten oversikt med Rediger, Fjern og Vis igjen.
+- Fjernede navn skjules fra framtidige valg, men historiske kamper og personstatistikk beholdes.
+- Feilskrevne navn kan rettes uten å miste gamle registreringer, siden personens ID er uendret.
+- Endringer lagres lokalt og følger den private synkroniseringen; tester dekker lagring, gjenoppretting og nye navn.
+
 ## [0.24.2] – 2026-11-10
 
 ### Riktig oppmøte når en kamp pågår
