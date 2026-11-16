@@ -124,7 +124,7 @@ export function SSUHistoryPage({onBack}:{onBack:()=>void}) {
   }
 
   return <section className="ha-shell ssu-history-page">
-    <button className="ha-back" type="button" onClick={onBack}><ArrowLeft size={17}/> Tilbake til Historie</button>
+    <button className="ha-back" type="button" onClick={onBack}><ArrowLeft size={17}/> Tilbake</button>
 
     <div className="ssu-history-hero">
       <div className="ssu-hero-photo"><img src={ssuPhotos[0].src} alt="Storhamar-supportere i gult og blått"/></div>

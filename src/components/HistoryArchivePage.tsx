@@ -15,6 +15,7 @@ import { numberIndex } from '../history/numberIndex'
 import { officialSeasonIndex, officialSeasonIndexSource } from '../history/seasonSourceIndex'
 import { historySources } from '../history/sources'
 import { storhamar1960s } from '../history/storhamar1960s'
+import { audienceAverageLabel, historyBackLabel, jerseyUsageLabels } from '../history/visualPolish'
 import { eliteProspectsSeasonLink, seasonDisplayName } from '../history/eliteProspectsSeason'
 import { CareerTotalsPage, HistoryAuditPage, HistoryNumberPage } from './HistoryResearchViews'
 import { SSUHistoryPage } from './SSUHistoryPage'
@@ -32,6 +33,7 @@ import type {
 
 type Section = 'overview' | 'audit' | 'numbers' | 'career-stats' | 'stories' | 'ssu' | ArchiveEntityKind
 type Selection = { kind: BrowsableKind; id: string }
+type HistoryLocation = { section: Section; selection: Selection | null; chapterId: string | null }
 type ImageTarget = { media: ArchiveMedia; caption: string } | null
 type SortOrder = 'newest' | 'oldest' | 'alpha'
 
@@ -142,7 +144,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
           {silSeason.postSeason && <div><span>Sluttspill / kvalifisering</span><strong>{silSeason.postSeason}</strong></div>}
           {silSeason.leadingPlayer && <div><span>Poengkonge / toppscorer</span><strong>{silSeason.leadingPlayer}</strong></div>}
           {silSeason.leadingStatistic && <div><span>Registrert statistikk</span><strong>{silSeason.leadingStatistic}</strong></div>}
-          {silSeason.averageAttendance && <div><span>Publikumssnitt (SIL-indeks)</span><strong>{silSeason.averageAttendance}</strong></div>}
+          {audienceAverageLabel(silSeason.averageAttendance) && <div><span>Publikumssnitt (SIL-indeks)</span><strong>{audienceAverageLabel(silSeason.averageAttendance)}</strong></div>}
         </div>
         <p>Dette er den historiske sesongindeksens tall og formuleringer, ikke en fullstendig kamp-for-kamp-statistikk. Et målmerket tall (m) må ikke forveksles med poeng (p).</p>
         <a className="ha-source-link" href={silSeason.sourceUrl || officialSeasonIndexSource} target="_blank" rel="noopener noreferrer">Åpne sesongens dokumentasjon i SIL-arkivet <ExternalLink size={15}/></a>
@@ -206,7 +208,7 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
   if (kind === 'jersey') {
     const jersey = item as ArchiveJersey
     return <div className="ha-fact-list">
-      <div><span>Brukt som</span><strong>{jersey.usage.join(', ') || 'Ikke registrert'}</strong></div>
+      <div><span>Type og bruk</span><strong>{jersey.usage.map((usage)=>jerseyUsageLabels[usage]).join(', ') || 'Ikke registrert'}</strong></div>
       {jersey.manufacturer && <div><span>Produsent</span><strong>{jersey.manufacturer}</strong></div>}
       {jersey.colours && jersey.colours.length > 0 && <div><span>Farger</span><strong>{jersey.colours.join(', ')}</strong></div>}
       {jersey.frontSponsor && <div><span>Brystsponsor</span><strong>{jersey.frontSponsor}</strong></div>}
@@ -287,9 +289,10 @@ function DetailsData({ kind, item, openItem }: { kind: BrowsableKind; item: Arch
   return null
 }
 
-function DetailView({ selection, back, openItem, openPhoto }: {
+function DetailView({ selection, back, backLabel, openItem, openPhoto }: {
   selection: Selection
   back: () => void
+  backLabel: string
   openItem: (kind: BrowsableKind, id: string) => void
   openPhoto: (media: ArchiveMedia) => void
 }) {
@@ -303,7 +306,7 @@ function DetailView({ selection, back, openItem, openPhoto }: {
   const references = [...sourceLinks(item), ...(personStory?.sources ?? [])]
     .filter((link, index, array) => array.findIndex((other) => other.url === link.url) === index)
   return <section className="ha-shell ha-detail">
-    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til {KIND_LABELS[selection.kind].toLowerCase()}arkivet</button>
+    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> {backLabel}</button>
     <div className="ha-detail-heading">
       <span className="ha-kicker">{KIND_LABELS[selection.kind]} · Storhamars historie</span>
       <h1>{item.title}</h1>
@@ -402,6 +405,7 @@ export function HistoryArchivePage() {
   const [section, setSection] = useState<Section>('overview')
   const [selection, setSelection] = useState<Selection | null>(null)
   const [chapterId, setChapterId] = useState<string | null>(null)
+  const [navigationTrail, setNavigationTrail] = useState<HistoryLocation[]>([])
   const [photo, setPhoto] = useState<ImageTarget>(null)
   const [query, setQuery] = useState('')
   const [decade, setDecade] = useState('all')
@@ -446,6 +450,7 @@ export function HistoryArchivePage() {
   }, [query, section])
 
   function goSection(next: Section) {
+    setNavigationTrail([])
     setSection(next)
     setSelection(null)
     setChapterId(null)
@@ -456,11 +461,26 @@ export function HistoryArchivePage() {
     setVisibleCount(24)
   }
   function openItem(kind: BrowsableKind, id: string) {
+    // Remember the actual page the reader came from (trainers, stories,
+    // shirt numbers, or even another detail) instead of guessing by entity kind.
+    setNavigationTrail((trail) => [...trail, {section, selection, chapterId}])
     setSection(kind)
     setSelection({kind,id})
     setChapterId(null)
   }
+  function backFromItem() {
+    const previous = navigationTrail[navigationTrail.length - 1]
+    if (!previous) {
+      goSection('overview')
+      return
+    }
+    setNavigationTrail((trail) => trail.slice(0, -1))
+    setSection(previous.section)
+    setSelection(previous.selection)
+    setChapterId(previous.chapterId)
+  }
   function openChapter(id: string) {
+    setNavigationTrail([])
     setSection('overview')
     setSelection(null)
     setChapterId(id)
@@ -487,7 +507,7 @@ export function HistoryArchivePage() {
       {photo.media.sourceUrl && <a href={photo.media.sourceUrl} target="_blank" rel="noopener noreferrer">Se originalkilde <ExternalLink size={13}/></a>}
     </div>}
 
-    {selection ? <DetailView key={selection.kind + selection.id} selection={selection} back={() => setSelection(null)} openItem={openItem} openPhoto={openPhoto}/>
+    {selection ? <DetailView key={selection.kind + selection.id} selection={selection} back={backFromItem} backLabel={historyBackLabel(navigationTrail[navigationTrail.length - 1])} openItem={openItem} openPhoto={openPhoto}/>
     : chapter ? <ChapterView key={chapter.id} chapter={chapter} back={() => setChapterId(null)} openItem={openItem} openPhoto={openPhoto}/>
     : section === 'overview' ? <section className="ha-shell">
       <div className="ha-hero">
@@ -604,7 +624,7 @@ export function HistoryArchivePage() {
     : section === 'numbers' ? <HistoryNumberPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
     : section === 'career-stats' ? <CareerTotalsPage back={()=>goSection('overview')} openPerson={(kind,id)=>openItem(kind,id)}/>
     : section === 'stories' ? <section className="ha-shell">
-      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake</button>
       <div className="ha-section-heading">
         <BookOpen size={24}/>
         <div><span className="ha-kicker">MENNESKENE BAK STORHAMAR</span><h1>Spillerhistorier</h1>
@@ -626,7 +646,7 @@ export function HistoryArchivePage() {
       <button className="ha-load-more" onClick={()=>goSection('player')}>Se hele spillerarkivet <ChevronRight size={17}/></button>
     </section>
     : isBrowsableKind(section) ? <section className="ha-shell">
-      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake</button>
       <div className="ha-section-heading">{(() => { const Icon=sectionIcon;return <Icon size={24}/> })()}<div><span className="ha-kicker">STORHAMAR · ARKIVET</span><h1>{sectionInfo?.title}</h1><p>{sectionInfo?.description}</p></div></div>
       {section === 'jersey' && <div className="ha-topic-note">SIL-arkivet dokumenterer at klubbens aller første drakter var svarte og gule. Den gule og blå draktidentiteten kom senere. Her finner du også Europa-, sluttspill- og spesialdrakter med kilde og bilde der det finnes.</div>}
       {section === 'season' && <div className="ha-topic-note">Sesonger fra 1957/58 til 2025/26. Det som ikke kan dokumenteres – særlig eldre statistikk – er merket som ufullstendig.</div>}
@@ -651,7 +671,7 @@ export function HistoryArchivePage() {
       {visibleCount<matches.length && <button className="ha-load-more" onClick={()=>setVisibleCount((count)=>count+24)}>Vis flere ({matches.length-visibleCount} igjen) <ChevronRight size={17}/></button>}
     </section>
     : roleList ? <section className="ha-shell">
-      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake</button>
       <div className="ha-section-heading"><Star size={22}/><div><span className="ha-kicker">SIL-ARKIVET</span><h1>{roleList.title}</h1><p>Navn og perioder er basert på SIL-arkivets historiske oversikt.</p></div></div>
       <label className="ha-search"><Search size={17}/><input value={query} placeholder={'Søk blant ' + roleList.title.toLowerCase()} onChange={(event)=>setQuery(event.target.value)}/></label>
       <div className="ha-roles">{roleList.entries.filter(([name,years])=>(name+' '+years).toLocaleLowerCase('nb-NO').includes(query.toLocaleLowerCase('nb-NO'))).map(([name,years], index)=>{
@@ -664,7 +684,7 @@ export function HistoryArchivePage() {
       <a className="ha-source-link" href={roleList.sourceUrl} target="_blank" rel="noopener noreferrer">Full oversikt hos SIL-arkivet <ExternalLink size={15}/></a>
     </section>
     : section === 'identity' ? <section className="ha-shell">
-      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake</button>
       <div className="ha-section-heading"><Shirt size={24}/><div><span className="ha-kicker">FARGER · SYMBOLER · NAVN</span><h1>Klubbidentitet</h1></div></div>
       <p className="ha-lead">Fra svart og gult til de karakteristiske gule og blå draktene. Storhamars visuelle historie forteller også historien om klubbens vekst.</p>
       <div className="ha-prose"><p>I starten handlet det om å få tak i utstyr. Draktene var svarte og gule. Senere ble gult og blått den tydelige klubbidentiteten, mens nye design, sponsorer og Dragons-perioden satte sitt preg på ulike epoker.</p></div>
@@ -676,7 +696,7 @@ export function HistoryArchivePage() {
       <a className="ha-source-link" href="https://silarkivet.no/drakter/" target="_blank" rel="noopener noreferrer">Kilde: SIL-arkivets drakthistorie <ExternalLink size={15}/></a>
     </section>
     : <section className="ha-shell">
-      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake til Historie</button>
+      <button className="ha-back" onClick={()=>goSection('overview')}><ArrowLeft size={17}/> Tilbake</button>
       <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">TRIBUNENE · SUPPORTERNE</span><h1>Supporterkultur</h1></div></div>
       <p className="ha-lead">Storhamar er mer enn resultater. Den organiserte supporterkulturen er også en del av klubbhistorien.</p>
       <div className="ha-prose"><p><strong>25. oktober 2001:</strong> Storhamar Supporter Union ble stiftet. Men den organiserte supporterhistorien strekker seg enda lenger tilbake til blant annet Storhamar supporterforening og Køllebladet.</p><p>Les hele historien i SSUs egen del med kapitler, viktige årstall og bilder fra borteturene.</p></div>

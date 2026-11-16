@@ -2,6 +2,20 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.7] – 2026-11-16
+
+### Småfeil fra uavhengig visuell betatest
+- Draktnummersøket viser nå bare detaljer for et nummer som faktisk finnes i søkeresultatet. Uten treff skjules gamle detaljer.
+- Historiske profiler husker hvilken side man kom fra. Profiler åpnet fra Trenere, Spillerhistorier og nummerregisteret går tilbake dit i stedet for til feil arkiv.
+- Drakt- og SSU-filtre brytes over flere linjer på smale skjermer i stedet for å kutte av kategorier.
+- Tilbakeknapper på arkivsider har kortere tekst og CSS som tillater linjebryting.
+- Smart reisemodus skiller tydelig mellom GPS i Android-appen og GPS i nettleser.
+- Historisk publikumssnitt med en løs avsluttende bindestrek vises ryddig. Det originale SIL-tallet endres ikke.
+- Drakttype vises med norske uttrykk, inkludert «Oppkjøring» i stedet for «preseason».
+- Unaturlig formulering i rekordarkivet er språkvasket.
+- Regresjonstester dekker valg ved nummersøk, tilbake-etiketter, tallformatering og drakttyper.
+- Ingen personlige kamper, reiser, kostnader eller skytabeller endres.
+
 ## [0.24.6] – 2026-11-16
 
 ### Hindre at rask lokal lagring overskrives av treg skysynk

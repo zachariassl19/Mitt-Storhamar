@@ -4,6 +4,7 @@ import { careerTotals, careerTotalsSource, careerStatDiscrepancies, careerNamesR
 import { historyAuditSummary, seasonAudit } from '../history/coverageAudit'
 import { numberIndex, documentedNumberRows, officialNumberSource, officialNumberSourceIssues } from '../history/numberIndex'
 import { historyArchive } from '../history/catalog'
+import { visibleShirtNumber } from '../history/visualPolish'
 
 type PersonKind = 'player' | 'legend'
 type OpenPerson = (kind: PersonKind, id: string) => void
@@ -23,7 +24,7 @@ export function HistoryAuditPage({ back, openSeason }: { back: () => void; openS
     (!showOnlyMissing || entry.issues.length > 0)
   ),[decade,showOnlyMissing])
   return <section className="ha-shell">
-    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til Historie</button>
+    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake</button>
     <div className="ha-section-heading"><ShieldCheck size={23}/><div>
       <span className="ha-kicker">KILDEKONTROLL · VERSJONERT ARKIV</span>
       <h1>Hva er dokumentert?</h1>
@@ -73,11 +74,12 @@ export function HistoryAuditPage({ back, openSeason }: { back: () => void; openS
 export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPerson:OpenPerson }) {
   const [selected,setSelected]=useState('08')
   const [search,setSearch]=useState('')
-  const row=numberIndex.find((entry)=>entry.number===selected)!
   const normalized=search.toLocaleLowerCase('nb-NO').trim()
   const matches=numberIndex.filter((entry)=>entry.number.includes(normalized) || entry.holders.some((holder)=>holder.name.toLocaleLowerCase('nb-NO').includes(normalized)))
+  const visibleNumber=visibleShirtNumber(selected, matches)
+  const row=matches.find((entry)=>entry.number===visibleNumber) ?? null
   return <section className="ha-shell">
-    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til Historie</button>
+    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake</button>
     <div className="ha-section-heading"><Shirt size={24}/><div>
       <span className="ha-kicker">SIL-ARKIVET · 01 TIL 98</span>
       <h1>Hvem brukte nummeret?</h1>
@@ -85,9 +87,9 @@ export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPers
     </div></div>
     <label className="ha-search"><Search size={17}/><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Søk nummer eller spiller…"/></label>
     <div className="ha-number-panel">
-      <div className="ha-number-grid" aria-label="Velg draktnummer">{matches.map((entry)=><button type="button" aria-pressed={selected===entry.number} key={entry.number} onClick={()=>setSelected(entry.number)} className={selected===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} registrert</span></button>)}</div>
+      <div className="ha-number-grid" aria-label="Velg draktnummer">{matches.map((entry)=><button type="button" aria-pressed={visibleNumber===entry.number} key={entry.number} onClick={()=>setSelected(entry.number)} className={visibleNumber===entry.number?'active':''}><strong>{entry.number}</strong><span>{entry.holders.length} registrert</span></button>)}</div>
       {matches.length===0 && <p className="ha-number-no-results">Ingen treff i nummerregisteret.</p>}
-      <div className="ha-number-detail">
+      {row && <div className="ha-number-detail">
         <div className="ha-number-selected-heading">
           <div><span className="ha-kicker">VALGT DRAKTNUMMER</span><strong className="ha-number-large">#{row.number}</strong></div>
           <span className="ha-number-count">{row.holders.length} {row.holders.length===1?'spiller':'spillere'}</span>
@@ -103,7 +105,7 @@ export function HistoryNumberPage({ back, openPerson }: { back:()=>void;openPers
             ? <button type="button" className="ha-number-player" key={person.name+index} onClick={()=>openPerson(target.kind,target.id)}>{main}</button>
             : <div className="ha-number-player" key={person.name+index}>{main}</div>
         })}</div>}
-      </div>
+      </div>}
     </div>
     <a className="ha-source-link" href={officialNumberSource} rel="noopener noreferrer" target="_blank">Sammenlign med originalregisteret hos SIL-arkivet <ExternalLink size={15}/></a>
     <div className="ha-research-note">Alle nummeroppføringene fra kildetabellen er med. {officialNumberSourceIssues.length} rader er spesielt merket på grunn av manglende år eller feil i originalsidens HTML. Individuelle spillerprofiler er ennå ikke komplette for alle navnene.</div>
@@ -125,7 +127,7 @@ export function CareerTotalsPage({ back, openPerson }: { back:()=>void;openPerso
     {key:'games',label:'Kamper'},{key:'points',label:'Poeng'},{key:'goals',label:'Mål'},{key:'assists',label:'Assist'},
   ]
   return <section className="ha-shell">
-    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake til Historie</button>
+    <button className="ha-back" onClick={back}><ArrowLeft size={17}/> Tilbake</button>
     <div className="ha-section-heading"><Users size={24}/><div><span className="ha-kicker">SIL-ARKIVET · A JOUR ETTER 2025/26</span><h1>Adelskalenderen</h1><p>Alle {careerTotals.length} dokumenterte rader fra SIL-arkivets samlede karrieretabell. Tallene er historiske og ikke live-statistikk for 2026/27.</p></div></div>
     <label className="ha-search"><Search size={17}/><input aria-label="Søk i den historiske adelskalenderen" value={query} onChange={(e)=>{setQuery(e.target.value);setVisibleCount(60)}} placeholder="Søk etter spiller…"/></label>
     <div className="ha-pill-filters">{sorter.map((item)=><button key={item.key} className={sort===item.key?'active':''} onClick={()=>{setSort(item.key);setVisibleCount(60)}}>{item.label}</button>)}</div>
