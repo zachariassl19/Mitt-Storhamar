@@ -2,6 +2,15 @@
 
 Alle merkbare endringer i Mitt Storhamar dokumenteres her.
 
+## [0.24.6] – 2026-11-16
+
+### Hindre at rask lokal lagring overskrives av treg skysynk
+- Privat synk leser nå de nyeste lokale appdataene etter at den har fått svar fra Supabase, ikke før nettverksforespørselen.
+- Oppstartssynk og vanlig lagring bruker samme trygge sammenslåing av data.
+- Automatisk synk venter til første innloggingssynk er ferdig for å redusere risikoen for samtidige opplastinger.
+- Fire regresjonstester simulerer lagring av reiser og kampvalg mens en skyforespørsel er utestående, førstegangsoppsett og gjenoppretting på ny enhet.
+- Endringen gjør ikke to samtidige enheter fullstendig transaksjonssikre; den fjerner en identifisert risiko for foreldet lokaltilstand på én enhet.
+
 ## [0.24.5] – 2026-11-11
 
 ### Sesongvelger for Elite Prospects i historiearkivet
