@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Cloud, CloudOff, LogIn, LogOut, RefreshCw, ShieldCheck, X } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { mergeCloudStorage } from '../lib/cloudSyncMerge'
+import { reconcileAfterRemoteFetch } from '../lib/cloudSyncSnapshot'
 import { supabase } from '../lib/supabase'
 
 const APP_STORAGE_PREFIX = 'mitt-storhamar:'
@@ -96,6 +97,7 @@ export function CloudSyncManager() {
   const lastFingerprintRef = useRef(storageFingerprint(readAppStorage()))
   const lastRemoteUpdatedAtRef = useRef<string | null>(null)
   const pushingRef = useRef(false)
+  const bootstrappingRef = useRef(false)
 
   // Kept mounted globally so background sync continues on every app tab,
   // but its dialog is opened from Mer rather than a floating screen overlay.
@@ -106,17 +108,17 @@ export function CloudSyncManager() {
   }, [])
 
   async function pushCurrent(localUser = user) {
-    if (!localUser || pushingRef.current) return
+    if (!localUser || pushingRef.current || bootstrappingRef.current) return
     pushingRef.current = true
     setStatus('syncing')
     try {
       // Always pull before pushing: another device may have saved data since our last poll.
-      const snapshot = snapshotFromLocal()
-      const localFingerprint = storageFingerprint(snapshot.storage)
-      const remote = await fetchRemoteState(localUser.id)
-      const merged = remote?.state?.storage
-        ? mergeCloudStorage(remote.state.storage, snapshot.storage)
-        : snapshot.storage
+      const { local, merged } = await reconcileAfterRemoteFetch(
+        () => fetchRemoteState(localUser.id),
+        remote => remote?.state?.storage,
+        readAppStorage,
+      )
+      const localFingerprint = storageFingerprint(local)
       const mergedFingerprint = storageFingerprint(merged)
       if (mergedFingerprint !== localFingerprint) replaceAppStorage(merged)
       const updatedAt = await writeRemoteState(localUser.id, {
@@ -140,11 +142,15 @@ export function CloudSyncManager() {
   async function bootstrap(localUser: User) {
     if (initializedUserRef.current === localUser.id) return
     initializedUserRef.current = localUser.id
+    bootstrappingRef.current = true
     setStatus('syncing')
 
     try {
-      const local = readAppStorage()
-      const remote = await fetchRemoteState(localUser.id)
+      const { remote, local, merged } = await reconcileAfterRemoteFetch(
+        () => fetchRemoteState(localUser.id),
+        result => result?.state?.storage,
+        readAppStorage,
+      )
 
       if (!remote?.state?.storage) {
         const updatedAt = await writeRemoteState(localUser.id, snapshotFromLocal())
@@ -167,9 +173,6 @@ export function CloudSyncManager() {
         return
       }
 
-      const merged = Object.keys(local).length === 0
-        ? remoteStorage
-        : mergeCloudStorage(remoteStorage, local)
       const mergedFingerprint = storageFingerprint(merged)
 
       replaceAppStorage(merged)
@@ -188,11 +191,13 @@ export function CloudSyncManager() {
       initializedUserRef.current = null
       setStatus('error')
       setMessage(error instanceof Error ? error.message : 'Kunne ikke starte privat synk.')
+    } finally {
+      bootstrappingRef.current = false
     }
   }
 
   async function pullIfNewer() {
-    if (!user || pushingRef.current) return
+    if (!user || pushingRef.current || bootstrappingRef.current) return
     try {
       const remote = await fetchRemoteState(user.id)
       if (!remote?.state?.storage) return
