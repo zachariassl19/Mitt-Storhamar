@@ -230,7 +230,7 @@ export function SmartTravelManager() {
     </button>
 
     {open && <div className="settings-entry-panel smart-settings-panel smart-trip-panel">
-      <p className="settings-panel-note">Velg kamp og start reisen én gang. På Android fortsetter GPS mens skjermen er låst med et synlig varsel. Sporing stopper ved avslutning av økten eller manuelt. Ingen koordinathistorikk lagres.</p>
+      <p className="settings-panel-note">Velg kamp og start reisen én gang. {native ? 'I Android-appen kan GPS fortsette mens skjermen er låst. Da vises et varsel om aktiv sporing.' : 'I nettleseren fungerer GPS mens siden er aktiv. Sporing kan stoppe når skjermen låses og fortsetter ikke med lukket fane.'} Stopp reisemodus når turen er ferdig. Ingen koordinathistorikk lagres.</p>
       {session && activeGame ? <>
         <div className="smart-trip-current">
           <strong>{gameText(activeGame)}</strong>
@@ -255,7 +255,7 @@ export function SmartTravelManager() {
         </button>
       </>}
       {message && <p role="status" className={status==='problem'?'save-warning':'settings-panel-note'}>{message}</p>}
-      <p className="settings-panel-note"><ShieldCheck size={14}/> GPS brukes bare til avstand og mulige kampdagssignaler. Oppmøte bekreftes fortsatt av deg. {native?'Android-batterisparing kan forsinke enkelte oppdateringer.':'Nettleseren kan ikke fortsette GPS med lukket fane.'}</p>
+      <p className="settings-panel-note"><ShieldCheck size={14}/> GPS brukes bare til avstand og mulige kampdagssignaler. Oppmøte bekreftes fortsatt av deg. {native?'Android-batterisparing kan forsinke enkelte oppdateringer.':'Lukkes nettleserfanen, avsluttes posisjonsoppdateringen.'}</p>
     </div>}
   </div>, portal)
 }
